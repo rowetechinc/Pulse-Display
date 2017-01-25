@@ -1,0 +1,630 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2BE9AD8A-5BD6-4A6C-89DC-1ABC6CEB7E33}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RTI</RootNamespace>
+    <AssemblyName>Pulse_Display</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <NuGetPackageImportStamp>9192b08e</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Metro">
+      <HintPath>..\packages\Caliburn.Metro.0.5.0\lib\net451\Caliburn.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Metro.Core">
+      <HintPath>..\packages\Caliburn.Metro.0.5.0\lib\net451\Caliburn.Metro.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Caliburn.Micro.Core.2.0.2\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.ReactiveUI">
+      <HintPath>..\packages\Caliburn.Micro.ReactiveUI.2.2.1\lib\portable-net45+win8+wp8+wpa81\Caliburn.Micro.ReactiveUI.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit, Version=2015.1.657.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\HelixToolkit.2015.1.657\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2015.1.657.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.657\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.2.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MahApps.Metro.1.2.2.0\lib\net45\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Blend, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Expression.Controls, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Expression.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xps">
+      <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Xps.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="ReactiveUI, Version=6.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\reactiveui-core.6.5.0\lib\Net45\ReactiveUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat, Version=1.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Splat.1.6.2\lib\Net45\Splat.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.99.0\lib\net451\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.99.0\lib\net451\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.99.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net451\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading">
+      <HintPath>..\packages\Rx-XAML.2.2.5\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.2.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WriteableBitmapEx.Wpf, Version=1.5.0.0, Culture=neutral, PublicKeyToken=50375ca6144f1c69, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WriteableBitmapEx.1.5.0.0\lib\net40\WriteableBitmapEx.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\Commons.cs" />
+    <Compile Include="Common\DbCommon.cs" />
+    <Compile Include="Events\CloseVmEvent.cs" />
+    <Compile Include="Events\CompassCalResultEvent.cs" />
+    <Compile Include="Events\EnsembleEvent.cs" />
+    <Compile Include="Events\EnsembleWriteEvent.cs" />
+    <Compile Include="Events\PageNavEvents.cs" />
+    <Compile Include="Events\PlaybackEvent.cs" />
+    <Compile Include="Events\ProjectEvent.cs" />
+    <Compile Include="Events\StatusEvent.cs" />
+    <Compile Include="Model\AdcpConnection.cs" />
+    <Compile Include="Model\AdcpPredictor.cs" />
+    <Compile Include="Model\AdcpStatus.cs" />
+    <Compile Include="Model\DistanceTraveled.cs" />
+    <Compile Include="Model\Options\AverageSubsystemConfigOptions.cs" />
+    <Compile Include="Model\Options\ExportDataOptions.cs" />
+    <Compile Include="Model\Options\PulseConfiguration.cs" />
+    <Compile Include="Model\Options\PulseOptions.cs" />
+    <Compile Include="Model\Options\RecoverDataOptions.cs" />
+    <Compile Include="Model\Options\ScreenSubsystemConfigOptions.cs" />
+    <Compile Include="Model\Options\SmartPageOptions.cs" />
+    <Compile Include="Model\Options\TankTestOptions.cs" />
+    <Compile Include="Model\Options\TextSubsystemConfigOptions.cs" />
+    <Compile Include="Model\Options\HeatmapSeriesOptions.cs" />
+    <Compile Include="Model\Options\TimeSeriesOptions.cs" />
+    <Compile Include="Model\Options\ValidationTestViewOptions.cs" />
+    <Compile Include="Model\Options\BackscatterOptions.cs" />
+    <Compile Include="Model\Options\ViewDataGraphicalOptions.cs" />
+    <Compile Include="Model\Options\ViewDataWavesOptions.cs" />
+    <Compile Include="Model\ProductImage.cs" />
+    <Compile Include="Model\ProjectManagerDatabaseWriter.cs" />
+    <Compile Include="Model\ProjectReportText.cs" />
+    <Compile Include="Model\PulseManager.cs" />
+    <Compile Include="Model\SubsystemDataConfig.cs" />
+    <Compile Include="Plot\BeamColor.cs" />
+    <Compile Include="Plot\BinPlot3D.cs" />
+    <Compile Include="Plot\ColormapBrush.cs" />
+    <Compile Include="Plot\ColormapHelper.cs" />
+    <Compile Include="Plot\ColormapToBrushConverter.cs" />
+    <Compile Include="Plot\CompassCalScatterPlot3D.cs" />
+    <Compile Include="Plot\ContourPlot.cs" />
+    <Compile Include="Plot\ContourPlotLegendView.xaml.cs" />
+    <Compile Include="Plot\ContourPlotLegendViewModel.cs" />
+    <Compile Include="Plot\DmgPlotView.xaml.cs">
+      <DependentUpon>DmgPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Plot\DmgPlotViewModel.cs" />
+    <Compile Include="Plot\HeatmapPlotSeries.cs" />
+    <Compile Include="Plot\LineSeriesWithToString.cs" />
+    <Compile Include="Plot\MinMaxAvgStdSeries.cs" />
+    <Compile Include="Plot\OxyPaletteToBrushConverter.cs" />
+    <Compile Include="Plot\OxyColorToBrushConverter.cs" />
+    <Compile Include="Plot\ProfileSeries.cs" />
+    <Compile Include="Plot\ProfileType.cs" />
+    <Compile Include="Plot\ProjectImage.cs" />
+    <Compile Include="Plot\ScatterPlot3D.cs" />
+    <Compile Include="Plot\ScatterSeriesWithToString.cs" />
+    <Compile Include="Plot\SeriesType.cs" />
+    <Compile Include="Plot\SimpleBitmap.cs" />
+    <Compile Include="Plot\TimeSeries.cs" />
+    <Compile Include="Plot\VelocityPlot3D.cs" />
+    <Compile Include="Plot\VelocityPlotSpectrum.cs" />
+    <Compile Include="Plot\VelocityPlotSurface.cs" />
+    <Compile Include="Plot\VelocityPlotSurfaceModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Utils\BoolToVisableOrCollapsed.cs" />
+    <Compile Include="Utils\EnumMatchToBooleanConverter.cs" />
+    <Compile Include="Utils\InverseBoolConverter.cs" />
+    <Compile Include="Utils\LimitedList.cs" />
+    <Compile Include="Utils\MarginConverter.cs" />
+    <Compile Include="Utils\ObservableCollectionEx.cs" />
+    <Compile Include="Utils\Screenshot.cs" />
+    <Compile Include="Utils\TimeFormatToDateTimeFormatConverter.cs" />
+    <Compile Include="Utils\uriToImageConverter.cs" />
+    <Compile Include="ViewModel\DiagnosticsBaseViewModel.cs" />
+    <Compile Include="ViewModel\AdcpPredictionModelViewModel.cs" />
+    <Compile Include="ViewModel\AdcpRangePlannerViewModel.cs" />
+    <Compile Include="ViewModel\AveragingBaseViewModel.cs" />
+    <Compile Include="ViewModel\AveragingViewModel.cs" />
+    <Compile Include="ViewModel\CompassCalViewModel.cs" />
+    <Compile Include="ViewModel\CompassUtilityViewModel.cs" />
+    <Compile Include="ViewModel\DiagnosticsViewModel.cs" />
+    <Compile Include="ViewModel\HeatmapPlotViewModel.cs" />
+    <Compile Include="ViewModel\PlaybackViewModel.cs" />
+    <Compile Include="ViewModel\ProfilePlotViewModel.cs" />
+    <Compile Include="ViewModel\PulseViewModel.cs" />
+    <Compile Include="ViewModel\ScreenDataBaseViewModel.cs" />
+    <Compile Include="ViewModel\ScreenDataViewModel.cs" />
+    <Compile Include="ViewModel\SerialNumberGeneratorViewModel.cs" />
+    <Compile Include="ViewModel\TerminalAdcpViewModel.cs" />
+    <Compile Include="ViewModel\TerminalNavViewModel.cs" />
+    <Compile Include="ViewModel\TerminalNmeaViewModel.cs" />
+    <Compile Include="ViewModel\TerminalViewModel.cs" />
+    <Compile Include="ViewModel\TimeSeriesPlotViewModel.cs" />
+    <Compile Include="ViewModel\UpdateFirmwareViewModel.cs" />
+    <Compile Include="ViewModel\ValidationTestBaseViewModel.cs" />
+    <Compile Include="ViewModel\ValidationTestViewModel.cs" />
+    <Compile Include="View\AdcpPredictionModelView.xaml.cs" />
+    <Compile Include="View\AdcpRangePlannerView.xaml.cs" />
+    <Compile Include="View\AveragingBaseView.xaml.cs" />
+    <Compile Include="View\AveragingView.xaml.cs" />
+    <Compile Include="View\CompassCalView.xaml.cs" />
+    <Compile Include="View\CompassUtilityView.xaml.cs" />
+    <Compile Include="View\DiagnosticsBaseView.xaml.cs">
+      <DependentUpon>DiagnosticsBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DiagnosticsView.xaml.cs">
+      <DependentUpon>DiagnosticsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HeatmapPlotView.xaml.cs">
+      <DependentUpon>HeatmapPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PlaybackView.xaml.cs">
+      <DependentUpon>PlaybackView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProfilePlotView.xaml.cs">
+      <DependentUpon>ProfilePlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PulseAnime.xaml.cs" />
+    <Compile Include="View\ScreenDataBaseView.xaml.cs" />
+    <Compile Include="View\ScreenDataView.xaml.cs" />
+    <Compile Include="View\SerialNumberGenerator.xaml.cs" />
+    <Compile Include="View\TerminalAdcpView.xaml.cs" />
+    <Compile Include="View\TerminalNavView.xaml.cs" />
+    <Compile Include="View\TerminalNmeaView.xaml.cs" />
+    <Compile Include="View\TerminalView.xaml.cs" />
+    <Compile Include="View\TimeSeriesPlotView.xaml.cs">
+      <DependentUpon>TimeSeriesPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UpdateFirmwareView.xaml.cs" />
+    <Compile Include="View\ValidationTestBaseView.xaml.cs">
+      <DependentUpon>ValidationTestBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ValidationTestView.xaml.cs">
+      <DependentUpon>ValidationTestView.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <Resource Include="Resources\Entypo.ttf" />
+    <Resource Include="Styles\Entypo.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Plot\ContourPlotLegendView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Plot\DmgPlotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Defaults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\OnOffSwitch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\PulseIcons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ScrollBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AdcpPredictionModelView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AdcpRangePlannerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AveragingBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\AveragingView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CompassCalView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CompassUtilityView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DiagnosticsBaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DiagnosticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HeatmapPlotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PlaybackView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProfilePlotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PulseAnime.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ScreenDataBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ScreenDataView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SerialNumberGenerator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TerminalAdcpView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TerminalNavView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TerminalNmeaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TerminalView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TimeSeriesPlotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\UpdateFirmwareView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ValidationTestBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ValidationTestView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\1200DR.png" />
+    <Resource Include="Images\1200SC.png" />
+    <Resource Include="Images\300600DR.png" />
+    <Resource Include="Images\300600SC.png" />
+    <Resource Include="Images\300SC_525.png" />
+    <Resource Include="Images\about.png" />
+    <Resource Include="Images\acquire_mode.png" />
+    <Resource Include="Images\adcp.png" />
+    <Resource Include="Images\adcp_med.png" />
+    <Resource Include="Images\adcp_utilities.png" />
+    <Resource Include="Images\adcp_white_small.png" />
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\add_project.png" />
+    <Resource Include="Images\alarm_clock.png" />
+    <Resource Include="Images\averagescreen.png" />
+    <Resource Include="Images\back.png" />
+    <Resource Include="Images\backward.png" />
+    <Resource Include="Images\battery.png" />
+    <Resource Include="Images\blank_projectimage.png" />
+    <Resource Include="Images\calendar.png" />
+    <Resource Include="Images\calibration.png" />
+    <Resource Include="Images\clear.png" />
+    <Resource Include="Images\clock.png" />
+    <Resource Include="Images\companylogo.png" />
+    <Resource Include="Images\companylogo_large.png" />
+    <Resource Include="Images\compass.png" />
+    <Resource Include="Images\compass_cal.png" />
+    <Resource Include="Images\compass_heading.png" />
+    <Resource Include="Images\compass_heading_indicator.png" />
+    <Resource Include="Images\compass_med.png" />
+    <Resource Include="Images\compass_utility.png" />
+    <Resource Include="Images\comp_med.png" />
+    <Resource Include="Images\data.png" />
+    <Resource Include="Images\data_export.png" />
+    <Resource Include="Images\decrease.png" />
+    <Resource Include="Images\default.png" />
+    <Resource Include="Images\delete.png" />
+    <Resource Include="Images\deployment.png" />
+    <Resource Include="Images\download.png" />
+    <Resource Include="Images\dualDR.png" />
+    <Resource Include="Images\dualSC.png" />
+    <Resource Include="Images\dvl_setup.png" />
+    <Resource Include="Images\east_north.png" />
+    <Resource Include="Images\estuary.png" />
+    <Resource Include="Images\format.png" />
+    <Resource Include="Images\forward.png" />
+    <Resource Include="Images\gps.png" />
+    <Resource Include="Images\gps_med.png" />
+    <Resource Include="Images\home.png" />
+    <Resource Include="Images\import.png" />
+    <Resource Include="Images\increase.png" />
+    <Resource Include="Images\indicator_0.png" />
+    <Resource Include="Images\indicator_1.png" />
+    <Resource Include="Images\indicator_2.png" />
+    <Resource Include="Images\indicator_3.png" />
+    <Resource Include="Images\indicator_4.png" />
+    <Resource Include="Images\laptop.png" />
+    <Resource Include="Images\load.png" />
+    <Resource Include="Images\load_project.png" />
+    <Resource Include="Images\logo.png" />
+    <Resource Include="Images\logo_small.ico" />
+    <Resource Include="Images\monitoring.png" />
+    <Resource Include="Images\moving_boat.png" />
+    <Resource Include="Images\nav_back.png" />
+    <Resource Include="Images\new_project.png" />
+    <Resource Include="Images\next.png" />
+    <Resource Include="Images\north_east.png" />
+    <Resource Include="Images\ocean.png" />
+    <Resource Include="Images\or.png" />
+    <Resource Include="Images\pause.png" />
+    <Resource Include="Images\ping.png" />
+    <Resource Include="Images\ping_stop.png" />
+    <Resource Include="Images\pitch_roll.png" />
+    <Resource Include="Images\pitch_roll_marks.png" />
+    <Resource Include="Images\playback.png" />
+    <Resource Include="Images\playback_mode.png" />
+    <Resource Include="Images\plot.png" />
+    <Resource Include="Images\plot_settings.png" />
+    <Resource Include="Images\project.png" />
+    <Resource Include="Images\projects.png" />
+    <Resource Include="Images\pulse.ico" />
+    <Resource Include="Images\pulse.png" />
+    <Resource Include="Images\pulse_logo.png" />
+    <Resource Include="Images\record.png" />
+    <Resource Include="Images\record_blink.png" />
+    <Resource Include="Images\record_off.png" />
+    <Resource Include="Images\refresh.png" />
+    <Resource Include="Images\remove.png" />
+    <Resource Include="Images\report.png" />
+    <Resource Include="Images\right_arrow.png" />
+    <Resource Include="Images\river.png" />
+    <Resource Include="Images\RiverProfiler.png" />
+    <Resource Include="Images\satellite.png" />
+    <Resource Include="Images\save.png" />
+    <Resource Include="Images\screen.png" />
+    <Resource Include="Images\sdcard.png" />
+    <Resource Include="Images\SeaPilot.png" />
+    <Resource Include="Images\SeaProfiler.png" />
+    <Resource Include="Images\SeaTrak.png" />
+    <Resource Include="Images\SeaWatch.png" />
+    <Resource Include="Images\SeaWave.png" />
+    <Resource Include="Images\serial.png" />
+    <Resource Include="Images\settings.png" />
+    <Resource Include="Images\setup.png" />
+    <Resource Include="Images\start.png" />
+    <Resource Include="Images\stop.png" />
+    <Resource Include="Images\terminal.png" />
+    <Resource Include="Images\test.png" />
+    <Resource Include="Images\testing.png" />
+    <Resource Include="Images\test_fail.png" />
+    <Resource Include="Images\test_notstarted.png" />
+    <Resource Include="Images\test_nottesting.png" />
+    <Resource Include="Images\test_pass.png" />
+    <Resource Include="Images\test_progress.png" />
+    <Resource Include="Images\timeseries.png" />
+    <Resource Include="Images\underwater_ground.png" />
+    <Resource Include="Images\update_firmware.png" />
+    <Resource Include="Images\upload.png" />
+    <Resource Include="Images\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Styles\Entypo-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ChangeLog.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RTI\RTI.csproj">
+      <Project>{b69f49cd-cca9-4532-a4a0-e185cd3fab33}</Project>
+      <Name>RTI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\WindowsIcons-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Entypo-license.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.99.0\build\net451\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.99.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.99.0\build\net451\System.Data.SQLite.Core.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

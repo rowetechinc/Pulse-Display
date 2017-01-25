@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="RTI.SerialNumberGeneratorView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+      mc:Ignorable="d" 
+      d:DesignHeight="60" d:DesignWidth="200">
+
+    <Grid>
+        <Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />   
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Row="0" HorizontalAlignment="Center" Margin="5">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.0625*" />
+				<ColumnDefinition Width="0.46875*" />
+				<ColumnDefinition Width="0.28125*" />
+				<ColumnDefinition Width="0.1875*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			
+			<!--Base Electronic Type-->
+			<Grid Grid.Row="0" Grid.Column="0" Margin="1">
+				<Button MinHeight="25" Command="{Binding Path=BaseElecTypeValueViewCommand}" Style="{StaticResource ButtonMoveStyle}">
+					<Border CornerRadius="3" Background="{StaticResource PulseBackBorder2Color}">
+						<TextBlock Text="{Binding Path=SelectedBaseElecType}" VerticalAlignment="Center" Margin="1" />
+					</Border>
+				</Button>
+			</Grid>
+			
+			<!-- Base Electronic Type Value Changer-->
+			<Grid Grid.Row="1" Grid.Column="0" Visibility="{Binding Path=IsBaseElectTypeValueVis, Converter={StaticResource BoolToVisConverter}}">
+				<ComboBox ItemsSource="{Binding Path=ListOfBaseElecType}" SelectedItem="{Binding Path=SelectedBaseElecType}"/>
+			</Grid>
+			
+			<!--Subsystems-->
+			<Grid Grid.Row="0" Grid.Column="1" Margin="1">
+				<Button Command="{Binding Path=SubsystemValueViewCommand}" Style="{StaticResource ButtonMoveStyle}">
+					<Border CornerRadius="3" Background="{StaticResource PulseBackBorder2Color}">
+						<TextBlock Text="{Binding Path=Subsystems}" VerticalAlignment="Center" Margin="1" />
+					</Border>
+				</Button>
+			</Grid>
+			
+			<!--Subsystem Value Changer-->
+			<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding Path=IsSubsystemValueVis, Converter={StaticResource BoolToVisConverter}}">
+				<ComboBox Width="60" ItemsSource="{Binding Path=ListOfSubsystems}" SelectedItem="{Binding Path=SelectedSubsystem}"/>
+				
+				<Button Width="25" Height="25" Style="{StaticResource ButtonMoveStyle}" Command="{Binding Path=AddSubsystemCommand}">
+					<Image Source="../Images/increase.png" />
+				</Button>
+				
+				<Button Width="25" Height="25" Style="{StaticResource ButtonMoveStyle}" Command="{Binding Path=RemoveSubsystemCommand}" >
+					<Image Source="../Images/decrease.png" />
+				</Button>
+				
+			</StackPanel>
+			
+			<!--Spare-->
+			<Grid Grid.Row="0" Grid.Column="2"  Margin="1">				
+				<Button Command="{Binding Path=SpareValueViewCommand}" Style="{StaticResource ButtonMoveStyle}">
+					<Border CornerRadius="3" Background="{StaticResource PulseBackBorder2Color}">
+						<TextBlock Text="{Binding Path=Spare}" VerticalAlignment="Center"  Margin="1" />
+					</Border>
+				</Button>
+			</Grid>
+			
+			<!--Spare Value Changer-->
+			<Grid Grid.Row="1" Grid.Column="2">				
+				<TextBox Text="{Binding Path=Spare}" Visibility="{Binding Path=IsSpareValueVis, Converter={StaticResource BoolToVisConverter}}" />
+			</Grid>
+			
+			<!--Serial Number-->
+			<Grid Grid.Row="0" Grid.Column="3" Margin="1">								
+				<Button Command="{Binding Path=SerialNumValueViewCommand}" Style="{StaticResource ButtonMoveStyle}">
+					<Border CornerRadius="3" Background="{StaticResource PulseBackBorder2Color}">
+						<TextBlock Text="{Binding Path=SerialNum}" VerticalAlignment="Center" Margin="1" />
+					</Border>
+				</Button>
+			</Grid>
+			
+			<!--Serial Number Value Changer-->
+			<Grid Grid.Row="1" Grid.Column="3">
+				<extToolkit:IntegerUpDown Value="{Binding Path=SerialNumValue}" Minimum="0" Maximum="999999" Visibility="{Binding Path=IsSerialNumValueVis, Converter={StaticResource BoolToVisConverter}}" />
+			</Grid>
+			
+		</Grid>
+    </Grid>
+</UserControl>

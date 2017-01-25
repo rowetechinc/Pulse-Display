@@ -1,0 +1,96 @@
+﻿Pulse_Display Changelog
+
+Pulse-Display-4.4.4
+ - In AdcpPredictor, fixed Maximum velocity for vertical beams.
+ - In AdcpPredictor, fixed beam angle when changing subsystems.
+ - In HeatmapPlotViewModel, set the min and max options for each selected plot type.
+ - In HeatmapPlotViewModel, added Interperlate option to the plot to blend data.
+ - In AdcpConnection, increase the time to run the DiagSpectrum test.
+ - In AdcpPredictionModelViewModel, added the Command Set to the display.
+
+Pulse_Display-4.4.3
+ - Updated Prediction model with Power Usage for systems with vertical beams.
+ - In ProjectReportText, allow DMG to be calculated with no Water Profile data.
+ - Updated Prediction model with Power Usage to handle 8 beam systems. 
+ - In AdcpPredictionModel, fixed bug in WavesModelPUV().
+ - Added support for SeaSeven in ProjectReportText.
+ - In ScreenDataViewModel, screen for missing heading. 
+ - In AdcpConnection, check for null in StopRawAdcpRecord().
+ - In ValidationTestViewModel, added GPS heading.
+ - In AdcpPredictionModelViewModel, if CWPP is 1, set CWPTBP to 0.
+ - In AdcpPredictor, check if CWPP is set to 1 in TimeBetweenPings value.
+ - In DistancedTraveld, added vertical velocity to distanced traveled.
+
+Pulse_Display-4.4.2
+ - In DistanceTraveled, allow 3 beams systems when using bottom track data.
+ - In PniPrimeCompassBinaryCodec, in MagCalibrationPosition(), added the Roll values in to the calibration.
+
+Pulse_Display-4.4.0
+ - Added, DataBit, Parity and Stop Bit to ADCP Terminal.
+ - In AdcpConnection, changed VT file name to RTI.
+ - Added recording to file to the record button.
+ - In ValidationTestBaseViewModel, added timer to monitor recording button.
+ - Added DVL data to TimeSeries.
+ - Added GenerateReport() to generate a report to HTML.
+ - In ViewDataGraphicalOptions, added MeasurementStandard.
+ - In ScreenDataViewModel, added Retransform heading offset and GPS heading.
+
+Pulse_Display-4.3.1
+ - Added Magnitude and Direction and Speed to TimeSeries.
+ - Added NMEA Heading and speed in TimeSeries.
+
+Pulse_Display-4.3.0
+ - Changed dictionary to ConcurrentDicitionary for the VM list in the base views.
+ - Changed namespace in Commons to PulseDisplay.Version.
+ - Updated Waves Prediction.
+ - Added Waves Plots to TimeSeries plots.
+ - In TimeSeries, added new constructor.  Added Transducer Depth plot. 
+ - In DistanceTraveled, fixed AccumulateWpEarth() to remove the boat speed.  Changed Direction error to an angle and not a percentage.
+ - Update the AdcpPredictionModel display to help users determine which values to change.
+ - In PlaybackViewModel, fixed bug in ChangePlaybackSpeed() setting the speed to high or low.
+
+Pulse_Display-4.2.1
+ - In AdcpConnection, make all the event handlers run in a thread.      
+
+Pulse_Display-4.2.0
+ - Change versions.
+ - In AdcpConnection, made ValidationTestRecording use raw recording.
+ - In UpdateFirmwareViewModel, create a timer to update the terminal display to reduce refreshes.
+ - In TerminalAdcpViewModel, create a timer to update the terminal display to reduce refreshes.
+
+Pulse_Display-4.1.3
+ - Change versions.
+ - In AdcpPredictionModelViewModel, update all the properties after setting defaults.
+ - In ProjectReportText, clear all the values.
+ - Autoscroll the terminal displays to the bottom.
+ - Added TankTestOptions.
+ - In PulseOptions, Added TankTestOptions.
+ - In ProjectReportText, added Tank Testing.
+ - In PulseManager, added TankTestOptions.
+ - In UpdateFirmwareViewModel, send FMCOPYS and FMCOPYB after uploading the firmware.
+ - In CompassCalViewModel, removed all the background workers.
+ - Added SerialNumberGeneratorView and ViewModel.
+ - In SerialNumberGenerator, added an event to know when the serial number is updated.
+
+Pulse_Display-4.1.2
+ - Change versions.
+ - Added Validation Test View and ViewModel.
+ - Added DMG Plot.
+ - Added Validation View Options.
+ - Added Backscatter Options.
+ - In ProjectReportText, added GlitchCheck().
+ - In AverageSubsystemConfigOptions, moved the LTA and STA options to a seperate class.
+ - In PulseOptions, added AverageOptions.
+ - In PulseManager, save AverageOptions to pulse db.
+ - In ProjectReportText, check for the number of beams in ProfileRange().
+ - In AdcpConnection, added TestEthernetConnection() to test the ethernet connection.
+ - In TerminalAdcpViewModel, added ping button to test the ethernet connection.
+ - In AdcpConnection, check if the ensemble is null in PublishEnsemble() before publishing.
+ - Check for null ensembles in the ensemble event.
+
+Pulse_Display-4.1.0
+ - Changed to version 4.1.0.
+ - Added an event to be sent when the compass cal is complete.
+ - Added CompassCalResultEvent.
+ - Added UpdateFirmware.
+ - In ProjectReportText, added GpsDistance and BtEarthDistance.

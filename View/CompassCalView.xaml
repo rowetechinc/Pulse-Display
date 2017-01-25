@@ -1,0 +1,648 @@
+﻿<UserControl x:Class="RTI.CompassCalView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+		xmlns:cal="http://www.caliburnproject.org"
+		MinWidth="800"
+        Background="{StaticResource PulseBackgroundColor}">
+	<ScrollViewer>
+	<Grid HorizontalAlignment="Left">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			
+			<!-- Status Bar -->
+			<Grid Grid.Row="1" Margin="5">
+				<Border CornerRadius="5" Margin="5,2,5,2" Background="{Binding Path=StatusBarBackground}">
+					<!-- Status Bar Textblock -->
+					<TextBlock Text="{Binding Path=StatusBarText, NotifyOnTargetUpdated=True}" Foreground="White" Height="0" Width="Auto" FontWeight="Bold" FontSize="18.667" HorizontalAlignment="Center" >
+						<TextBlock.Triggers>
+							<EventTrigger RoutedEvent="Binding.TargetUpdated">
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Height">
+											<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+											<EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="40"/>
+											<EasingDoubleKeyFrame KeyTime="{Binding Path=StatusBarDurationStart}" Value="40"/>
+											<EasingDoubleKeyFrame KeyTime="{Binding Path=StatusBarDurationStop}" Value="0"/>
+										</DoubleAnimationUsingKeyFrames>
+									</Storyboard>
+								</BeginStoryboard>
+							</EventTrigger>
+						</TextBlock.Triggers>
+					</TextBlock>
+				</Border>
+			</Grid><!-- Status Bar -->
+			
+			<!--Sample Data-->
+			<Grid Grid.Row="2" Margin="5">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Sample Details -->
+				<Grid Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Center">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<!-- Calibration Sample -->
+					<TextBlock Grid.Row="0" Grid.Column="1" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PulseFontColor}" Text="SAMPLE " FontSize="24" FontWeight="Bold" />
+					<TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontHighlightColor}" Text="{Binding Path=CalSamples}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="64" FontWeight="Bold"  />
+
+					<!-- Calibration Next Position -->
+					<TextBlock Grid.Row="0" Grid.Column="2" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PulseFontColor}" Text="DESC " FontSize="24" FontWeight="Bold" />
+					<Viewbox Grid.Row="1" Grid.Column="2" Margin="5" MinWidth="200"><TextBlock Foreground="{StaticResource PulseFontBrightColor}" Text="{Binding Path=CalPosition}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="50" FontWeight="Bold"  /></Viewbox>
+				</Grid>
+			</Grid><!--Sample Data-->
+			
+			<!--Start and Sample Button-->
+			<Grid Grid.Row="3" Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!--Start Compass Cal Button-->
+				<Button Grid.Column="0" Command="{Binding Path=CompassCalCommand}" Style="{StaticResource ButtonStyle}"  Width="75" Height="75" Margin="5" Foreground="{StaticResource PulseFontColor}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Image Grid.Row="0" Source="../Images/compass.png" />
+						<Viewbox Grid.Row="1">
+							<StackPanel>
+								<TextBlock Text="Calibration" HorizontalAlignment="Center" />
+								<TextBlock Text="{Binding Path=CompassCalButtonLabel}" HorizontalAlignment="Center" />
+							</StackPanel>
+						</Viewbox>
+					</Grid>
+				</Button>
+
+				<!-- Serial Number-->
+				<Grid Grid.Column="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<!--Serial Number-->
+					<TextBlock Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Right" Margin="5" Foreground="{StaticResource PulseFontColor}" Text="Serial Number" />
+					<TextBlock Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Left" Margin="5" Foreground="{StaticResource PulseFontBrightColor}"  Text="{Binding Path=SerialNumber}" FontWeight="Bold" />
+
+					<!--Firmware-->
+					<TextBlock Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Right" Margin="5" Foreground="{StaticResource PulseFontColor}" Text="Firmware" />
+					<TextBlock Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Left" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" Text="{Binding Path=Firmware}" FontWeight="Bold" />
+
+					<!--Hardware-->
+					<TextBlock Grid.Row="2" Grid.Column="0"  HorizontalAlignment="Right" Margin="5" Foreground="{StaticResource PulseFontColor}" Text="Hardware" />
+					<TextBlock Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Left" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" Text="{Binding Path=Hardware}" FontWeight="Bold" />
+				</Grid>
+
+				<!-- Calibration Sample Button-->
+				<Button Grid.Column="2" Grid.RowSpan="2"  Command="{Binding Path=TakeCompassCalSampleCommand}" Style="{StaticResource ButtonStyle}"  Width="75" Height="75" Margin="5" Foreground="{StaticResource PulseFontColor}" IsDefault="True">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<Image Grid.Row="0" Source="../Images/next.png" />
+						<Viewbox Grid.Row="1">
+							<StackPanel>
+								<TextBlock Text="Next" HorizontalAlignment="Center" />
+								<TextBlock Text="Sample" HorizontalAlignment="Center" />
+							</StackPanel>
+						</Viewbox>
+					</Grid>
+				</Button>
+			</Grid><!--Start and Sample Button-->
+			
+			<!--Results-->
+			<Grid Grid.Row="4" Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!--Cal Score-->
+				<Border Grid.Column="0" Margin="5" CornerRadius="5" Background="{StaticResource PulseBackBorder1Color}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="Mag Score"  Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Text="Accel Score"  Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="2" Grid.Column="0" Text="Field Std Dev" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="3" Grid.Column="0" Text="X Dist Coverage" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="4" Grid.Column="0" Text="Y Dist Coverage" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="5" Grid.Column="0" Text="Z Dist Coverage" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5" />
+						<TextBlock Grid.Row="2" Grid.Column="2" Text="uT" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="2" Grid.Column="5" Text="mg" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="3" Grid.Column="2" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="3" Grid.Column="5" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="4" Grid.Column="2" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="4" Grid.Column="5" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="5" Grid.Column="2" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+						<TextBlock Grid.Row="5" Grid.Column="5" Text="%" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" Margin="5"/>
+
+						<TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtStdDevErr" Text="{Binding Path=CalScore_StdDevErr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtXcoverage" Text="{Binding Path=CalScore_xCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="4" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtYcoverage" Text="{Binding Path=CalScore_yCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="5" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtZcoverage" Text="{Binding Path=CalScore_zCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+						<TextBlock Grid.Row="2" Grid.Column="3" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtStdDevErr}" />
+						<TextBlock Grid.Row="3" Grid.Column="3" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtXcoverage}" />
+						<TextBlock Grid.Row="4" Grid.Column="3" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtYcoverage}" />
+						<TextBlock Grid.Row="5" Grid.Column="3" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtZcoverage}" />
+
+						<TextBlock Grid.Row="2" Grid.Column="4" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtAccelStdDevErr" Text="{Binding Path=CalScore_accelStdDevErr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="3" Grid.Column="4" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtXAccel" Text="{Binding Path=CalScore_xAccelCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="4" Grid.Column="4" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtYAccel" Text="{Binding Path=CalScore_yAccelCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Row="5" Grid.Column="4" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" x:Name="txtZAccel" Text="{Binding Path=CalScore_zAccelCoverage, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+						<TextBlock Grid.Row="2" Grid.Column="6" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtAccelStdDevErr}" IsEnabled="{Binding Path=IsMagAndAccelCalibration}" />
+						<TextBlock Grid.Row="3" Grid.Column="6" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtXAccel}" IsEnabled="{Binding Path=IsMagAndAccelCalibration}"/>
+						<TextBlock Grid.Row="4" Grid.Column="6" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtYAccel}" IsEnabled="{Binding Path=IsMagAndAccelCalibration}"/>
+						<TextBlock Grid.Row="5" Grid.Column="6" Margin="5" Foreground="Red" VerticalAlignment="Bottom" Text="{Binding (Validation.Errors).CurrentItem.ErrorContent, ElementName=txtZAccel}" IsEnabled="{Binding Path=IsMagAndAccelCalibration}"/>
+
+
+					</Grid>
+				</Border>
+
+				<!--Verify Results-->
+				<Border Grid.Column="1" Grid.ColumnSpan="2" Margin="5" CornerRadius="5" Background="{StaticResource PulseBackBorder1Color}" >
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                       </Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<!--Pre Points-->
+						<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="Pre Points" HorizontalAlignment="Center" />
+						<Border Grid.Row="1" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" HorizontalAlignment="Center" >
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<!--Titles-->
+								<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="LOC" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="HDG" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="PTCH" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="ROLL" HorizontalAlignment="Right" />
+
+
+								<!--Point 1-->
+								<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point1_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Pre_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Pre_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Pre_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 2-->
+								<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point2_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Pre_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Pre_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Pre_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 3-->
+								<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point3_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Pre_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Pre_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Pre_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 4-->
+								<TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point4_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Pre_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Pre_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Pre_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+							</Grid>
+						</Border>
+
+						<!--Post Points-->
+						<TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="Post Points" HorizontalAlignment="Center" />
+						<Border Grid.Row="1" Grid.Column="1" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" HorizontalAlignment="Center" >
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<!--Titles-->
+								<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="LOC" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="HDG" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="PTCH" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="ROLL" HorizontalAlignment="Right" />
+
+
+								<!--Point 1-->
+								<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point1_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Post_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Post_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Post_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 2-->
+								<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point2_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Post_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Post_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Post_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 3-->
+								<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point3_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Post_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Post_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Post_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 4-->
+								<TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="{Binding Path=Point4_Loc, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Post_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Post_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Post_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+							</Grid>
+						</Border>
+
+						<!--Difference-->
+						<TextBlock Grid.Row="0" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="Diff Point" HorizontalAlignment="Center" />
+						<Border Grid.Row="1" Grid.Column="2" Background="{StaticResource RtiBorderRedColor}" Margin="5" CornerRadius="5" >
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<!--Titles-->
+								<TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="HDG" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="PTCH" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="0" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="ROLL" HorizontalAlignment="Right" />
+
+
+								<!--Point 1-->
+								<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Diff_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Diff_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="1" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point1_Diff_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 2-->
+								<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Diff_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Diff_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="2" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point2_Diff_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 3-->
+								<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Diff_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Diff_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="3" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point3_Diff_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+
+								<!--Point 4-->
+								<TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Diff_Hdg, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="1" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Diff_Ptch, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+								<TextBlock Grid.Row="4" Grid.Column="2" Margin="5" Foreground="{StaticResource PulseFontBrightColor}" FontWeight="Bold" Text="{Binding Path=Point4_Diff_Roll, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Right" />
+							</Grid>
+						</Border>
+
+						<!--Test Results-->
+						<TextBlock Grid.Row="0" Grid.Column="3" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="Test Results" HorizontalAlignment="Center" />
+						<Border Grid.Row="1" Grid.Column="3" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" HorizontalAlignment="Center" >
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<!--ADCP COMM-->
+								<TextBlock Grid.Row="1" Grid.Column="0" Text="ADCP COMM:" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Right" Margin="5" />
+								<Image Grid.Row="1" Grid.Column="1" Source="{Binding Path=TestResult_AdcpComm}" Margin="5" MaxWidth="24" MaxHeight="24" />
+
+								<!--Compass COMM-->
+								<TextBlock Grid.Row="2" Grid.Column="0" Text="Compass COMM:" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Right" Margin="5" />
+								<Image Grid.Row="2" Grid.Column="1" Source="{Binding Path=TestResult_CompassComm}" Margin="5" MaxWidth="24" MaxHeight="24" />
+
+								<!--Compass Cal Saved-->
+								<TextBlock Grid.Row="3" Grid.Column="0" Text="Cal Saved:" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Right" Margin="5" />
+								<Image Grid.Row="3" Grid.Column="1" Source="{Binding Path=TestResult_CompassCalSaved}" Margin="5" MaxWidth="24" MaxHeight="24" />
+
+								<!--Compass Cal Good-->
+								<TextBlock Grid.Row="4" Grid.Column="0" Text="Cal Good:" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Right" Margin="5" />
+								<Image Grid.Row="4" Grid.Column="1" Source="{Binding Path=TestResult_CompassCalGood}" Margin="5" MaxWidth="24" MaxHeight="24" />
+
+								<!--Compass Cal Complete-->
+								<TextBlock Grid.Row="5" Grid.Column="0" Text="Cal Complete:" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Right" Margin="5" />
+								<Image Grid.Row="5" Grid.Column="1" Source="{Binding Path=TestResult_CompassCalComplete}" Margin="5" MaxWidth="24" MaxHeight="24" />
+							</Grid>
+						</Border>
+
+                            <!--Diag Display-->
+                            <TextBlock Grid.Row="0" Grid.Column="4" Margin="5" Foreground="{StaticResource PulseFontColor}" FontWeight="Bold" Text="Diagnostic" HorizontalAlignment="Center" />
+                            <Border Grid.Row="1" Grid.Column="4" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" HorizontalAlignment="Center" >
+                                <StackPanel>
+                                    <ScrollViewer Height="120" Width="200" Margin="5">
+                                        <TextBox TextWrapping="Wrap" Text="{Binding Path=DiagDisplay}" />
+                                    </ScrollViewer>
+                                    <Button Command="{Binding Path=ClearDiagDisplayCommand}" Content="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"  />
+                                </StackPanel>
+                            </Border>
+
+                        </Grid>
+				</Border>
+			</Grid><!--Results-->
+			
+			<!--Settings and Utilities-->
+			<Grid Grid.Row="6" Margin="5">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!--Settings-->
+				<Border Grid.Column="0" Background="{StaticResource PulseBackBorder1Color}" CornerRadius="5" Margin="5" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Text="Settings" HorizontalAlignment="Center" Foreground="#FFD9E50F" FontWeight="Bold" FontSize="16" />
+
+						<!-- Validate Cal Score On/Off Switch -->
+						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Validate Cal Score: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<CheckBox Grid.Row="1" Grid.Column="1" Margin="5" IsChecked="{Binding Path=IsValidateCalScore}" Style="{StaticResource OnOffSwitchStyle}" HorizontalAlignment="Left" />
+					
+						<!-- Mag and Accel On/Off Switch -->
+						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Mag and Acceleration Calibration: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+                        <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" IsChecked="{Binding Path=IsMagAndAccelCalibration}" Style="{StaticResource OnOffSwitchStyle}" HorizontalAlignment="left" />
+                        </Grid>
+				</Border>
+				<!--Settings-->
+
+				<!--Configuration-->
+				<Border Grid.Column="1" Background="{StaticResource PulseBackBorder1Color}" CornerRadius="5" Margin="5" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<!--Title-->
+						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Text="Configuration" HorizontalAlignment="Center" Foreground="#FFD9E50F" FontWeight="Bold" FontSize="16" />
+
+						<!-- Auto Sample On/Off Switch -->
+						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Auto Sample: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<CheckBox Grid.Row="1" Grid.Column="1" Margin="5" Foreground="#FFC5CFD1" IsChecked="{Binding Path=IsCompassCalAutoSample}" Style="{StaticResource OnOffSwitchStyle}" HorizontalAlignment="Left" />
+
+						<!-- Number of Samples -->
+						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Number of Samples: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="1" Margin="5" Minimum="12" Maximum="32" Value="{Binding CompassCalNumSamples}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" />
+
+						<!-- Cal Stable Check -->
+						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Calibration Stable Check: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<CheckBox Grid.Row="3" Grid.Column="1" Margin="5" Foreground="#FFC5CFD1" IsChecked="{Binding Path=IsCompassCalStableCheck}" Style="{StaticResource OnOffSwitchStyle}" HorizontalAlignment="Left" />
+
+						<!-- Declination -->
+						<TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Text="Declination: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" Minimum="-180.0" Maximum="180.0" Value="{Binding CompassCalDeclination}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" />
+
+					</Grid>
+				</Border>
+				<!--Configuration-->
+
+				<!--Read Compass-->
+				<Border Grid.Column="2" Background="{StaticResource PulseBackBorder1Color}" CornerRadius="5" Margin="5" >
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+
+						<!--Title-->
+						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="5" Text="Read Compass" HorizontalAlignment="Center" Foreground="#FFD9E50F" FontWeight="Bold" FontSize="16" />
+
+						<!-- Heading -->
+						<TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Heading: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Path=CompassCalHeading}" HorizontalAlignment="Right" Foreground="{StaticResource PulseFontBrightColor}" />
+						<TextBlock Grid.Row="1" Grid.Column="2" Margin="5" Text="Deg" HorizontalAlignment="Left" Foreground="{StaticResource PulseFontColor}" />
+
+						<!-- Pitch -->
+						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Pitch: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Path=CompassCalPitch}" HorizontalAlignment="Right" Foreground="{StaticResource PulseFontBrightColor}" />
+						<TextBlock Grid.Row="2" Grid.Column="2" Margin="5" Text="Deg" HorizontalAlignment="Left" Foreground="{StaticResource PulseFontColor}" />
+
+						<!-- Roll -->
+						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Roll: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
+						<TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Path=CompassCalRoll}" HorizontalAlignment="Right" Foreground="{StaticResource PulseFontBrightColor}" />
+						<TextBlock Grid.Row="3" Grid.Column="2" Margin="5" Text="Deg" HorizontalAlignment="Left" Foreground="{StaticResource PulseFontColor}" />
+
+						<!-- Distortion -->
+						<!--TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Text="Distortion: " HorizontalAlignment="Right" Foreground="White" />
+				<Rectangle Grid.Row="4" Grid.Column="1" Margin="5" Fill="{Binding Path=CompassCalDistortionColor}" />
+				<TextBlock Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Path=CompassCalDistortion}" HorizontalAlignment="Center" /-->
+
+						<!-- Cal Status -->
+						<!--TextBlock Grid.Row="5" Grid.Column="0" Margin="5" Text="Calibrated: " HorizontalAlignment="Right" Foreground="White" />
+				<Rectangle Grid.Row="5" Grid.Column="1" Margin="5" Fill="{Binding Path=CompassCalStatusColor}" />
+				<TextBlock Grid.Row="5" Grid.Column="1" Margin="5" Text="{Binding Path=CompassCalStatus}" HorizontalAlignment="Center" /-->
+
+					</Grid>
+				</Border>
+				<!--Read Compass-->
+
+				<!--Buttons-->
+				<!-- Read and Disconnect buttons -->
+				<StackPanel Grid.Column="3" Orientation="Vertical" Grid.Row="5" HorizontalAlignment="Center" >
+
+					<!-- Read Compass -->
+					<Button  Command="{Binding Path=ReadCompassCommand}" Style="{StaticResource ButtonStyle}"  Width="50" Height="50" Margin="5" Foreground="{StaticResource PulseFontColor}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Image Grid.Row="0" Source="../Images/calibration.png" />
+							<Viewbox Grid.Row="1">
+								<StackPanel>
+									<TextBlock Text="Read" HorizontalAlignment="Center" />
+									<TextBlock Text="Compass" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Viewbox>
+						</Grid>
+					</Button>
+
+					<!-- Disconnect Compass Button -->
+					<Button Command="{Binding Path=CompassDisconnectCommand}" Style="{StaticResource ButtonStyle}"  Width="50" Height="50" Margin="5" Foreground="{StaticResource PulseFontColor}" >
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Image Grid.Row="0" Source="../Images/compass.png" />
+							<Viewbox Grid.Row="1">
+								<StackPanel>
+									<TextBlock Text="Compass" HorizontalAlignment="Center" />
+									<TextBlock Text="Disconnect" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Viewbox>
+						</Grid>
+					</Button>
+
+					<!-- Factory Magnetometer Calibration -->
+					<Button Command="{Binding Path=SetDefaultCompassCalMagCommand}" Style="{StaticResource ButtonStyle}"  Width="50" Height="50" Margin="5" Foreground="{StaticResource PulseFontColor}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Image Grid.Row="0" Source="../Images/calibration.png" />
+							<Viewbox Grid.Row="1">
+								<StackPanel>
+									<TextBlock Text="Factory" HorizontalAlignment="Center" />
+									<TextBlock Text="Magnetometer" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Viewbox>
+						</Grid>
+					</Button>
+
+
+					<!-- Factory Accelerator Calibration -->
+					<Button Command="{Binding Path=SetDefaultCompassCalAccelCommand}" Style="{StaticResource ButtonStyle}"  Width="50" Height="50" Margin="5" Foreground="{StaticResource PulseFontColor}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Image Grid.Row="0" Source="../Images/calibration.png" />
+							<Viewbox Grid.Row="1">
+								<StackPanel>
+									<TextBlock Text="Factory" HorizontalAlignment="Center" />
+									<TextBlock Text="Accelerometer" HorizontalAlignment="Center" />
+								</StackPanel>
+							</Viewbox>
+						</Grid>
+					</Button>
+				</StackPanel>
+			</Grid><!--Settings and Utilites-->
+			
+			<Grid Grid.Row="7" Visibility="{Binding Path=IsAdmin, Converter={StaticResource BoolToVisConverter}}">
+				<ContentControl  cal:View.Model="{Binding CompassUtilityVM}" />
+			</Grid>	
+				
+		</Grid>
+	</Grid>
+	</ScrollViewer>
+</UserControl>

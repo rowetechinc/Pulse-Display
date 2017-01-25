@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="RTI.DiagnosticsBaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"   
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Row="0" Style="{StaticResource ListBoxLikeTabPanelWithIcons}" ItemsSource="{Binding Path=DiagVMList}" SelectedItem="{Binding SelectedDiagVM}" />
+
+        <Border Grid.Column="0" Grid.Row="1" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="2" HorizontalAlignment="Left">
+            <StackPanel >
+                <!--Button Command="{Binding Path=FindAdcpCommand}" Content="Find ADCP"  Margin="5" /-->
+                <ItemsControl ItemsSource="{Binding AdcpList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Port: " Foreground="{StaticResource PulseFontColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Port}" Foreground="{StaticResource PulseFontBrightColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Baud Rate: " Foreground="{StaticResource PulseFontColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Baud}" Foreground="{StaticResource PulseFontBrightColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Serial Number: " Foreground="{StaticResource PulseFontColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SerialNumber}" Foreground="{StaticResource PulseFontBrightColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Firmware: " Foreground="{StaticResource PulseFontColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Firmware}" Foreground="{StaticResource PulseFontBrightColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Hardware: " Foreground="{StaticResource PulseFontColor}" Margin="5,2" />
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Hardware}" Foreground="{StaticResource PulseFontBrightColor}" Margin="5,2" />
+                                <Button Grid.Row="5" Grid.Column="1" Command="{Binding Path=ConnectCommand}" Background="{StaticResource PulseFontHighlightColor }" Content="Connect"  Margin="5"  />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!--Display the VM-->
+        <ContentControl cal:View.Model="{Binding SelectedDiagVM}" Grid.Row="2"/>
+
+    </Grid>
+</UserControl>

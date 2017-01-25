@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="RTI.ProfilePlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+			 xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="200"
+			 MinWidth="10" MinHeight="10">
+    <Grid>
+    	<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />	  	
+		</Grid.ColumnDefinitions>	
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="15" />
+			<RowDefinition Height="*" />  	
+		</Grid.RowDefinitions>
+				
+		<!--Settings-->
+		<!--Must be below the plot to be on top of the plot-->
+		<!--Use a canvas with an expander inside so the plot below can be selected by the mouse-->
+		<!--http://stackoverflow.com/questions/4392791/how-to-make-wpf-expander-expand-upwards-while-keeping-the-header-fixed-->		
+		<Canvas Grid.Row="0" MinHeight="25" Panel.ZIndex="99" HorizontalAlignment="Left" VerticalAlignment="Top">
+			<ToggleButton x:Name="toggle" Width="15" Height="15" Style="{StaticResource ToggleButtonMoveStyle}" >
+				<Image Source="../Images/plot_settings.png" />
+			</ToggleButton>
+			
+			<Popup Placement="Bottom" PlacementTarget="{Binding ElementName=toggle}" IsOpen="{Binding ElementName=toggle, Path=IsChecked}" AllowsTransparency="True">
+				<Grid Background="{StaticResource PulseSettingsBackground}">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="0.25*" />
+						<RowDefinition Height="0.25*" />
+					</Grid.RowDefinitions>
+					<Grid.BitmapEffect>
+						<DropShadowBitmapEffect />
+					</Grid.BitmapEffect>
+					
+					<!--Settings for th plot-->
+					<Border Grid.Row="0" BorderBrush="{StaticResource PulseSettingsBackBorderBrush}"  BorderThickness="1" Margin="5" CornerRadius="5">
+						<StackPanel>
+							<TextBlock Text="Settings" Foreground="{StaticResource PulseFontColor}" Margin="5" HorizontalAlignment="Center" />
+							<!--StackPanel Orientation="Horizontal">
+								<TextBlock Text="Plot Height" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Center" Margin="5" />
+								<extToolkit:IntegerUpDown Minimum="0" Value="{Binding PlotHeight}" HorizontalAlignment="Left" Width="100"  UseLayoutRounding="True" Increment="5" Margin="5" />
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="Plot Width " Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Center" Margin="5" />
+								<extToolkit:IntegerUpDown Minimum="0" Value="{Binding PlotWidth}" HorizontalAlignment="Left" Width="100"  UseLayoutRounding="True" Increment="5" Margin="5" />
+							</StackPanel-->
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Clear" Command="{Binding Path=ClearPlotCommand}" HorizontalAlignment="Center" Margin="5" Background="#FFF1A32E" BorderBrush="#FFD8952E" Foreground="#FFFDFFFF" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Filter Data:                    " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsFilterData}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Profile Series:                " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsProfileSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Min Series Points:         " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsMinSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Max Series Points:         " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsMaxSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Avg Series:                    " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsAvgSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="STD Ping to Ping Series:" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsStdP2PSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="STD Bin to Bin Series:    " Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                                <CheckBox IsChecked="{Binding IsStdB2BSeriesOn}" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                            </StackPanel>
+                        </StackPanel>
+					</Border>
+					
+					<!--Add Additional Series-->
+					<Border Grid.Row="1" BorderBrush="{StaticResource PulseSettingsBackBorderBrush}" BorderThickness="1" Margin="5" CornerRadius="5">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							
+							<TextBlock Grid.ColumnSpan="5" Grid.Row="0" Text="Add Series" Foreground="{StaticResource PulseFontColor}" Margin="5" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
+							<TextBlock Grid.ColumnSpan="5" Grid.Row="3" Text="Remove Series" Foreground="{StaticResource PulseFontColor}" Margin="5" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" />
+							
+							<!--DataSet Type-->
+							<TextBlock Grid.Column="0" Grid.Row="1" Text="DataSet" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+							<ComboBox Grid.Column="0" Grid.Row="2" Margin="5" Width="100" ItemsSource="{Binding Path=DataSetTypeList}" SelectedItem="{Binding Path=SelectedDataSetType}" />
+							
+							<!--Subsystem Type-->
+							<!--TextBlock Grid.Column="1" Grid.Row="1" Text="Subsystem Configuration" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+							<ComboBox Grid.Column="1" Grid.Row="2" Margin="5" ItemsSource="{Binding Path=SubsystemConfigList}" SelectedItem="{Binding Path=SelectedSubsystemConfig}" /-->
+							
+							<!--Color-->
+							<TextBlock Grid.Column="1" Grid.Row="1" Text="Color" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+							<ComboBox Grid.Column="1" Grid.Row="2" Margin="5" Width="40" ItemsSource="{Binding Path=SeriesColorsList}" SelectedItem="{Binding Path=SelectedSeriesColor}" ItemTemplate="{StaticResource OxyColorComboBox}" />
+							
+							
+							<!--Beam Number-->
+							<TextBlock Grid.Column="2" Grid.Row="1" Text="Beam" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+							<extToolkit:IntegerUpDown Grid.Column="2" Grid.Row="2" Minimum="0" Maximum="{Binding Path=MaxBeam}" Value="{Binding Path=SelectedBeam}" Margin="5" />
+							
+							<!--Subsystem Type-->
+							<TextBlock Grid.Column="3" Grid.Row="1" Text="Max Bin" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+							<extToolkit:IntegerUpDown Grid.Column="3" Grid.Row="2" Minimum="0" Maximum="{Binding Path=MaxBin}" Value="{Binding Path=SelectedMaxBins}" Margin="5"  />
+							
+							<Button Grid.Column="4" Grid.Row="2" Width="25" Height="25" Command="{Binding AddSeriesCommand}" Margin="5" Style="{StaticResource ButtonMoveStyle}">
+								<Image Source="../Images/add.png" />
+							</Button>
+							
+							
+							<ComboBox Grid.Row="4" Grid.Column="0" ItemsSource="{Binding PlotSeriesList, Mode=TwoWay}" SelectedItem="{Binding SelectedRemoveSeries}" Margin="5" />
+							<Button Grid.Row="4" Grid.Column="1" Width="25" Height="25" Command="{Binding RemoveSeriesCommand}" Margin="5" Style="{StaticResource ButtonMoveStyle}">
+								<Image Source="../Images/remove.png" />
+							</Button>
+                            
+                            <StackPanel Grid.Row="5">
+                                <Button Content="Generate Report" HorizontalAlignment="Center" Command="{Binding GenerateReportCommand}" />
+                                <TextBlock Text="Ctrl-C to Copy Plot" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" />
+                                <TextBlock Text="Ctrl-Alt-R to Copy Report" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" />
+                            </StackPanel>
+                            
+						</Grid>
+					</Border>
+					
+				</Grid> 
+		  	</Popup>
+		</Canvas><!--Settings-->
+		
+		<!--Plot Title-->
+		<TextBlock Grid.Row="0" Text="{Binding Path=Title}" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="10.667" Margin="0" />
+
+		<!-- Profile Plot -->
+        <oxy:PlotView Grid.Row="1" Grid.Column="0" x:Name="profilePlot" Background="#00000000" Model="{Binding Plot}" Margin="0">
+            <oxy:PlotView.DefaultTrackerTemplate>
+				<ControlTemplate>
+					<oxy:TrackerControl Position="{Binding Position}" LineExtents="{Binding PlotModel.PlotArea}" Background="{StaticResource PulseBackBorder1Color}">
+						<oxy:TrackerControl.Content>
+							<TextBlock Text="{Binding}" Margin="7" Foreground="GreenYellow" />
+						</oxy:TrackerControl.Content>
+					</oxy:TrackerControl>
+				</ControlTemplate>
+			</oxy:PlotView.DefaultTrackerTemplate>
+		</oxy:PlotView> 
+
+    </Grid>
+</UserControl>

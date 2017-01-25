@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="RTI.AveragingBaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:cal="http://www.caliburnproject.org" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer>
+		<Grid>
+	    	<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			
+	    	<!--Next/Back/Exit button-->
+			<Grid Background="{StaticResource PulseBackBorderNavColor}" Grid.Row="0" Margin="0" >
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+				
+					<!--Back Button-->
+					<Button Command="{Binding Path=BackCommand}" Margin="2" Width="65" BorderBrush="Black" Background="{StaticResource PulseButtonBlackBackground}">
+						<StackPanel Orientation="Horizontal">
+							<Rectangle Width="10" Height="10" Margin="2,0,2,0">
+			                    <Rectangle.Fill>
+			                        <VisualBrush Visual="{StaticResource ArrowHead-Left}" />
+			                    </Rectangle.Fill>
+			                </Rectangle>
+							<TextBlock Text="Back" Foreground="{StaticResource PulseFontOrangeColor}" />
+						</StackPanel>
+					</Button>			
+					
+					<!--Next Button-->
+					<Button Command="{Binding Path=NextCommand}" Margin="2" IsDefault="True" Width="65" BorderBrush="Black" Background="{StaticResource PulseButtonBlackBackground}" >
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Next" Foreground="{StaticResource PulseFontOrangeColor}"  />
+							<Rectangle Width="10" Height="10" Margin="2,0,2,0">
+			                    <Rectangle.Fill>
+			                        <VisualBrush Visual="{StaticResource ArrowHead-Right}" />
+			                    </Rectangle.Fill>
+			                </Rectangle>
+						</StackPanel>
+					</Button>
+					
+					<!--Exit Button-->
+					<Button Command="{Binding Path=ExitCommand}" Margin="10,2"  Width="65" BorderBrush="Black" Background="{StaticResource PulseButtonBlackBackground}" >
+						<TextBlock Text="Exit" Foreground="{StaticResource PulseFontOrangeColor}"  />
+					</Button>
+				</StackPanel>
+			</Grid>
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <ListBox Grid.Row="0" Style="{StaticResource ListBoxLikeTabPanelWithIcons}" ItemsSource="{Binding Path=AveragingVMList}" SelectedItem="{Binding SelectedAveragingVM}" />
+
+                <!--Display the Graphical VM-->
+                <ContentControl cal:View.Model="{Binding SelectedAveragingVM}" Grid.Row="1"/>
+
+            </Grid>
+        </Grid>
+	</ScrollViewer>
+</UserControl>

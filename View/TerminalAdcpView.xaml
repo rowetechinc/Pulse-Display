@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="RTI.TerminalAdcpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1280">
+    <UserControl.Resources>
+        <Style x:Key="{x:Type ToolTip}" TargetType="{x:Type ToolTip}">
+            <Setter Property="Background" Value="Black" />
+        </Style>
+    </UserControl.Resources>
+
+
+    <Grid Background="{StaticResource PulseBackBorder1Color}">
+    	<Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="0.45*" />
+		</Grid.ColumnDefinitions>
+				
+		<!--Serial Port Settings-->
+        <StackPanel Grid.Row="0" Grid.Column="0" Background="{StaticResource PulseBackBorder3Color}">
+
+            <TextBlock Text="ADCP Communication Port" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Margin="5" />
+            <!--List of the Comm Options-->
+            <ListBox ItemsSource="{Binding AdcpCommOptionsList}" SelectedItem="{Binding SelectedAdcpConnOption}" Margin="5,5,5,10" BorderBrush="Transparent" Background="Transparent" >
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                        </Style.Resources>
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton Content="{Binding Name}" GroupName="Properties">
+                            <!-- Binding IsChecked to IsSelected requires no support code -->
+                            <RadioButton.IsChecked>
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource AncestorType=ListBoxItem}" Mode="TwoWay" />
+                            </RadioButton.IsChecked>
+                        </RadioButton>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!--Serial-->
+            <Border Background="{StaticResource PulseBackBorder2Color}" Margin="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="Serial" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Margin="5" />
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding CommPortList}" Width="115" SelectedItem="{Binding Path=SelectedAdcpCommPort}" Margin="5" />
+                        <Button Content="Scan" Command="{Binding Path=ScanSerialPortsCommand}" Margin="5"/>
+                    </StackPanel>
+                    <ComboBox ItemsSource="{Binding BaudRateList}" SelectedItem="{Binding Path=SelectedAdcpBaudRate}" Margin="5" />
+                    <Expander Header="Advanced" Background="{StaticResource PulseBackBorder1Color}" BorderBrush="Transparent">
+                        <WrapPanel>
+                            <ComboBox ItemsSource="{Binding DataBitList}" SelectedItem="{Binding Path=SelectedDataBit}" Margin="2" />
+                            <ComboBox ItemsSource="{Binding ParityList}" SelectedItem="{Binding Path=SelectedParity}" Margin="2" />
+                            <ComboBox ItemsSource="{Binding StopBitList}" SelectedItem="{Binding Path=SelectedStopBit}" Margin="2" />
+                        </WrapPanel>
+                    </Expander>
+                </StackPanel>
+            </Border>
+
+
+            <!--Ethernet-->
+            <Border Background="{StaticResource PulseBackBorder2Color}" Margin="0,1">
+                <StackPanel>
+                    <TextBlock Text="IP" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Margin="5" />
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <TextBox Text="{Binding Path=EtherAddressA}" Width="30" Margin="5,5,0,0" />
+                        <TextBlock Text="." Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" />
+                        <TextBox Text="{Binding Path=EtherAddressB}" Width="30" Margin="5,5,0,0" />
+                        <TextBlock Text="." Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold"/>
+                        <TextBox Text="{Binding Path=EtherAddressC}" Width="30" Margin="5,5,0,0" />
+                        <TextBlock Text="." Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold"/>
+                        <TextBox Text="{Binding Path=EtherAddressD}" Width="30" Margin="5,5,0,0" />
+                        <Button Content="PING" Command="{Binding Path=TestPingEthernetCommand}" Margin="15,5,0,0" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Port:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
+                        <TextBox Text="{Binding Path=EtherPort}" Width="75" Margin="5" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+
+            <!--Record-->
+            <Border Background="{StaticResource PulseBackBorder2Color}" Margin="0,1,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Record:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Grid.Row="0" Grid.Column="1" Content="" Foreground="#FFC5CFD1" Margin="5" IsChecked="{Binding Path=IsRawAdcpRecording}" Style="{StaticResource OnOffSwitchStyle}" />
+                            <TextBlock Text="{Binding Path=RawAdcpBytesWritten}" ToolTip="{Binding Path=RawAdcpBytesWritten}" Margin="5" Foreground="White" />
+                        </StackPanel>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Path=RawAdcpFileName}" ToolTip="{Binding Path=RawAdcpFileName}" Margin="5" Foreground="White" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+
+        <!--Input and Output-->
+		<StackPanel Grid.Row="0" Grid.Column="1">
+		    <ScrollViewer Height="325" Margin="5" ScrollChanged="ScrollViewer_ScrollChanged">
+                <TextBox Text="{Binding Path=AdcpReceiveBuffer, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" MinWidth="300" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
+			</ScrollViewer>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<!--Editable Combobox Textbox History http://stackoverflow.com/questions/3373239/wpf-editable-combobox-->
+				<ComboBox Grid.Column="0" HorizontalContentAlignment="Stretch" IsEditable="True" ItemsSource="{Binding AdcpCommandHistory}" SelectedItem="{Binding SelectedAdcpCommand}" Text="{Binding NewAdcpCommand, UpdateSourceTrigger=LostFocus}" PreviewKeyDown="ComboBox_PreviewKeyDown" Margin="5" />
+				<Button Grid.Column="1" Content="Send" HorizontalAlignment="Right" IsDefault="True" Command="{Binding SendCommand}" Margin="5" />
+			</Grid>
+            
+            <!--Buttons-->
+            <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                <!--Button Content="Reconnect" Command="{Binding ReconnectCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" /-->
+                <Button Content="Start Ping" Command="{Binding StartPingCommand}" Margin="5" />
+                <Button Content="Stop Ping" Command="{Binding StopPingCommand}" Margin="5" />
+                <Button Content="BREAK" Command="{Binding BreakCommand}" Margin="5" />
+                <Button Content="Clear" Command="{Binding ClearCommand}" Margin="5" />
+                <Button Content="CSHOW" Command="{Binding CSHOWCommand}" Margin="5" />
+                <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" />
+                <Button Content="Force BREAK" Command="{Binding ForceBreakCommand}" Margin="5" />
+            </WrapPanel>
+
+        </StackPanel>
+			
+		<!--Clear the input data button-->
+		<Button Grid.Row="0" Grid.Column="1" Command="{Binding Path=ClearCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
+            <StackPanel Orientation="Horizontal">
+				<Rectangle Width="15" Height="15">
+	                <Rectangle.Fill>
+	                    <VisualBrush Visual="{StaticResource sweep}" />
+	                </Rectangle.Fill>
+	            </Rectangle>
+			</StackPanel>
+        </Button>
+			
+		<!--Command Set-->
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" Height="325" Margin="5" VerticalAlignment="Top">
+                <TextBox Text="{Binding Path=AdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
+            </ScrollViewer>
+
+            <Button Grid.Row="1" Content="Send Command Set" HorizontalAlignment="Right" Command="{Binding SendCommandSetCommand}" Margin="5" />
+            <Button Grid.Row="1" Content="Import Commands" HorizontalAlignment="Left" Command="{Binding ImportCommandSetCommand}" Margin="10,5,5,5" />
+
+            <!--Clear the command set button-->
+            <Button Grid.Row="0" Command="{Binding Path=ClearCommandSetCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource sweep}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+
+        </Grid>
+    </Grid>
+</UserControl>

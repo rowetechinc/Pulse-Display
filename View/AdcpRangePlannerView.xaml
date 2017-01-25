@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="RTI.AdcpRangePlannerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:rti="clr-namespace:RTI"
+			 mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="150">
+	<UserControl.Resources>
+		<!--Margin converter-->
+		<rti:MarginConverter x:Key="marginConverter" />
+		
+		<SolidColorBrush x:Key="BT_COLOR" Color="#FFFF2220" />
+		<SolidColorBrush x:Key="WP_COLOR" Color="#FF608386" />
+	</UserControl.Resources>
+	
+    	<Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Margin="5">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="0.05*" />
+				<RowDefinition Height="0.25*" />
+			</Grid.RowDefinitions>
+			
+			<!--Legend-->
+			<!--Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="Black">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					
+					<Viewbox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" >
+						<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource PulseBackBorder1Color}">
+							<TextBlock Text="Water Profile" Foreground="#FF608386" Margin="5" />
+						</Border>
+					</Viewbox>
+					<Viewbox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" >
+						<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource PulseBackBorder1Color}">
+							<TextBlock Text="Bottom Track" Foreground="{StaticResource BT_COLOR}" Margin="5" />
+						</Border>
+					</Viewbox>
+					
+				</Grid>
+			</Border-->
+			
+			<!--ADCP Image-->
+			<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				
+				<!--Adcp Image rotated-->
+				<Image Grid.Column="1" Source="{Binding Path=AdcpImage}" Width="64" Height="65">
+					<Image.LayoutTransform>
+						<RotateTransform Angle="180"/>
+					</Image.LayoutTransform>
+				</Image>
+			</Grid>
+			
+			<!--Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="Blue" CornerRadius="5" >
+			</Border-->	
+			
+			<!--Viewbox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+				<Canvas Width="100" Height="300">
+					<Image Source="../Images/underwater_ground.png" Margin="{Binding Path=DepthToBottomPos, Converter={StaticResource marginConverter}}" />
+				</Canvas>
+			</Viewbox-->
+			<!--Viewbox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0">
+				<Canvas Width="300" Height="300">
+					<Viewbox Width="300" MaxHeight="10" Stretch="Fill" Margin="{Binding Path=DepthToBottomPos, Converter={StaticResource marginConverter}}">
+						<Image Source="../Images/underwater_ground.png" />
+					</Viewbox>
+				</Canvas>
+			</Viewbox-->
+			
+			<!--Range Pulses-->
+			<Viewbox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					
+					<!--Water Profile Beam-->
+					<Viewbox Grid.Column="0" VerticalAlignment="Top" Width="100" Height="{Binding Path=WaterProfileRangePos}">
+						<rti:PulseAnime Width="100" Height="300" Color="{StaticResource WP_COLOR}">
+							<rti:PulseAnime.RenderTransform >
+								<RotateTransform Angle="20" />
+							</rti:PulseAnime.RenderTransform>
+						</rti:PulseAnime>
+					</Viewbox>
+					
+					<!--Water Profile Beam-->
+					<Viewbox Grid.Column="1" VerticalAlignment="Top" Width="100" Height="{Binding Path=WaterProfileRangePos}">
+						<rti:PulseAnime Width="100" Height="300" Color="{StaticResource WP_COLOR}">
+							<rti:PulseAnime.RenderTransform >
+								<RotateTransform Angle="-20" CenterX="100" />
+							</rti:PulseAnime.RenderTransform>
+						</rti:PulseAnime>
+					</Viewbox>
+					
+					<!--Bottom Track Beam-->
+					<Viewbox Grid.Column="0" VerticalAlignment="Top" Width="100" Height="{Binding Path=BottomTrackRangePos}">
+						<rti:PulseAnime Grid.Column="0" Width="100" Height="300" Color="{StaticResource BT_COLOR}">
+							<rti:PulseAnime.RenderTransform >
+								<RotateTransform Angle="20" />
+							</rti:PulseAnime.RenderTransform>
+						</rti:PulseAnime>
+					</Viewbox>
+					
+					<!--Bottom Track Beam-->
+					<Viewbox Grid.Column="1" VerticalAlignment="Top" Width="100" Height="{Binding Path=BottomTrackRangePos}">
+	                	<rti:PulseAnime Width="100" Height="300" Color="{StaticResource BT_COLOR}">
+							<rti:PulseAnime.RenderTransform >
+								<RotateTransform Angle="-20" CenterX="100" />
+							</rti:PulseAnime.RenderTransform>
+						</rti:PulseAnime>
+					</Viewbox>
+					
+					<!--5th Beam-->
+					<Viewbox Grid.Column="0" Grid.ColumnSpan="2" Width="100" Height="300" VerticalAlignment="Top" Visibility="Hidden">
+						<rti:PulseAnime Width="100" Height="300" Color="Orange" />
+					</Viewbox>
+
+				</Grid>
+			</Viewbox>
+			
+			
+			<!--Depth Lines-->
+			<Grid Grid.Row="2" Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Viewbox Grid.Column="2" VerticalAlignment="Top" Stretch="Fill">
+					<Canvas Width="100" Height="300">
+						
+						<!--Lines for marking depths-->
+						<!--Line StrokeThickness="5" Stroke="#FFE3A441" X1="0" Y1="{Binding Path=WpFirstBinRangePos}" X2="50" Y2="{Binding Path=WpFirstBinRangePos}" HorizontalAlignment="Center" /-->
+						<!--Line StrokeThickness="5" Stroke="#FFE3A441" X1="0" Y1="{Binding Path=WpBlankPos}" X2="50" Y2="{Binding Path=WpBlankPos}" HorizontalAlignment="Center" /-->
+						<!--Line StrokeThickness="5" Stroke="#FF83A860" X1="0" Y1="{Binding Path=BtBlankPos}" X2="50" Y2="{Binding Path=BtBlankPos}" HorizontalAlignment="Center" /-->
+						<Line StrokeThickness="5" Stroke="{StaticResource WP_COLOR}" X1="0" Y1="{Binding Path=WaterProfileRangePos}" X2="50" Y2="{Binding Path=WaterProfileRangePos}" HorizontalAlignment="Center" />
+						<Line StrokeThickness="5" Stroke="{StaticResource BT_COLOR}" X1="0" Y1="{Binding Path=BottomTrackRangePos}" X2="50" Y2="{Binding Path=BottomTrackRangePos}" HorizontalAlignment="Center" />
+						
+						<Line StrokeThickness="5" Stroke="#FF4C8999" X1="50" Y1="0" X2="50" Y2="300" HorizontalAlignment="Center" />
+						
+						<!--Title for each line-->
+						<!--TextBlock Text="{Binding Path=WpFirstBinRangeStr}" Margin="{Binding Path=WpFirstBinRangePos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" /-->
+						<!--TextBlock Text="{Binding Path=WpBlankStr}" Margin="{Binding Path=WpBlankPos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" /-->
+						<!--TextBlock Text="{Binding Path=BtBlankStr}" Margin="{Binding Path=BtBlankPos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" /-->
+						<TextBlock Text="{Binding Path=WaterProfileRangeStr}" Margin="{Binding Path=WaterProfileRangePos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" />
+						<TextBlock Text="{Binding Path=BottomTrackRangeStr}" Margin="{Binding Path=BottomTrackRangePos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" />
+						<!--TextBlock Text="{Binding Path=DepthToBottomStr}" Margin="{Binding Path=DepthToBottomPos, Converter={StaticResource marginConverter}}" Foreground="#FFC5CFD1" FontSize="24" /-->
+						
+					</Canvas>
+				</Viewbox>
+			</Grid>
+			
+			<!--Depth Lines-->
+			<!--Grid Grid.Row="2" Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				
+				<Viewbox Grid.Column="2" Stretch="Fill">
+					<Grid Width="50" Height="300">
+						<Line StrokeThickness="1" Stroke="Orange" X1="0" Y1="{Binding Path=WpBlankLine}" X2="50" Y2="{Binding Path=WpBlankLine}" HorizontalAlignment="Center" />
+						<Line StrokeThickness="1" Stroke="Green" X1="0" Y1="0" X2="50" Y2="0" HorizontalAlignment="Center" />
+						<Line StrokeThickness="1" Stroke="#FF608386" X1="0" Y1="{Binding Path=WaterProfileLine}" X2="50" Y2="{Binding Path=WaterProfileLine}" HorizontalAlignment="Center" />
+						<Line StrokeThickness="1" Stroke="#FFFF2220" X1="0" Y1="{Binding Path=BottomTrackLine}" X2="50" Y2="{Binding Path=BottomTrackLine}" HorizontalAlignment="Center" />
+					</Grid>
+				</Viewbox>
+			</Grid-->
+								
+			<!--TextBlock Grid.Row="4" Grid.Column="0" Text="{Binding Path=WaterProfileRange}" Foreground="#FFC5CFD1" HorizontalAlignment="Right" Margin="5"/-->
+			<!--TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path=DepthToBottomStr}" Foreground="#FFC5CFD1" HorizontalAlignment="Center" Margin="5"/-->
+			
+		</Grid>
+</UserControl>
