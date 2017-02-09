@@ -27,6 +27,7 @@
  * 07/30/2013      RC          3.0.6      Initial coding
  * 08/07/2014      RC          4.0.0      Updated ReactiveCommand to 6.0.
  * 10/01/2014      RC          4.1.0      Added ability to record the compass data and set what output.
+ * 01/12/2017      RC          4.4.4      Added all the compass mounting reference options.
  *
  */
 
@@ -43,6 +44,7 @@ namespace RTI
     using System.Threading.Tasks;
     using System.IO;
     using System.Collections.Concurrent;
+    using System.ComponentModel;
 
     /// <summary>
     /// TODO: Update summary.
@@ -303,6 +305,56 @@ namespace RTI
 
         #endregion
 
+        #region Mounting Reference
+
+        /// <summary>
+        /// Get a list for all mounting refernces..
+        /// </summary>
+        /// <returns>Get a list of all the mounting references.</returns>
+        public BindingList<string> GetMountingRefList()
+        {
+            BindingList<string> MountingRefList = new BindingList<string>();
+            //foreach (var pniRef in PniPrimeCompassBinaryCodec.PniConfiguration.PniMountingRef)
+            foreach(string pniRef in Enum.GetNames(typeof(PniPrimeCompassBinaryCodec.PniConfiguration.PniMountingRef)))
+            {
+                MountingRefList.Add(pniRef);
+            }
+
+            return MountingRefList;
+        }
+
+        /// <summary>
+        /// Selected mounting reference.
+        /// </summary>
+        private string _SelectedMountingRef;
+        /// <summary>
+        /// Set the selected mounting reference.
+        /// </summary>
+        public string SelectedMountingRef
+        {
+            get { return _SelectedMountingRef; }
+
+            set
+            {
+                _SelectedMountingRef = value;
+                this.NotifyOfPropertyChange(() => this.RawCompassRecordFileName);
+
+            }
+        }
+        
+        /// <summary>
+        /// List of the Mounting references.
+        /// </summary>
+        public BindingList<string> MountingRefList
+        {
+            get
+            {
+                return GetMountingRefList();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Commands
@@ -341,6 +393,11 @@ namespace RTI
         /// Command to set the Mounting Ref.
         /// </summary>
         public ReactiveCommand<System.Reactive.Unit> MountingRefCommand { get; protected set; }
+
+        /// <summary>
+        /// Command to set the Mounting Reference that is selected.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> MountingRefSelectedCommand { get; protected set; }
 
         /// <summary>
         /// Command to set the Taps.
@@ -405,6 +462,8 @@ namespace RTI
             _isProcessingBuffer = false;
             _buffer = new ConcurrentQueue<RTI.PniPrimeCompassBinaryCodec.PniDataResponse>();
 
+            SelectedMountingRef = MountingRefList[0];
+
             // Setup the compass event subscriptions
             SubscribeCompassEvents();
 
@@ -431,6 +490,9 @@ namespace RTI
 
             MountingRefCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(x => x.IsCompassConnected, x => x.Value),
                                                                                 param => Task.Run(() => SetMountingRef(param)));
+
+            MountingRefSelectedCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(x => x.IsCompassConnected, x => x.Value),
+                                                                                _ => Task.Run(() => SetMountingRefFromSelection()));
 
             TapsCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(x => x.IsCompassConnected, x => x.Value),
                                                                                 param => Task.Run(() => SetTaps(param)));
@@ -719,6 +781,19 @@ namespace RTI
                             break;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Send the command for the mounting reference for the given selected mounting reference.
+        /// </summary>
+        private void SetMountingRefFromSelection()
+        {
+            PniPrimeCompassBinaryCodec.PniConfiguration.PniMountingRef choice;
+            if (Enum.TryParse(SelectedMountingRef, out choice))
+            {
+                var cmd = PniPrimeCompassBinaryCodec.SetConfigCommand(PniPrimeCompassBinaryCodec.ID.kMountingRef, (byte)choice);
+                _adcpConn.AdcpSerialPort.SendCompassCommand(cmd);
             }
         }
 

@@ -7,6 +7,7 @@ Pulse-Display-4.4.4
  - In HeatmapPlotViewModel, added Interperlate option to the plot to blend data.
  - In AdcpConnection, increase the time to run the DiagSpectrum test.
  - In AdcpPredictionModelViewModel, added the Command Set to the display.
+ - In CompassUtiltiyViewModel, added all the compass mounting reference options.
 
 Pulse_Display-4.4.3
  - Updated Prediction model with Power Usage for systems with vertical beams.

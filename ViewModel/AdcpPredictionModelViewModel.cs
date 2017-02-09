@@ -149,6 +149,7 @@ namespace RTI
                 _pm.UpdateAdcpPredictorUserInput(_UserInput);
 
                 // Set defaults to ADCP Config
+               
                 SetAdcpDefaults();
                 // Save Configuration
                 //AddSubsystemConfig();
@@ -1139,11 +1140,20 @@ namespace RTI
         public ReactiveCommand<object> ImportCommandSetCommand { get; protected set; }
 
         #endregion
+        /// <summary>
+        /// Create a static class to change bool value to make certain initialization 
+        /// commands to happen the first time class is run, but not every time.
+        /// </summary>
+        static bool onStart;
+        static AdcpPredictionModelViewModel()
+        {
+            onStart = true;
+        }
 
         /// <summary>
         /// Initialize the values.
         /// </summary>
-        
+     
         public AdcpPredictionModelViewModel()
             : base("Prediction Model")
         {
@@ -1151,18 +1161,15 @@ namespace RTI
             _pm = IoC.Get<PulseManager>();
             _UserInput = _pm.GetAdcpPredictorUserInput();
             Predictor = new AdcpPredictor(_UserInput);
-
             // Populate the subsystem list
             PopulateLists();
-
             // Add Subsystem to configuration and
             // Setup ADCP Command set
             AddSubsystemConfig();
-            UpdateCommandSet();                                                 
+            UpdateCommandSet();
+        //this.NotifyOfPropertyChange(null);
 
-            //this.NotifyOfPropertyChange(null);
-
-            SetDefaultCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => SetDefaults()));
+        SetDefaultCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => SetDefaults()));
 
             ClearCommandSetCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => ClearCommandSet()));
 
@@ -1172,6 +1179,16 @@ namespace RTI
             // Import an ADCP command set
             ImportCommandSetCommand = ReactiveCommand.Create();
             ImportCommandSetCommand.Subscribe(_ => ImportCommandSet());
+
+            //SetDefaults on first startup, update command values and updateCommandSet on every other startup.
+            if (!onStart)
+            {
+                _SetAdcpDefaults();
+                UpdateCommandSet();
+            }
+            else
+                SetDefaults();
+            onStart = false;
         }
 
         /// <summary>
@@ -1199,6 +1216,7 @@ namespace RTI
             }
             catch (Exception e)
             {
+                log.Error("Error getting the list of CEI command.", e);
             }
             // Create the list
             ListOfSubsystems = new SubsystemList();
@@ -1266,6 +1284,7 @@ namespace RTI
             _pm.UpdateAdcpPredictorUserInput(_UserInput);
 
             // Set defaults to ADCP Config
+           
             SetAdcpDefaults();
 
             UpdateCommandSet();
@@ -1273,14 +1292,22 @@ namespace RTI
             // Update all the properties
             NotifyResultsProperties();
         }
-
         /// <summary>
         /// Set the default settings for the ADCP configuration.
         /// </summary>
         private void SetAdcpDefaults()
         {
-            // Set all the values to the prediction input
             AddSubsystemConfig();
+            _SetAdcpDefaults();
+        }
+
+        /// <summary>
+        /// Set ADCP commands equal to UI values.
+        /// </summary>
+        private void _SetAdcpDefaults()
+        {
+            // Set all the values to the prediction input
+           
             _adcpConfig.Commands.CEI = new Commands.TimeValue((float)_UserInput.CEI);
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPON = _UserInput.CWPON;
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBTON = _UserInput.CBTON;
@@ -1547,40 +1574,7 @@ namespace RTI
                 for (int x = 0; x < results.Length; x++)
                 {
 
-                    //To Noah, this code won't work, we tried making a general case for the commands, but we cant check if the command only has letters because some commands have numbers in their names.
-                    //if (results[x].IndexOf("[") != -1 && results[x].IndexOf("]") != -1)
-                    //{
-                    //    int cmdGood = results[x].IndexOf("[") - 1;
-                    //    for (int i = 0; i < results[x].Substring(0, results[x].IndexOf("[")).Length; i++)
-                    //    {
-                    //        if (!char.IsDigit(results[x][i]))
-                    //        {
-                    //            string srt = results[x].Substring(0, results[x].IndexOf("[") - 1);
-                    //            cmdGood--;
-                    //        }
-                    //        else
-                    //        {
-                    //            Error(results[x], "You have an error with your command name.");
-                    //        }
-                    //    }
-                    //    if (cmdGood == 0)
-                    //    {
-                    //        string subsystemNumber = results[x].Substring(results[x].IndexOf("[") + 1, results[x].IndexOf("]") - results[x].IndexOf("[") - 1);
-                    //        // cmdGood = subsystemNumber/*results[x].Substring(results[x].IndexOf("[") + 1, results[x].IndexOf("]") - results[x].IndexOf("[") - 1)*/.Length;
-                    //        for (int i = 0; i < subsystemNumber/*results[x].Substring(results[x].IndexOf("[") + 1, results[x].IndexOf("]") - results[x].IndexOf("[") - 1)*/.Length; i++)
-                    //        {
-                    //            char charmander = results[x][results[x].IndexOf("[") + i + 1];
-                    //            if (char.IsDigit(charmander/*results[x][results[x].IndexOf("[") + i + 1]*/))
-                    //            {
-                    //                Error(results[x], "You have an error with your brackets.");
-
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //else if (results[x].IndexOf("[") != -1 && results[x].IndexOf("[") == -1) Error(results[x], "Command does not properly use brackets."); //if the command has one bracket, but not the other, throw an error.
-                    //else if (results[x].IndexOf("[") == -1 && results[x].IndexOf("]") != -1) Error(results[x], "Command does not properly use brackets."); //if the command has one bracket, but not the other, throw an error.
-                   
+                                       
                     try
                     {
                         if (results[x].Contains("CEPO")) //Gets the amount of subsystems CEPO has
@@ -1658,7 +1652,7 @@ namespace RTI
                     }
                     catch (Exception e)
                     {
-                      
+                        log.Error("Error importing the commands.", e);
                     }
                 }
                 AdcpCommandSet = "";
@@ -1677,8 +1671,7 @@ namespace RTI
             }
             catch (Exception e)
             {
-
-               
+                log.Error("Error importing commands", e);
             }
         }
 
