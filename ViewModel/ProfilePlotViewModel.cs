@@ -36,6 +36,7 @@
  * 01/23/2015      RC          4.1.0      Added MinMaxAvgStdSeries to take the min, max, avg and std of a profile plot.
  * 01/27/2015      RC          4.1.0      Added the option to turn on or off the profile plots.
  * 12/07/2015      RC          4.4.0      Added GenerateReport to create HTML files.
+ * 02/17/2015      RC          4.4.5      Update the plot when selection changed in UpdateSeriesVisibility().
  * 
  */
 
@@ -809,6 +810,67 @@ namespace RTI
         }
 
         /// <summary>
+        /// Add the bulk data to the plot to update the plot time series.
+        /// </summary>
+        /// <param name="ensemble">Latest data.</param>
+        /// <param name="maxEnsembles">Maximum number of ensembles to display.</param>
+        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        {
+            for (int x = 0; x < ensembles.Count(); x++)
+            {
+                EnsWithMax ewm = new EnsWithMax();
+                ewm.Ensemble = ensembles.IndexValue(x);
+
+                // Verify the subsystem matches this viewmodel's subystem.
+                if ((subsystem == ewm.Ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                        && (ssConfig == ewm.Ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                {
+                    if (ewm != null)
+                    {
+                        // Get the max number of bins
+                        ewm.MaxBins = DataSet.Ensemble.MAX_NUM_BINS;
+                        if (ewm.Ensemble.IsEnsembleAvail)
+                        {
+                            ewm.MaxBins = ewm.Ensemble.EnsembleData.NumBins;
+                        }
+
+                        // Update the list with the latest ensemble
+                        UpdateEnsembleList(ewm.Ensemble, ewm.MaxBins);
+
+                        // Update the list options
+                        UpdateListOptions(ewm.Ensemble);
+
+                        // Lock the plot for an update
+                        lock (Plot.SyncRoot)
+                        {
+                            // Update the time series with the latest data
+                            foreach (var series in Plot.Series)
+                            {
+                                // Verify the type of series
+                                if (series.GetType() == typeof(ProfileSeries))
+                                {
+                                    //Update the series
+                                    ((ProfileSeries)series).UpdateSeries(ewm.Ensemble, ewm.MaxBins, _isFilterData);
+                                }
+                            }
+
+                            // Update min,max,avg,std
+                            foreach (var mSeries in _minMaxAvgStdSeriesList)
+                            {
+                                mSeries.UpdateSeries(ewm.Ensemble, ewm.MaxBins, _isFilterData);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // After the line series have been updated
+            // Refresh the plot with the latest data.
+            Plot.InvalidatePlot(true);
+        }
+
+
+        /// <summary>
         /// Update the plot async.
         /// </summary>
         /// <param name="param">Ensemble and max bin.</param>
@@ -1152,6 +1214,58 @@ namespace RTI
             Plot.InvalidatePlot(true);
         }
 
+        /// <summary>
+        /// Update the plot with the latest ensemble data.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble data.</param>
+        /// <param name="maxBins">Maximum number of bins in the series.</param>
+        private void UpdatePlotBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        {
+            // Lock the plot for an update
+            lock (Plot.SyncRoot)
+            {
+                for (int x = 0; x < ensembles.Count(); x++)
+                {
+                    var ensemble = ensembles.IndexValue(x);
+
+                    // Verify the subsystem matches this viewmodel's subystem.
+                    if ((subsystem == ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                            && (ssConfig == ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                    {
+
+                        // Get the number of bins
+                        int maxBins = DataSet.Ensemble.MAX_NUM_BINS;
+                        if (ensemble.IsEnsembleAvail)
+                        {
+                            maxBins = ensemble.EnsembleData.NumBins;
+                        }
+
+                        // Update the time series with the latest data
+                        foreach (var series in Plot.Series)
+                        {
+                            // Verify the type of series
+                            if (series.GetType() == typeof(ProfileSeries))
+                            {
+                                //Update the series
+                                ((ProfileSeries)series).UpdateSeries(ensemble, maxBins, _isFilterData);
+
+                            }
+                        }
+
+                        // Update min,max,avg,std
+                        foreach (var mSeries in _minMaxAvgStdSeriesList)
+                        {
+                            mSeries.UpdateSeries(ensemble, maxBins, _isFilterData);
+                        }
+                    }
+                }
+            }
+
+            // After the line series have been updated
+            // Refresh the plot with the latest data.
+            Plot.InvalidatePlot(true);
+        }
+
         #endregion
 
         #region Clear Plot
@@ -1438,6 +1552,9 @@ namespace RTI
                     series.IsVisible = value;
                 }
             }
+
+            // Then refresh the plot
+            Plot.InvalidatePlot(true);
         }
 
         #endregion

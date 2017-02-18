@@ -60,7 +60,7 @@ namespace RTI
     /// Base viewmodel for the Validation test.  This will create a VM for each
     /// subsystem configuration.
     /// </summary>
-    public class ValidationTestBaseViewModel : PulseViewModel, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<CloseVmEvent>
+    public class ValidationTestBaseViewModel : PulseViewModel, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<CloseVmEvent>, IHandle<BulkEnsembleEvent>
     {
         #region Variables
 
@@ -610,6 +610,65 @@ namespace RTI
 
         #endregion
 
+        #region Bulk Ensemble
+
+        /// <summary>
+        /// Display the bulk ensemble event async.
+        /// </summary>
+        private void BulkEnsembleDisplayExecute(BulkEnsembleEvent ensEvent)
+        {
+
+            // Find all the configurations
+            for (int x = 0; x < ensEvent.Ensembles.Count(); x++)
+            {
+                // There can only be 12 configurations
+                if(x > 12)
+                {
+                    break;
+                }
+
+                // Get the ensemble
+                DataSet.Ensemble ens = ensEvent.Ensembles.IndexValue(x);
+
+                // Verify the ensemble
+                if (ens != null && ens.IsEnsembleAvail)
+                {
+                    // Create the config
+                    var ssDataConfig = new SubsystemDataConfig(ens.EnsembleData.SubsystemConfig, ensEvent.Source);
+
+                    // Check if the config exist in the table
+                    if (!_validationTestVMDict.ContainsKey(ssDataConfig))
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(new System.Action(() => AddConfig(ssDataConfig)));
+                    }
+
+                    //Wait for the dispatcher to add the config
+                    // Monitor for any timeouts
+                    int timeout = 0;
+                    while (!_validationTestVMDict.ContainsKey(ssDataConfig))
+                    {
+                        // Set a timeout and wait for the config
+                        timeout++;
+                        if (timeout > 10)
+                        {
+                            break;
+                        }
+                        System.Threading.Thread.Sleep(250);
+                    }
+
+                    //_events.PublishOnUIThread(new EnsembleEvent(ens, EnsembleSource.Playback));
+                }
+            }
+
+            // Pass the ensembles to the displays
+            foreach (var vm in _validationTestVMDict.Values)
+            {
+                vm.DisplayBulkData(ensEvent.Ensembles);
+            }
+        }
+
+        #endregion
+
         #region EventHandlers
 
         /// <summary>
@@ -691,6 +750,19 @@ namespace RTI
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Handle event when BulkEnsembleEvent is received.
+        /// This will create the displays for each config
+        /// if it has not been created already.  It will also
+        /// display the latest ensemble.
+        /// </summary>
+        /// <param name="ensEvent">Ensemble event.</param>
+        public void Handle(BulkEnsembleEvent ensEvent)
+        {
+            // Execute async
+            Task.Run(() => BulkEnsembleDisplayExecute(ensEvent));
         }
 
         #endregion

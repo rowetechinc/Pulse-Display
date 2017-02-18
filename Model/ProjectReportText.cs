@@ -40,11 +40,9 @@
  * 04/16/2015      RC          4.1.2      Check for the number of beams in ProfileRange().
  * 05/20/2015      RC          4.1.3      Clear all the values.
  * 06/23/2015      RC          4.1.3      Added Tank Testing.
-<<<<<<< .mine
  * 04/07/2016      RC          4.4.3      Added support for SeaSeven in ProjectReportText.
-=======
  * 03/15/2016      RC          4.4.3      Allow DMG to be calculated with no Water Profile data.
->>>>>>> .r5873
+ * 02/13/2017      RC          4.4.5      Removed the await in LoadData().
  * 
  */
 
@@ -4342,13 +4340,41 @@ namespace RTI
         /// Load an entire cache of data to be calcualted and displayed.
         /// </summary>
         /// <param name="cache"></param>
-        public async void LoadData(Cache<long, DataSet.Ensemble> cache)
+        public void LoadData(Cache<long, DataSet.Ensemble> cache, Subsystem subsystem, SubsystemDataConfig ssConfig)
         {
             // Distance Traveled
-            await Task.Run(() => _distanceTraveled.Calculate(cache));
+            //await Task.Run(() => _distanceTraveled.Calculate(cache));
+            _distanceTraveled.Calculate(cache, subsystem, ssConfig);
             PropertyChangedDistanceTraveled();
 
-            NumEnsembles = cache.Count();
+            for (int x = 0; x < cache.Count(); x++ )
+            {
+                // Get the ensembles
+                var ensemble = cache.IndexValue(x);
+
+                // Verify the subsystem matches this viewmodel's subystem.
+                if ((subsystem == ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                        && (ssConfig == ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                {
+
+                    // Average Amplitude
+                    AverageAmplitude(ensemble);
+
+                    // Glitch check
+                    GlitchCheck(ensemble);
+
+                    // Profile Range
+                    ProfileRange(ensemble);
+
+                    // Get report Info
+                    SetReportInfo(ensemble);
+
+                    // Set Test Orientation
+                    SetTestOrientation(ensemble);
+
+                    NumEnsembles++;
+                }
+            }
         }
 
         /// <summary>

@@ -95,7 +95,7 @@ namespace RTI
     /// <summary>
     /// Plots and data needed to do a lake test.
     /// </summary>
-    public class ValidationTestViewModel : PulseViewModel, IDisposable, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<BulkEnsembleEvent>
+    public class ValidationTestViewModel : PulseViewModel, IDisposable, IHandle<EnsembleEvent>, IHandle<ProjectEvent>
     {
 
         #region Variables
@@ -342,6 +342,27 @@ namespace RTI
 
         #endregion
 
+        #region Is Loading
+
+        /// <summary>
+        /// Flag for loading.
+        /// </summary>
+        private bool _IsLoading;
+        /// <summary>
+        /// Flag for loading.
+        /// </summary>
+        public bool IsLoading
+        {
+            get { return _IsLoading; }
+            set
+            {
+                _IsLoading = value;
+                this.NotifyOfPropertyChange(() => this.IsLoading);
+            }
+        }
+
+        #endregion
+
         #region Ensembles
 
         /// <summary>
@@ -476,6 +497,58 @@ namespace RTI
 
         #endregion
 
+        #region Bad BT Status Count
+
+        /// <summary>
+        /// Number of BT bad status ensembles counted.  This value is used to calculate the
+        /// percentage of bad status ensembles processed.
+        /// </summary>
+        private long _badBtStatusCount;
+        /// <summary>
+        /// Number of BT bad status ensembles counted.  This value is used to calculate the
+        /// percentage of bad status ensembles processed.
+        /// </summary>
+        public long BadBtStatusCount
+        {
+            get { return _badBtStatusCount; }
+            set
+            {
+                _badBtStatusCount = value;
+                this.NotifyOfPropertyChange(() => this.BadBtStatusCount);
+                this.NotifyOfPropertyChange(() => this.IsBadBtStatusCount);
+            }
+        }
+        /// <summary>
+        /// Flag if the number of BT bad status ensembles counted is incremented.
+        /// </summary>
+        public bool IsBadBtStatusCount
+        {
+            get { return _badBtStatusCount > 0; }
+        }
+
+        /// <summary>
+        /// Percentage of BT bad status.  This will get the total number
+        /// of good ensembles against the total ensemble with a status 
+        /// that was not good.
+        /// </summary>
+        private string _badBtStatusPercentage;
+        /// <summary>
+        /// Percentage of BT bad status.  This will get the total number
+        /// of good ensembles against the total ensemble with a status 
+        /// that was not good.
+        /// </summary>
+        public string BadBtStatusPercentage
+        {
+            get { return _badBtStatusPercentage; }
+            set
+            {
+                _badBtStatusPercentage = value;
+                this.NotifyOfPropertyChange(() => this.BadBtStatusPercentage);
+            }
+        }
+
+        #endregion
+
         #region Plots
 
         /// <summary>
@@ -507,78 +580,19 @@ namespace RTI
         public ProfilePlotViewModel AmpPlot { get; set; }
 
         /// <summary>
-        /// Bottom Track Range plot model.
+        /// Bottom Track Range plot.
         /// </summary>
-        private PlotModel _bottomTrackRangePlot;
-        /// <summary>
-        /// Bottom Track Range plot model property.
-        /// </summary>
-        public PlotModel BottomTrackRangePlot
-        {
-            get
-            {
-                return _bottomTrackRangePlot;
-            }
-            private set
-            {
-                _bottomTrackRangePlot = value;
-                this.NotifyOfPropertyChange(() => this.BottomTrackRangePlot);
-            }
-        }
+        public TimeSeriesPlotViewModel BottomTrackRangePlot { get; set; }
 
         /// <summary>
-        /// Bottom Track Speed plot model.
+        /// Bottom Track Speed plot.
         /// </summary>
-        private PlotModel _bottomTrackSpeedPlot;
-        /// <summary>
-        /// Bottom Track Speed plot model property.
-        /// </summary>
-        public PlotModel BottomTrackSpeedPlot
-        {
-            get
-            {
-                return _bottomTrackSpeedPlot;
-            }
-            private set
-            {
-                _bottomTrackSpeedPlot = value;
-                this.NotifyOfPropertyChange(() => this.BottomTrackSpeedPlot);
-            }
-        }
+        public TimeSeriesPlotViewModel BottomTrackSpeedPlot { get; set; }
 
         /// <summary>
-        /// Bottom Track Velocity Series plot model.
+        /// Bottom Track Beam Velocity plot.
         /// </summary>
-        private PlotModel _bottomTrackVelSeriesPLot;
-        /// <summary>
-        /// Bottom Track Velocity Series plot model.
-        /// </summary>
-        public PlotModel BottomTrackVelSeriesPlot
-        {
-            get { return _bottomTrackVelSeriesPLot; }
-            set
-            {
-                _bottomTrackVelSeriesPLot = value;
-                this.NotifyOfPropertyChange(() => this.BottomTrackVelSeriesPlot);
-            }
-        }
-
-        ///// <summary>
-        ///// Set flag if should use Earth or Beam for Good Ping data.
-        ///// </summary>
-        //private bool _isGoodPingEarth;
-        ///// <summary>
-        ///// Set flag if should use Earth or Beam for Good Ping data.
-        ///// </summary>
-        //public bool IsGoodPingEarth
-        //{
-        //    get { return _isGoodPingEarth; }
-        //    set
-        //    {
-        //        _isGoodPingEarth = value;
-        //        this.NotifyOfPropertyChange(() => this.IsGoodPingEarth);
-        //    }
-        //}
+        public TimeSeriesPlotViewModel BottomTrackVelSeriesPlot { get; set; }
 
         #endregion
 
@@ -1286,6 +1300,7 @@ namespace RTI
             //IsGoodPingEarth = true;
             //IsFilteringData = true;
             _isTesting = false;
+            IsLoading = false;
             //_isCalculateDmg = true;
             //IsCreatingProject = false;
             //IsCorrAmpAverage = true;
@@ -1297,6 +1312,7 @@ namespace RTI
             GoodEnsembleCount = 0;
             EnsembleCount = 0;
             BadStatusCount = 0;
+            BadBtStatusCount = 0;
             GoodEnsemblePercentage = 0.ToString("0.00") + "%";
             BadStatusPercentage = 0.ToString("0.00") + "%";
 
@@ -1368,6 +1384,8 @@ namespace RTI
             GoodEnsemblePercentage = "";
             BadStatusCount = 0;
             BadStatusPercentage = "";
+            BadBtStatusCount = 0;
+            BadBtStatusPercentage = "";
 
             TestOrientationColor = DEFAULT_TEST_ORIENTATION_COLOR;
         }
@@ -1459,14 +1477,38 @@ namespace RTI
             AmpPlot.IsProfileSeriesOn = !IsCorrAmpAverage;
             AmpPlot.IsFilterData = IsFilteringData;
 
-            BottomTrackRangePlot = CreateBottomTrackRangePlot();
-            _bottomTrackRangeList = new List<float[]>();
+            // Bottom Track Range plot
+            var btRangeSource = new DataSource(DataSource.eSource.BottomTrack);
+            var btRangeType = new BaseSeriesType(BaseSeriesType.eBaseSeriesType.Base_Range);
+            BottomTrackRangePlot = new TimeSeriesPlotViewModel(new SeriesType(btRangeSource, btRangeType));
+            BottomTrackRangePlot.AddSeries(btRangeSource, btRangeType, 0, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_0));
+            BottomTrackRangePlot.AddSeries(btRangeSource, btRangeType, 1, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_1));
+            BottomTrackRangePlot.AddSeries(btRangeSource, btRangeType, 2, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_2));
+            BottomTrackRangePlot.AddSeries(btRangeSource, btRangeType, 3, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_3));
+            BottomTrackRangePlot.Plot.PlotMargins = new OxyPlot.OxyThickness(20, 0, 0, 0);
+            BottomTrackRangePlot.Plot.TitlePadding = 0;
+            BottomTrackRangePlot.Plot.Padding = new OxyPlot.OxyThickness(0);
 
-            BottomTrackSpeedPlot = CreateBottomTrackSpeedPlot();
-            _bottomTrackVelocityList = new List<double>();
+            // Bottom Track Speed Plot
+            var btVelSource = new DataSource(DataSource.eSource.AncillaryBottomTrack);
+            var btVelType = new BaseSeriesType(BaseSeriesType.eBaseSeriesType.Base_Speed);
+            BottomTrackSpeedPlot = new TimeSeriesPlotViewModel(new SeriesType(btVelSource, btVelType));
+            BottomTrackSpeedPlot.AddSeries(btVelSource, btVelType, 0, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_0));
+            BottomTrackSpeedPlot.Plot.PlotMargins = new OxyPlot.OxyThickness(20, 0, 0, 0);
+            BottomTrackSpeedPlot.Plot.TitlePadding = 0;
+            BottomTrackSpeedPlot.Plot.Padding = new OxyPlot.OxyThickness(0);
 
-            BottomTrackVelSeriesPlot = CreateBottomTrackVelSeriesPlot();
-            _bottomTrackVelSeriesList = new List<float[]>();
+            // Bottom Track Speed Plot
+            var btBeamVelSource = new DataSource(DataSource.eSource.BottomTrack);
+            var btBeamVelType = new BaseSeriesType(BaseSeriesType.eBaseSeriesType.Base_Velocity_Beam);
+            BottomTrackVelSeriesPlot = new TimeSeriesPlotViewModel(new SeriesType(btBeamVelSource, btBeamVelType));
+            BottomTrackVelSeriesPlot.AddSeries(btBeamVelSource, btBeamVelType, 0, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_0));
+            BottomTrackVelSeriesPlot.AddSeries(btBeamVelSource, btBeamVelType, 1, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_1));
+            BottomTrackVelSeriesPlot.AddSeries(btBeamVelSource, btBeamVelType, 2, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_2));
+            BottomTrackVelSeriesPlot.AddSeries(btBeamVelSource, btBeamVelType, 3, 0, OxyColor.Parse(BeamColor.DEFAULT_COLOR_BEAM_3));
+            BottomTrackVelSeriesPlot.Plot.PlotMargins = new OxyPlot.OxyThickness(20, 0, 0, 0);
+            BottomTrackVelSeriesPlot.Plot.TitlePadding = 0;
+            BottomTrackVelSeriesPlot.Plot.Padding = new OxyPlot.OxyThickness(0);
         }
 
         /// <summary>
@@ -1774,13 +1816,16 @@ namespace RTI
                 if (adcpData.IsBottomTrackAvail) // Bottom Track plots
                 {
                     // Bottom Track Range
-                    AddBottomTrackRangeSeries(adcpData);
+                    //AddBottomTrackRangeSeries(adcpData);
+                    Task.Run(() => BottomTrackRangePlot.AddIncomingData(adcpData, Convert.ToInt32(EnsembleCount)));
 
                     // Bottom Track Speed
-                    AddBottomTrackSpeedSeries(adcpData);
+                    //AddBottomTrackSpeedSeries(adcpData);
+                    Task.Run(() => BottomTrackSpeedPlot.AddIncomingData(adcpData, Convert.ToInt32(EnsembleCount)));
 
                     // Bottom Track Beam Series
-                    AddBottomTrackVelSeriesSeries(adcpData);
+                    //AddBottomTrackVelSeriesSeries(adcpData);
+                    Task.Run(() => BottomTrackVelSeriesPlot.AddIncomingData(adcpData, Convert.ToInt32(EnsembleCount)));
 
                     // Set the orientation of the test based off bottom track velocities
                     SetTestOrientation(adcpData);
@@ -1788,395 +1833,424 @@ namespace RTI
             }
         }
 
-        #region Bottom Track Range
 
-        /// <summary>
-        /// Add the Bottom Track Range values to the plot.
-        /// This will keep a list of the last MAX_DATASETS ranges
-        /// and plot them.
-        /// </summary>
-        /// <param name="adcpData">Get the latest data.</param>
-        private void AddBottomTrackRangeSeries(DataSet.Ensemble adcpData)
+        ///<summary>
+        /// Update all the series to display
+        /// the graph.
+        ///</summary>
+        private void AddSeriesBulk(Cache<long, DataSet.Ensemble> ensembles)
         {
-            try
-            {
-                _bottomTrackRangeList.Add(adcpData.BottomTrackData.Range);
-                if (_bottomTrackRangeList.Count > MaxEnsembles)
-                {
-                    _bottomTrackRangeList.RemoveAt(0);
-                }
+            // Correlation plots
+            CorrPlot.AddIncomingDataBulk(ensembles, _Config.SubSystem, _Config);
 
-                // Update the plot
-                UpdateBottomTrackRangePlot(_bottomTrackRangeList);
-            }
-            catch (Exception)
+            AmpPlot.AddIncomingDataBulk(ensembles, _Config.SubSystem, _Config);
+
+            BottomTrackRangePlot.AddIncomingDataBulk(ensembles, _Config.SubSystem, _Config);
+
+            BottomTrackSpeedPlot.AddIncomingDataBulk(ensembles, _Config.SubSystem, _Config);
+
+            BottomTrackVelSeriesPlot.AddIncomingDataBulk(ensembles, _Config.SubSystem, _Config);
+
+            if (ensembles.Count() > 0)
             {
-                // When shutting down, can get a null reference
+                // Get the last ensemble
+                var ensemble = ensembles.IndexValue(ensembles.Count() - 1);
+
+                // Set the orientation of the test based off bottom track velocities
+                SetTestOrientation(ensemble);
             }
+                
         }
 
-        /// <summary>
-        /// Update the PlotModel with the latest data.
-        /// </summary>
-        /// <param name="rangeList">Latest data to update the plot.</param>
-        private void UpdateBottomTrackRangePlot(List<float[]> rangeList)
-        {
-            lock (BottomTrackRangePlot.SyncRoot)
-            {
-                if (rangeList != null)
-                {
-                    // Create the Line Series if they do not exist
-                    if (_btRangeLsBeam0 == null)
-                    {
-                        _btRangeLsBeam0 = new LineSeries() { Color = Beam0Color };
-                    }
-                    if (_btRangeLsBeam1 == null)
-                    {
-                        _btRangeLsBeam1 = new LineSeries() { Color = Beam1Color };
-                    }
-                    if (_btRangeLsBeam2 == null)
-                    {
-                        _btRangeLsBeam2 = new LineSeries() { Color = Beam2Color };
-                    }
-                    if (_btRangeLsBeam3 == null)
-                    {
-                        _btRangeLsBeam3 = new LineSeries() { Color = Beam3Color };
-                    }
+        //#region Bottom Track Range
 
-                    // Clear the last points
-                    _btRangeLsBeam0.Points.Clear();
-                    _btRangeLsBeam1.Points.Clear();
-                    _btRangeLsBeam2.Points.Clear();
-                    _btRangeLsBeam3.Points.Clear();
+        ///// <summary>
+        ///// Add the Bottom Track Range values to the plot.
+        ///// This will keep a list of the last MAX_DATASETS ranges
+        ///// and plot them.
+        ///// </summary>
+        ///// <param name="adcpData">Get the latest data.</param>
+        //private void AddBottomTrackRangeSeries(DataSet.Ensemble adcpData)
+        //{
+        //    try
+        //    {
+        //        _bottomTrackRangeList.Add(adcpData.BottomTrackData.Range);
+        //        if (_bottomTrackRangeList.Count > MaxEnsembles)
+        //        {
+        //            _bottomTrackRangeList.RemoveAt(0);
+        //        }
 
-                    // Populate the series with new points
-                    int index = 0;
-                    for (int x = 0; x < rangeList.Count; x++)
-                    {
-                        if (rangeList[x] != null)
-                        {
-                            if (IsFilteringData)
-                            {
-                                // If the point is bad, do not plot it
-                                if (rangeList[x].Length > 0 && rangeList[x][0] != DataSet.Ensemble.BAD_RANGE)
-                                {
-                                    _btRangeLsBeam0.Points.Add(new DataPoint(index, rangeList[x][0]));
-                                }
+        //        // Update the plot
+        //        UpdateBottomTrackRangePlot(_bottomTrackRangeList);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        // When shutting down, can get a null reference
+        //    }
+        //}
 
-                                if (rangeList[x].Length > 1 && rangeList[x][1] != DataSet.Ensemble.BAD_RANGE)
-                                {
-                                    _btRangeLsBeam1.Points.Add(new DataPoint(index, rangeList[x][1]));
-                                }
+        ///// <summary>
+        ///// Update the PlotModel with the latest data.
+        ///// </summary>
+        ///// <param name="rangeList">Latest data to update the plot.</param>
+        //private void UpdateBottomTrackRangePlot(List<float[]> rangeList)
+        //{
+        //    lock (BottomTrackRangePlot.SyncRoot)
+        //    {
+        //        if (rangeList != null)
+        //        {
+        //            // Create the Line Series if they do not exist
+        //            if (_btRangeLsBeam0 == null)
+        //            {
+        //                _btRangeLsBeam0 = new LineSeries() { Color = Beam0Color };
+        //            }
+        //            if (_btRangeLsBeam1 == null)
+        //            {
+        //                _btRangeLsBeam1 = new LineSeries() { Color = Beam1Color };
+        //            }
+        //            if (_btRangeLsBeam2 == null)
+        //            {
+        //                _btRangeLsBeam2 = new LineSeries() { Color = Beam2Color };
+        //            }
+        //            if (_btRangeLsBeam3 == null)
+        //            {
+        //                _btRangeLsBeam3 = new LineSeries() { Color = Beam3Color };
+        //            }
 
-                                if (rangeList[x].Length > 2 && rangeList[x][2] != DataSet.Ensemble.BAD_RANGE)
-                                {
-                                    _btRangeLsBeam2.Points.Add(new DataPoint(index, rangeList[x][2]));
-                                }
+        //            // Clear the last points
+        //            _btRangeLsBeam0.Points.Clear();
+        //            _btRangeLsBeam1.Points.Clear();
+        //            _btRangeLsBeam2.Points.Clear();
+        //            _btRangeLsBeam3.Points.Clear();
 
-                                if (rangeList[x].Length > 3 && rangeList[x][3] != DataSet.Ensemble.BAD_RANGE)
-                                {
-                                    _btRangeLsBeam3.Points.Add(new DataPoint(index, rangeList[x][3]));
-                                }
-                            }
-                            else
-                            {
-                                if (rangeList[x].Length > 0)
-                                {
-                                    _btRangeLsBeam0.Points.Add(new DataPoint(index, rangeList[x][0]));
-                                }
+        //            // Populate the series with new points
+        //            int index = 0;
+        //            for (int x = 0; x < rangeList.Count; x++)
+        //            {
+        //                if (rangeList[x] != null)
+        //                {
+        //                    if (IsFilteringData)
+        //                    {
+        //                        // If the point is bad, do not plot it
+        //                        if (rangeList[x].Length > 0 && rangeList[x][0] != DataSet.Ensemble.BAD_RANGE)
+        //                        {
+        //                            _btRangeLsBeam0.Points.Add(new DataPoint(index, rangeList[x][0]));
+        //                        }
 
-                                if (rangeList[x].Length > 1)
-                                {
-                                    _btRangeLsBeam1.Points.Add(new DataPoint(index, rangeList[x][1]));
-                                }
+        //                        if (rangeList[x].Length > 1 && rangeList[x][1] != DataSet.Ensemble.BAD_RANGE)
+        //                        {
+        //                            _btRangeLsBeam1.Points.Add(new DataPoint(index, rangeList[x][1]));
+        //                        }
 
-                                if (rangeList[x].Length > 2)
-                                {
-                                    _btRangeLsBeam2.Points.Add(new DataPoint(index, rangeList[x][2]));
-                                }
+        //                        if (rangeList[x].Length > 2 && rangeList[x][2] != DataSet.Ensemble.BAD_RANGE)
+        //                        {
+        //                            _btRangeLsBeam2.Points.Add(new DataPoint(index, rangeList[x][2]));
+        //                        }
 
-                                if (rangeList[x].Length > 3)
-                                {
-                                    _btRangeLsBeam3.Points.Add(new DataPoint(index, rangeList[x][3]));
-                                }
-                            }
-                        }
+        //                        if (rangeList[x].Length > 3 && rangeList[x][3] != DataSet.Ensemble.BAD_RANGE)
+        //                        {
+        //                            _btRangeLsBeam3.Points.Add(new DataPoint(index, rangeList[x][3]));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        if (rangeList[x].Length > 0)
+        //                        {
+        //                            _btRangeLsBeam0.Points.Add(new DataPoint(index, rangeList[x][0]));
+        //                        }
 
-                        index++;
-                    }
+        //                        if (rangeList[x].Length > 1)
+        //                        {
+        //                            _btRangeLsBeam1.Points.Add(new DataPoint(index, rangeList[x][1]));
+        //                        }
 
-                    // Update series
-                    if (BottomTrackRangePlot.Series.Count < 4)
-                    {
-                        BottomTrackRangePlot.Series.Add(_btRangeLsBeam0);
-                        BottomTrackRangePlot.Series.Add(_btRangeLsBeam1);
-                        BottomTrackRangePlot.Series.Add(_btRangeLsBeam2);
-                        BottomTrackRangePlot.Series.Add(_btRangeLsBeam3);
-                    }
-                    else
-                    {
-                        BottomTrackRangePlot.Series[0] = _btRangeLsBeam0;
-                        BottomTrackRangePlot.Series[1] = _btRangeLsBeam1;
-                        BottomTrackRangePlot.Series[2] = _btRangeLsBeam2;
-                        BottomTrackRangePlot.Series[3] = _btRangeLsBeam3;
-                    }
-                }
-                else
-                {
-                    // Just clear
-                    BottomTrackRangePlot.Series.Clear();
-                }     
-            }
+        //                        if (rangeList[x].Length > 2)
+        //                        {
+        //                            _btRangeLsBeam2.Points.Add(new DataPoint(index, rangeList[x][2]));
+        //                        }
 
-            // Update the plot
-            BottomTrackRangePlot.InvalidatePlot(true);
-        }
+        //                        if (rangeList[x].Length > 3)
+        //                        {
+        //                            _btRangeLsBeam3.Points.Add(new DataPoint(index, rangeList[x][3]));
+        //                        }
+        //                    }
+        //                }
+
+        //                index++;
+        //            }
+
+        //            // Update series
+        //            if (BottomTrackRangePlot.Series.Count < 4)
+        //            {
+        //                BottomTrackRangePlot.Series.Add(_btRangeLsBeam0);
+        //                BottomTrackRangePlot.Series.Add(_btRangeLsBeam1);
+        //                BottomTrackRangePlot.Series.Add(_btRangeLsBeam2);
+        //                BottomTrackRangePlot.Series.Add(_btRangeLsBeam3);
+        //            }
+        //            else
+        //            {
+        //                BottomTrackRangePlot.Series[0] = _btRangeLsBeam0;
+        //                BottomTrackRangePlot.Series[1] = _btRangeLsBeam1;
+        //                BottomTrackRangePlot.Series[2] = _btRangeLsBeam2;
+        //                BottomTrackRangePlot.Series[3] = _btRangeLsBeam3;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Just clear
+        //            BottomTrackRangePlot.Series.Clear();
+        //        }     
+        //    }
+
+        //    // Update the plot
+        //    BottomTrackRangePlot.InvalidatePlot(true);
+        //}
 
 
 
-        #endregion
+        //#endregion
 
-        #region Bottom Track Speed
+        //#region Bottom Track Speed
 
-        /// <summary>
-        /// Add the Bottom Track Range values to the plot.
-        /// This will keep a list of the last MAX_DATASETS ranges
-        /// and plot them.
-        /// </summary>
-        /// <param name="adcpData">Get the latest data.</param>
-        private void AddBottomTrackSpeedSeries(DataSet.Ensemble adcpData)
-        {
-            _bottomTrackVelocityList.Add(adcpData.BottomTrackData.GetVelocityMagnitude());
-            if (_bottomTrackVelocityList.Count > MaxEnsembles)
-            {
-                _bottomTrackVelocityList.RemoveAt(0);
-            }
+        ///// <summary>
+        ///// Add the Bottom Track Range values to the plot.
+        ///// This will keep a list of the last MAX_DATASETS ranges
+        ///// and plot them.
+        ///// </summary>
+        ///// <param name="adcpData">Get the latest data.</param>
+        //private void AddBottomTrackSpeedSeries(DataSet.Ensemble adcpData)
+        //{
+        //    _bottomTrackVelocityList.Add(adcpData.BottomTrackData.GetVelocityMagnitude());
+        //    if (_bottomTrackVelocityList.Count > MaxEnsembles)
+        //    {
+        //        _bottomTrackVelocityList.RemoveAt(0);
+        //    }
 
-            // Update the plot
-            try
-            {
-                UpdateBottomTrackSpeedPlot(_bottomTrackVelocityList);
-            }
-            catch (Exception)
-            {
-                // When shutting down, can get a null reference
-            }
-        }
+        //    // Update the plot
+        //    try
+        //    {
+        //        UpdateBottomTrackSpeedPlot(_bottomTrackVelocityList);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        // When shutting down, can get a null reference
+        //    }
+        //}
 
-        /// <summary>
-        /// Update the PlotModel with the latest data.
-        /// If filtering is turned on and a bad speed is found, it will not
-        /// plot the point.  On the next pass, it will move to the next good point.
-        /// </summary>
-        /// <param name="speedList">Latest data to update the plot.</param>
-        private void UpdateBottomTrackSpeedPlot(List<double> speedList)
-        {
-            lock (BottomTrackSpeedPlot.SyncRoot)
-            {
-                if (speedList != null)
-                {
-                    if (_btSpeedLs == null)
-                    {
-                        _btSpeedLs = new LineSeries();
-                    }
+        ///// <summary>
+        ///// Update the PlotModel with the latest data.
+        ///// If filtering is turned on and a bad speed is found, it will not
+        ///// plot the point.  On the next pass, it will move to the next good point.
+        ///// </summary>
+        ///// <param name="speedList">Latest data to update the plot.</param>
+        //private void UpdateBottomTrackSpeedPlot(List<double> speedList)
+        //{
+        //    lock (BottomTrackSpeedPlot.SyncRoot)
+        //    {
+        //        if (speedList != null)
+        //        {
+        //            if (_btSpeedLs == null)
+        //            {
+        //                _btSpeedLs = new LineSeries();
+        //            }
 
-                    // Clear the last points
-                    _btSpeedLs.Points.Clear();
+        //            // Clear the last points
+        //            _btSpeedLs.Points.Clear();
 
-                    // Populate the series with new points
-                    int index = 0;
-                    //foreach (double speed in speedList)
-                    for (int x = 0; x < speedList.Count; x++)
-                    {
-                        double curSpeed = speedList[x];
+        //            // Populate the series with new points
+        //            int index = 0;
+        //            //foreach (double speed in speedList)
+        //            for (int x = 0; x < speedList.Count; x++)
+        //            {
+        //                double curSpeed = speedList[x];
 
-                        // Check if data should be filtered
-                        if (IsFilteringData)
-                        {
-                            // Filter for good speeds
-                            if (curSpeed != 0)
-                            {
-                                _btSpeedLs.Points.Add(new DataPoint(index, curSpeed));
-                            }
-                        }
-                        else
-                        {
-                            _btSpeedLs.Points.Add(new DataPoint(index, curSpeed));
-                        }
+        //                // Check if data should be filtered
+        //                if (IsFilteringData)
+        //                {
+        //                    // Filter for good speeds
+        //                    if (curSpeed != 0)
+        //                    {
+        //                        _btSpeedLs.Points.Add(new DataPoint(index, curSpeed));
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    _btSpeedLs.Points.Add(new DataPoint(index, curSpeed));
+        //                }
 
-                        index++;
-                    }
+        //                index++;
+        //            }
 
-                    // Update the series
-                    if (BottomTrackSpeedPlot.Series.Count < 1)
-                    {
-                        BottomTrackSpeedPlot.Series.Add(_btSpeedLs);
-                    }
-                    else
-                    {
-                        BottomTrackSpeedPlot.Series[0] = _btSpeedLs;
-                    }
-                }
-                else
-                {
-                    // Clear the plot
-                    BottomTrackSpeedPlot.Series.Clear();
-                }
-            }
+        //            // Update the series
+        //            if (BottomTrackSpeedPlot.Series.Count < 1)
+        //            {
+        //                BottomTrackSpeedPlot.Series.Add(_btSpeedLs);
+        //            }
+        //            else
+        //            {
+        //                BottomTrackSpeedPlot.Series[0] = _btSpeedLs;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Clear the plot
+        //            BottomTrackSpeedPlot.Series.Clear();
+        //        }
+        //    }
 
-            // Update the plot
-            BottomTrackSpeedPlot.InvalidatePlot(true);
-        }
+        //    // Update the plot
+        //    BottomTrackSpeedPlot.InvalidatePlot(true);
+        //}
 
-        #endregion
+        //#endregion
 
-        #region Bottom Track Beam Series
+        //#region Bottom Track Beam Series
 
-        /// <summary>
-        /// Add the latest Bottom Track Beam velocity data to the list.
-        /// Then update the plot.
-        /// </summary>
-        /// <param name="adcpData">Latest ensemble.</param>
-        private void AddBottomTrackVelSeriesSeries(DataSet.Ensemble adcpData)
-        {
-            _bottomTrackVelSeriesList.Add(adcpData.BottomTrackData.BeamVelocity);
-            if (_bottomTrackVelSeriesList.Count > MaxEnsembles)
-            {
-                _bottomTrackVelSeriesList.RemoveAt(0);
-            }
+        ///// <summary>
+        ///// Add the latest Bottom Track Beam velocity data to the list.
+        ///// Then update the plot.
+        ///// </summary>
+        ///// <param name="adcpData">Latest ensemble.</param>
+        //private void AddBottomTrackVelSeriesSeries(DataSet.Ensemble adcpData)
+        //{
+        //    _bottomTrackVelSeriesList.Add(adcpData.BottomTrackData.BeamVelocity);
+        //    if (_bottomTrackVelSeriesList.Count > MaxEnsembles)
+        //    {
+        //        _bottomTrackVelSeriesList.RemoveAt(0);
+        //    }
 
-            // Update the plot
-            try
-            {
-                UpdateBottomTrackVelSeriesPlot(_bottomTrackVelSeriesList);
-            }
-            catch (Exception)
-            {
-                // When shutting down, can get a null reference
-            }
-        }
+        //    // Update the plot
+        //    try
+        //    {
+        //        UpdateBottomTrackVelSeriesPlot(_bottomTrackVelSeriesList);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        // When shutting down, can get a null reference
+        //    }
+        //}
 
-        /// <summary>
-        /// Update the Bottom Track Velocity series plot with the latest data.
-        /// Then update the plot in the view.
-        /// </summary>
-        /// <param name="dataList">Latest data to plot.</param>
-        private void UpdateBottomTrackVelSeriesPlot(List<float[]> dataList)
-        {
-            lock (BottomTrackVelSeriesPlot.SyncRoot)
-            {
-                if (dataList != null)
-                {
-                    // Make a copy just in case the datalist is modified
-                    List<float[]> tempList = new List<float[]>(dataList);
+        ///// <summary>
+        ///// Update the Bottom Track Velocity series plot with the latest data.
+        ///// Then update the plot in the view.
+        ///// </summary>
+        ///// <param name="dataList">Latest data to plot.</param>
+        //private void UpdateBottomTrackVelSeriesPlot(List<float[]> dataList)
+        //{
+        //    lock (BottomTrackVelSeriesPlot.SyncRoot)
+        //    {
+        //        if (dataList != null)
+        //        {
+        //            // Make a copy just in case the datalist is modified
+        //            List<float[]> tempList = new List<float[]>(dataList);
 
-                    // Create the Line series
-                    if (_btBeamVelLsBeam0 == null)
-                    {
-                        _btBeamVelLsBeam0 = new LineSeries() { Color = Beam0Color };
-                    }
-                    if (_btBeamVelLsBeam1 == null)
-                    {
-                        _btBeamVelLsBeam1 = new LineSeries() { Color = Beam1Color };
-                    }
-                    if (_btBeamVelLsBeam2 == null)
-                    {
-                        _btBeamVelLsBeam2 = new LineSeries() { Color = Beam2Color };
-                    }
-                    if (_btBeamVelLsBeam3 == null)
-                    {
-                        _btBeamVelLsBeam3 = new LineSeries() { Color = Beam3Color };
-                    }
+        //            // Create the Line series
+        //            if (_btBeamVelLsBeam0 == null)
+        //            {
+        //                _btBeamVelLsBeam0 = new LineSeries() { Color = Beam0Color };
+        //            }
+        //            if (_btBeamVelLsBeam1 == null)
+        //            {
+        //                _btBeamVelLsBeam1 = new LineSeries() { Color = Beam1Color };
+        //            }
+        //            if (_btBeamVelLsBeam2 == null)
+        //            {
+        //                _btBeamVelLsBeam2 = new LineSeries() { Color = Beam2Color };
+        //            }
+        //            if (_btBeamVelLsBeam3 == null)
+        //            {
+        //                _btBeamVelLsBeam3 = new LineSeries() { Color = Beam3Color };
+        //            }
 
-                    // Clear the last points
-                    _btBeamVelLsBeam0.Points.Clear();
-                    _btBeamVelLsBeam1.Points.Clear();
-                    _btBeamVelLsBeam2.Points.Clear();
-                    _btBeamVelLsBeam3.Points.Clear();
+        //            // Clear the last points
+        //            _btBeamVelLsBeam0.Points.Clear();
+        //            _btBeamVelLsBeam1.Points.Clear();
+        //            _btBeamVelLsBeam2.Points.Clear();
+        //            _btBeamVelLsBeam3.Points.Clear();
 
-                    // Populate the series with new points
-                    int index = 0;
-                    for (int x = 0; x < tempList.Count; x++)
-                    {
-                        if (tempList[x] != null)
-                        {
-                            if (IsFilteringData)
-                            {
-                                // If the point is bad, do not plot it
-                                if (tempList[x].Length > 0 && tempList[x][0] != DataSet.Ensemble.BAD_VELOCITY)
-                                {
-                                    _btBeamVelLsBeam0.Points.Add(new DataPoint(index, tempList[x][0]));
-                                }
+        //            // Populate the series with new points
+        //            int index = 0;
+        //            for (int x = 0; x < tempList.Count; x++)
+        //            {
+        //                if (tempList[x] != null)
+        //                {
+        //                    if (IsFilteringData)
+        //                    {
+        //                        // If the point is bad, do not plot it
+        //                        if (tempList[x].Length > 0 && tempList[x][0] != DataSet.Ensemble.BAD_VELOCITY)
+        //                        {
+        //                            _btBeamVelLsBeam0.Points.Add(new DataPoint(index, tempList[x][0]));
+        //                        }
 
-                                if (tempList[x].Length > 1 && tempList[x][1] != DataSet.Ensemble.BAD_VELOCITY)
-                                {
-                                    _btBeamVelLsBeam1.Points.Add(new DataPoint(index, tempList[x][1]));
-                                }
+        //                        if (tempList[x].Length > 1 && tempList[x][1] != DataSet.Ensemble.BAD_VELOCITY)
+        //                        {
+        //                            _btBeamVelLsBeam1.Points.Add(new DataPoint(index, tempList[x][1]));
+        //                        }
 
-                                if (tempList[x].Length > 2 && tempList[x][2] != DataSet.Ensemble.BAD_VELOCITY)
-                                {
-                                    _btBeamVelLsBeam2.Points.Add(new DataPoint(index, tempList[x][2]));
-                                }
+        //                        if (tempList[x].Length > 2 && tempList[x][2] != DataSet.Ensemble.BAD_VELOCITY)
+        //                        {
+        //                            _btBeamVelLsBeam2.Points.Add(new DataPoint(index, tempList[x][2]));
+        //                        }
 
-                                if (tempList[x].Length > 3 && tempList[x][3] != DataSet.Ensemble.BAD_VELOCITY)
-                                {
-                                    _btBeamVelLsBeam3.Points.Add(new DataPoint(index, tempList[x][3]));
-                                }
-                            }
-                            else
-                            {
-                                if (tempList[x].Length > 0)
-                                {
-                                    _btBeamVelLsBeam0.Points.Add(new DataPoint(index, tempList[x][0]));
-                                }
+        //                        if (tempList[x].Length > 3 && tempList[x][3] != DataSet.Ensemble.BAD_VELOCITY)
+        //                        {
+        //                            _btBeamVelLsBeam3.Points.Add(new DataPoint(index, tempList[x][3]));
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        if (tempList[x].Length > 0)
+        //                        {
+        //                            _btBeamVelLsBeam0.Points.Add(new DataPoint(index, tempList[x][0]));
+        //                        }
 
-                                if (tempList[x].Length > 1)
-                                {
-                                    _btBeamVelLsBeam1.Points.Add(new DataPoint(index, tempList[x][1]));
-                                }
+        //                        if (tempList[x].Length > 1)
+        //                        {
+        //                            _btBeamVelLsBeam1.Points.Add(new DataPoint(index, tempList[x][1]));
+        //                        }
 
-                                if (tempList[x].Length > 2)
-                                {
-                                    _btBeamVelLsBeam2.Points.Add(new DataPoint(index, tempList[x][2]));
-                                }
+        //                        if (tempList[x].Length > 2)
+        //                        {
+        //                            _btBeamVelLsBeam2.Points.Add(new DataPoint(index, tempList[x][2]));
+        //                        }
 
-                                if (tempList[x].Length > 3)
-                                {
-                                    _btBeamVelLsBeam3.Points.Add(new DataPoint(index, tempList[x][3]));
-                                }
-                            }
-                        }
+        //                        if (tempList[x].Length > 3)
+        //                        {
+        //                            _btBeamVelLsBeam3.Points.Add(new DataPoint(index, tempList[x][3]));
+        //                        }
+        //                    }
+        //                }
 
-                        index++;
-                    }
+        //                index++;
+        //            }
 
-                    // Update the plot
-                    if (BottomTrackVelSeriesPlot.Series.Count < 4)
-                    {
-                        BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam0);
-                        BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam1);
-                        BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam2);
-                        BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam3);
-                    }
-                    else
-                    {
-                        BottomTrackVelSeriesPlot.Series[0] = _btBeamVelLsBeam0;
-                        BottomTrackVelSeriesPlot.Series[1] = _btBeamVelLsBeam1;
-                        BottomTrackVelSeriesPlot.Series[2] = _btBeamVelLsBeam2;
-                        BottomTrackVelSeriesPlot.Series[3] = _btBeamVelLsBeam3;
-                    }
-                }
-                else
-                {
-                    BottomTrackVelSeriesPlot.Series.Clear();
-                }
-            }
+        //            // Update the plot
+        //            if (BottomTrackVelSeriesPlot.Series.Count < 4)
+        //            {
+        //                BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam0);
+        //                BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam1);
+        //                BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam2);
+        //                BottomTrackVelSeriesPlot.Series.Add(_btBeamVelLsBeam3);
+        //            }
+        //            else
+        //            {
+        //                BottomTrackVelSeriesPlot.Series[0] = _btBeamVelLsBeam0;
+        //                BottomTrackVelSeriesPlot.Series[1] = _btBeamVelLsBeam1;
+        //                BottomTrackVelSeriesPlot.Series[2] = _btBeamVelLsBeam2;
+        //                BottomTrackVelSeriesPlot.Series[3] = _btBeamVelLsBeam3;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            BottomTrackVelSeriesPlot.Series.Clear();
+        //        }
+        //    }
 
-            // Update the plot
-            BottomTrackVelSeriesPlot.InvalidatePlot(true);
-        }
+        //    // Update the plot
+        //    BottomTrackVelSeriesPlot.InvalidatePlot(true);
+        //}
 
-        #endregion
+        //#endregion
 
         #region Test Orientation
 
@@ -2189,48 +2263,51 @@ namespace RTI
         /// <param name="adcpData">Ensemble data.</param>
         private void SetTestOrientation(DataSet.Ensemble adcpData)
         {
-            if (adcpData.BottomTrackData.NumBeams >= DataSet.Ensemble.DEFAULT_NUM_BEAMS_BEAM)
+            if (adcpData.IsBottomTrackAvail)
             {
-                float b0 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_0_INDEX];
-                float b1 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_1_INDEX];
-                float b2 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_2_INDEX];
-                float b3 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_3_INDEX];
-
-                // Make sure they are not bad velocity
-                if (b0 != DataSet.Ensemble.BAD_VELOCITY && b1 != DataSet.Ensemble.BAD_VELOCITY && b2 != DataSet.Ensemble.BAD_VELOCITY && b3 != DataSet.Ensemble.BAD_VELOCITY)
+                if (adcpData.BottomTrackData.NumBeams >= DataSet.Ensemble.DEFAULT_NUM_BEAMS_BEAM)
                 {
-                    // Beam 0 is forward
-                    if (b0 > 0.2 && b1 < 0)
+                    float b0 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_0_INDEX];
+                    float b1 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_1_INDEX];
+                    float b2 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_2_INDEX];
+                    float b3 = adcpData.BottomTrackData.BeamVelocity[DataSet.Ensemble.BEAM_3_INDEX];
+
+                    // Make sure they are not bad velocity
+                    if (b0 != DataSet.Ensemble.BAD_VELOCITY && b1 != DataSet.Ensemble.BAD_VELOCITY && b2 != DataSet.Ensemble.BAD_VELOCITY && b3 != DataSet.Ensemble.BAD_VELOCITY)
                     {
-                        TestOrientation = "Beam 0 Forward";
-                        TestOrientationColor = Beam0ColorStr;
-                    }
-                    else if (b1 > 0.2 && b0 < 0)
-                    {
-                        TestOrientation = "Beam 1 Forward";
-                        TestOrientationColor = Beam1ColorStr;
-                    }
-                    else if (b2 > 0.2 && b3 < 0)
-                    {
-                        TestOrientation = "Beam 2 Forward";
-                        TestOrientationColor = Beam2ColorStr;
-                    }
-                    else if (b3 > 0.2 && b2 < 0)
-                    {
-                        TestOrientation = "Beam 3 Forward";
-                        TestOrientationColor = Beam3ColorStr;
-                    }
-                    else
-                    {
-                        TestOrientation = "";
+                        // Beam 0 is forward
+                        if (b0 > 0.2 && b1 < 0)
+                        {
+                            TestOrientation = "Beam 0 Forward";
+                            TestOrientationColor = Beam0ColorStr;
+                        }
+                        else if (b1 > 0.2 && b0 < 0)
+                        {
+                            TestOrientation = "Beam 1 Forward";
+                            TestOrientationColor = Beam1ColorStr;
+                        }
+                        else if (b2 > 0.2 && b3 < 0)
+                        {
+                            TestOrientation = "Beam 2 Forward";
+                            TestOrientationColor = Beam2ColorStr;
+                        }
+                        else if (b3 > 0.2 && b2 < 0)
+                        {
+                            TestOrientation = "Beam 3 Forward";
+                            TestOrientationColor = Beam3ColorStr;
+                        }
+                        else
+                        {
+                            TestOrientation = "";
+                        }
                     }
                 }
-            }
-            // Vertical Beam
-            else if (adcpData.BottomTrackData.NumBeams == 1)
-            {
-                TestOrientation = "Vertical BEAM";
-                TestOrientationColor = Beam0ColorStr;
+                // Vertical Beam
+                else if (adcpData.BottomTrackData.NumBeams == 1)
+                {
+                    TestOrientation = "Vertical BEAM";
+                    TestOrientationColor = Beam0ColorStr;
+                }
             }
         }
 
@@ -2270,16 +2347,20 @@ namespace RTI
             //_maxEnsembles = DEFAULT_MAX_ENSEMBLES;
 
             // Clear bottom track Range plot
-            _bottomTrackRangeList.Clear();
-            UpdateBottomTrackRangePlot(null);
+            //_bottomTrackRangeList.Clear();
+            //UpdateBottomTrackRangePlot(null);
+            BottomTrackRangePlot.ClearIncomingData();
+
 
             // Clear bottom track Speed plot
-            _bottomTrackVelocityList.Clear();
-            UpdateBottomTrackSpeedPlot(null);
+            //_bottomTrackVelocityList.Clear();
+            //UpdateBottomTrackSpeedPlot(null);
+            BottomTrackSpeedPlot.ClearIncomingData();
 
             // Clear Bottom Track Velocity series plot
-            _bottomTrackVelSeriesList.Clear();
-            UpdateBottomTrackVelSeriesPlot(null);
+            //_bottomTrackVelSeriesList.Clear();
+            //UpdateBottomTrackVelSeriesPlot(null);
+            BottomTrackVelSeriesPlot.ClearIncomingData();
 
             // Clear the Amplitude plot
             AmpPlot.ClearIncomingData();
@@ -2759,6 +2840,16 @@ namespace RTI
         }
 
         /// <summary>
+        /// Only update the contour plot and timeseries.  This will need each ensemble.
+        /// The profile plots only need the last ensemble. 
+        /// </summary>
+        /// <param name="ensEvent">Event that contains the Ensembles to display.</param>
+        public void DisplayBulkData(Cache<long, DataSet.Ensemble> ensembles)
+        {
+            DisplayDataBulkExecute(ensembles);
+        }
+
+        /// <summary>
         /// Display the data.  This should only be called from DisplayData(object) and that
         /// should be called from DisplayDataExecute.Execute(ensemble) to run in the background.
         /// </summary>
@@ -2817,6 +2908,16 @@ namespace RTI
                             }
                         }
 
+                        // Check if the status is not good for Bottom track data
+                        // If it is not good, increment the count
+                        if (ensemble.IsBottomTrackAvail)
+                        {
+                            if (ensemble.BottomTrackData.Status.Value != RTI.Status.GOOD)
+                            {
+                                BadBtStatusCount++;
+                            }
+                        }
+
                         // Set the Percentages
                         if (_ensembleCount > 0)
                         {
@@ -2825,8 +2926,12 @@ namespace RTI
                             GoodEnsemblePercentage = resultGoodEnsemblePercentage.ToString("0.00") + "%";
 
                             // Calculate the Bad Status Percentage
-                            double resultBadStatusPercentage = (((double)_goodEnsembleCount) / ((double)_ensembleCount)) * 100.0;
+                            double resultBadStatusPercentage = (((double)_badStatusCount) / ((double)_ensembleCount)) * 100.0;
                             BadStatusPercentage = resultBadStatusPercentage.ToString("0.00") + "%";
+
+                            // Calculate the Bad Status Percentage
+                            double resultBadBtStatusPercentage = (((double)_badBtStatusCount) / ((double)_ensembleCount)) * 100.0;
+                            BadBtStatusPercentage = resultBadBtStatusPercentage.ToString("0.00") + "%";
                         }
                     }
                 }
@@ -2852,25 +2957,120 @@ namespace RTI
                 // Clear all the current data
                 await Task.Run(() => Clear());
 
-                for (int x = 0; x < ensEvent.Ensembles.Count(); x++)
+                DisplayDataBulkExecute(ensEvent.Ensembles);
+            }
+        }
+
+        /// <summary>
+        /// Display the bulk data.
+        /// </summary>
+        /// <param name="ensembles">Ensembles to display.</param>
+        private async void DisplayDataBulkExecute(Cache<long, DataSet.Ensemble> ensembles)
+        {
+            IsLoading = true;
+
+            // Add data to plots
+            await Task.Run(() => AddSeriesBulk(ensembles));
+
+            // Add data to Distance made good calculation
+            //if (_isCalculateDmg && IsDmgDataGood(ensemble))
+            if (IsCalculateDmg)
+            {
+                // Calculate the DMG
+                await Task.Run(() => _reportText.LoadData(ensembles, _Config.SubSystem, _Config));
+
+                // Update the Distance Made Good Plot
+                await AddDistanceMadeGoodSeries(_reportText);
+            }
+            else
+            {
+                // Set the minimum values
+                //if (ensemble.IsEnsembleAvail)
+                //{
+                //    _reportText.NumBins = ensemble.EnsembleData.NumBins;
+                //    _reportText.DateAndTime = ensemble.EnsembleData.EnsDateTime;
+                //}
+            }
+
+            // View the text output
+            // Display the last ensemble
+            if (ensembles.Count() > 0)
+            {
+                var ensemble = ensembles.IndexValue(ensembles.Count() - 1);
+                // Add Text output
+                SetEnsembleTextOutput(ensemble);
+            }
+
+            // Check the data
+            CheckData(ensembles);
+
+            IsLoading = false;
+
+        }
+
+        #endregion
+
+        #region Check Data
+
+        /// <summary>
+        /// Check the data bad values.
+        /// </summary>
+        /// <param name="ensembles"></param>
+        private void CheckData(Cache<long, DataSet.Ensemble> ensembles)
+        {
+            for (int x = 0; x < ensembles.Count(); x++)
+            {
+                // Get the ensemble
+                var ensemble = ensembles.IndexValue(x);
+
+                // Verify the subsystem matches this viewmodel's subystem.
+                if ((_Config.SubSystem == ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                        && (_Config == ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
                 {
-                    // If no subsystem is given, then a project is not selected
-                    // So receive all data and display
-                    // If the serial number is not set, this may be an old ensemble
-                    // Try to display it anyway
-                    if (!_Config.SubSystem.IsEmpty() && !ensEvent.Ensembles.IndexValue(x).EnsembleData.SysSerialNumber.IsEmpty())
+
+                    // Increase the ensemble count
+                    EnsembleCount++;
+
+                    if (ensemble.IsEnsembleAvail)
                     {
-                        // Verify the subsystem matches this viewmodel's subystem.
-                        if ((_Config.SubSystem != ensEvent.Ensembles.IndexValue(x).EnsembleData.GetSubSystem())        // Check if Subsystem matches 
-                                || (_Config != ensEvent.Ensembles.IndexValue(x).EnsembleData.SubsystemConfig)          // Check if Subsystem Config matches
-                                || _Config.Source != ensEvent.Source)                                   // Check if source matches
+                        // Check if the status is not good
+                        // If it is not good, increment the count
+                        if (ensemble.EnsembleData.Status.Value != RTI.Status.GOOD)
                         {
-                            return;
+                            BadStatusCount++;
+                        }
+                        else
+                        {
+                            GoodEnsembleCount++;
                         }
                     }
 
-                    // Display the data
-                    await DisplayData(ensEvent.Ensembles.IndexValue(x));
+
+                    // Check if the status is not good for Bottom track data
+                    // If it is not good, increment the count
+                    if (ensemble.IsBottomTrackAvail)
+                    {
+                        if (ensemble.BottomTrackData.Status.Value != RTI.Status.GOOD)
+                        {
+                            BadBtStatusCount++;
+                        }
+                    }
+
+                    // Set the Percentages
+                    if (_ensembleCount > 0)
+                    {
+                        // Calculate the Good Ensemble Percentage
+                        double resultGoodEnsemblePercentage = (((double)_goodEnsembleCount) / ((double)_ensembleCount)) * 100.0;
+                        GoodEnsemblePercentage = resultGoodEnsemblePercentage.ToString("0.00") + "%";
+
+                        // Calculate the Bad Status Percentage
+                        double resultBadStatusPercentage = (((double)_badStatusCount) / ((double)_ensembleCount)) * 100.0;
+                        BadStatusPercentage = resultBadStatusPercentage.ToString("0.00") + "%";
+
+                        // Calculate the Bad Status Percentage
+                        double resultBadBtStatusPercentage = (((double)_badBtStatusCount) / ((double)_ensembleCount)) * 100.0;
+                        BadBtStatusPercentage = resultBadBtStatusPercentage.ToString("0.00") + "%";
+                    }
                 }
             }
         }
@@ -2891,9 +3091,9 @@ namespace RTI
             {
                 //CorrPlot.InvalidatePlot(true);
                 //AmpPlot.InvalidatePlot(true);
-                BottomTrackRangePlot.InvalidatePlot(true);
-                BottomTrackSpeedPlot.InvalidatePlot(true);
-                BottomTrackVelSeriesPlot.InvalidatePlot(true);
+                //BottomTrackRangePlot.InvalidatePlot(true);
+                //BottomTrackSpeedPlot.InvalidatePlot(true);
+                //BottomTrackVelSeriesPlot.InvalidatePlot(true);
             }
         }
 
@@ -2969,7 +3169,8 @@ namespace RTI
         public void Handle(BulkEnsembleEvent ensEvent)
         {
             // Display the data async
-            Task.Run(() => DisplayBulkDataExecute(ensEvent));
+            //Task.Run(() => DisplayBulkDataExecute(ensEvent));
+            DisplayBulkDataExecute(ensEvent);
         }
 
         /// <summary>

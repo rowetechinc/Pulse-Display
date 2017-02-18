@@ -44,6 +44,7 @@
  * 11/25/2015      RC          4.3.1      Added NMEA Heading and speed.
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
  * 12/07/2015      RC          4.4.0      Added GenerateReport to create HTML files.
+ * 02/17/2017      RC          4.4.5      Added AddIncomingDataBulk to display all data.
  * 
  */
 
@@ -788,6 +789,57 @@ namespace RTI
                 // Execute async
                 await Task.Run(() => AddIncomingDataExecute(ewm));
             }
+        }
+
+        /// <summary>
+        /// Add the bulk data to the plot to update the plot time series.
+        /// </summary>
+        /// <param name="ensemble">Latest data.</param>
+        /// <param name="maxEnsembles">Maximum number of ensembles to display.</param>
+        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        {
+            for (int x = 0; x < ensembles.Count(); x++)
+            {
+                EnsWithMax ewm = new EnsWithMax();
+                ewm.Ensemble = ensembles.IndexValue(x);
+                ewm.MaxEnsembles = ensembles.Count();
+
+                if (ewm != null)
+                {
+                    // Verify the subsystem matches this viewmodel's subystem.
+                    if ((subsystem == ewm.Ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                            && (ssConfig == ewm.Ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                    {
+
+                        // Update the list with the latest ensemble
+                        UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
+
+                        // Update the plots in the dispatcher thread
+                        try
+                        {
+                            // Lock the plot for an update
+                            lock (Plot.SyncRoot)
+                            {
+                                // Update the time series with the latest data
+                                foreach (TimeSeries series in Plot.Series)
+                                {
+                                    // Update the series
+                                    series.UpdateSeries(ewm.Ensemble, ewm.MaxEnsembles, _isFilterData);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // When shutting down, can get a null reference
+                            log.Debug("Error updating Time Series Plot", ex);
+                        }
+                    }
+                }
+            }
+
+            // After the line series have been updated
+            // Refresh the plot with the latest data.
+            Plot.InvalidatePlot(true);
         }
 
         /// <summary>

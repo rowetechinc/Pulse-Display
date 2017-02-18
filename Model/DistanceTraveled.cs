@@ -525,14 +525,19 @@ namespace RTI
         /// Calculate all the data at once.
         /// </summary>
         /// <param name="cache"></param>
-        public void Calculate(Cache<long, DataSet.Ensemble> cache)
+        public void Calculate(Cache<long, DataSet.Ensemble> cache, Subsystem subsystem, SubsystemDataConfig ssConfig)
         {
             for(int x = 0; x < cache.Count(); x++)
             {
                 DataSet.Ensemble ensemble = cache.Get(x);
                 if (ensemble != null)
                 {
-                    AccumulateData(ensemble);
+                    // Verify the subsystem matches this viewmodel's subystem.
+                    if ((subsystem == ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                            && (ssConfig == ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                    {
+                        AccumulateData(ensemble);
+                    }
                 }
             }
         }
@@ -636,13 +641,13 @@ namespace RTI
                     CalculatePercentError();                    // Calculate the percent error
 
                     //Debug.WriteLine(this.ToString());
-                    Debug.WriteLine(string.Format("Ens: {0}, {1}", ensemble.EnsembleData.EnsembleNumber, ensemble.EnsembleData.EnsDateTime.ToString()));
-                    Debug.WriteLine(string.Format("GPS           {0}, {1}", GpsMag, GpsDir));
-                    Debug.WriteLine(string.Format("BT Earth      {0}, {1} - {2}, {3}, {4}", BtEarthMag, BtEarthDir, BtE, BtN, BtU));
-                    Debug.WriteLine(string.Format("BT Instrument {0}, {1} - {2}, {3}, {4}", BtInstrumentMag, BtInstrumentDir, BtX, BtY, BtZ));
-                    Debug.WriteLine(string.Format("WP Earth      {0}, {1} - {2}, {3}, {4}", WpEarthMag, WpEarthDir, WpE, WpN, WpU));
-                    Debug.WriteLine(string.Format("WP Instrument {0}, {1} - {2}, {3}, {4}", WpInstrumentMag, WpInstrumentDir, WpX, WpY, WpZ));
-                    Debug.WriteLine(string.Format("--------------------------------------------------------"));
+                    //Debug.WriteLine(string.Format("Ens: {0}, {1}", ensemble.EnsembleData.EnsembleNumber, ensemble.EnsembleData.EnsDateTime.ToString()));
+                    //Debug.WriteLine(string.Format("GPS           {0}, {1}", GpsMag, GpsDir));
+                    //Debug.WriteLine(string.Format("BT Earth      {0}, {1} - {2}, {3}, {4}", BtEarthMag, BtEarthDir, BtE, BtN, BtU));
+                    //Debug.WriteLine(string.Format("BT Instrument {0}, {1} - {2}, {3}, {4}", BtInstrumentMag, BtInstrumentDir, BtX, BtY, BtZ));
+                    //Debug.WriteLine(string.Format("WP Earth      {0}, {1} - {2}, {3}, {4}", WpEarthMag, WpEarthDir, WpE, WpN, WpU));
+                    //Debug.WriteLine(string.Format("WP Instrument {0}, {1} - {2}, {3}, {4}", WpInstrumentMag, WpInstrumentDir, WpX, WpY, WpZ));
+                    //Debug.WriteLine(string.Format("--------------------------------------------------------"));
                 //}
             }
         }

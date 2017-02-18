@@ -685,6 +685,61 @@ namespace RTI
         }
 
         /// <summary>
+        /// Add the bulk data to the plot to update the plot time series.
+        /// </summary>
+        /// <param name="ensemble">Latest data.</param>
+        /// <param name="maxEnsembles">Maximum number of ensembles to display.</param>
+        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        {
+            for (int y = 0; y < ensembles.Count(); y++)
+            {
+                EnsWithMax ewm = new EnsWithMax();
+                ewm.Ensemble = ensembles.IndexValue(y);
+                ewm.MaxEnsembles = ensembles.Count();
+
+                if (ewm != null)
+                {
+                    // Verify the subsystem matches this viewmodel's subystem.
+                    if ((subsystem == ewm.Ensemble.EnsembleData.GetSubSystem())                 // Check if Subsystem matches 
+                            && (ssConfig == ewm.Ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
+                    {
+                        // Update the list with the latest ensemble
+                        UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
+
+                        // Update the plots in the dispatcher thread
+                        try
+                        {
+                            // Lock the plot for an update
+                            lock (Plot.SyncRoot)
+                            {
+                                // Update the time series with the latest data
+                                for (int x = 0; x < Plot.Series.Count; x++)
+                                {
+                                    // Heatmap Plot Series
+                                    if (Plot.Series[x].GetType() == typeof(HeatmapPlotSeries))
+                                    {
+                                        // Update the series
+                                        ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ewm.Ensemble, ewm.MaxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // When shutting down, can get a null reference
+                            log.Debug("Error updating Time Series Plot", ex);
+                        }
+                    }
+                }
+            }
+
+            // After the line series have been updated
+            // Refresh the plot with the latest data.
+            Plot.InvalidatePlot(true);
+        }
+
+
+        /// <summary>
         /// Add the incoming data async.
         /// </summary>
         /// <param name="param">Ensemble and Max ensembles.</param>

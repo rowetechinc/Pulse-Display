@@ -1,5 +1,10 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.4.5
+ - In TimeSeriesPlotViewModel, added AddIncomingDataBulk to display all data.
+ - In ProjectReportText, removed the await in LoadData().
+ - In ProfilePlotViewModel, update the plot when selection changed in UpdateSeriesVisibility().
+
 Pulse-Display-4.4.4
  - In AdcpPredictor, fixed Maximum velocity for vertical beams.
  - In AdcpPredictor, fixed beam angle when changing subsystems.
