@@ -132,23 +132,6 @@ namespace RTI
         private readonly PulseManager _pm;
 
         /// <summary>
-        /// List of latest Bottom Track
-        /// Ranges.
-        /// </summary>
-        private List<float[]> _bottomTrackRangeList;
-
-        /// <summary>
-        /// List of latest Bottom Track velocities.
-        /// </summary>
-        private List<double> _bottomTrackVelocityList;
-
-        /// <summary>
-        /// List of latest Bottom Track
-        /// Velocity series.
-        /// </summary>
-        private List<float[]> _bottomTrackVelSeriesList;
-
-        /// <summary>
         /// Event Aggregator to receive the latest ensembles.
         /// </summary>
         private IEventAggregator _eventAggregator;
@@ -169,67 +152,6 @@ namespace RTI
         /// displayed.
         /// </summary>
         private bool _isActive;
-
-        #region Line Series
-
-        #region Bottom Track Range
-
-        /// <summary>
-        /// Bottom Track Range Line Series Beam 0.
-        /// </summary>
-        private LineSeries _btRangeLsBeam0;
-
-        /// <summary>
-        /// Bottom Track Range Line Series Beam 1.
-        /// </summary>
-        private LineSeries _btRangeLsBeam1;
-
-        /// <summary>
-        /// Bottom Track Range Line Series Beam 2.
-        /// </summary>
-        private LineSeries _btRangeLsBeam2;
-
-        /// <summary>
-        /// Bottom Track Range Line Series Beam 3.
-        /// </summary>
-        private LineSeries _btRangeLsBeam3;
-
-        #endregion
-
-        #region Bottom Track Speed
-
-        /// <summary>
-        /// Bottom Track Speed Line Series Beam 0.
-        /// </summary>
-        private LineSeries _btSpeedLs;
-
-        #endregion
-
-        #region Bottom Track Beam Velocity
-
-        /// <summary>
-        /// Bottom Track Beam Velocity Line Series Beam 0.
-        /// </summary>
-        private LineSeries _btBeamVelLsBeam0;
-
-        /// <summary>
-        /// Bottom Track Beam Velocity Line Series Beam 1.
-        /// </summary>
-        private LineSeries _btBeamVelLsBeam1;
-
-        /// <summary>
-        /// Bottom Track Beam Velocity Line Series Beam 2.
-        /// </summary>
-        private LineSeries _btBeamVelLsBeam2;
-
-        /// <summary>
-        /// Bottom Track Beam Velocity Line Series Beam 3.
-        /// </summary>
-        private LineSeries _btBeamVelLsBeam3;
-
-        #endregion
-
-        #endregion
 
         #endregion
 
