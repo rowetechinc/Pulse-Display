@@ -4412,6 +4412,17 @@ namespace RTI
         }
 
         /// <summary>
+        /// Calculate the profile range from the blank, bin size and number of bins.
+        /// </summary>
+        public double ProfileRangeBinSize
+        {
+            get
+            {
+                return CWPBL + (CWPBS * CWPBN);
+            }
+        }
+
+        /// <summary>
         /// Maximum velocity.
         /// Based off UaRadial and Beam angle.
         /// Value in m/s.

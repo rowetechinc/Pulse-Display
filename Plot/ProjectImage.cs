@@ -32,6 +32,7 @@
  * 06/28/2013      RC          2.19       Replaced Shutdown() with IDisposable.
  * 08/07/2013      RC          3.0.7      In GenerateImage() remove the old image before creating the new file.
  * 08/16/2013      RC          3.0.7      Added Bottom Track Line and screen the data before creating the image.
+ * 02/23/2017      RC          4.4.5      Added ProduceCompleteImage() to produce the image in a single pass.
  * 
  */
 
@@ -297,7 +298,8 @@ namespace RTI
 
                     // Produce the image based off the
                     // set project.
-                    ProduceImage();
+                    //ProduceImage();
+                    ProduceCompleteImage();
                 }
             }
         }
@@ -391,6 +393,21 @@ namespace RTI
         }
 
         /// <summary>
+        /// Produce the complete image in one pass.  This will get all the ensembles
+        /// from the database.  It will then draw the image.
+        /// </summary>
+        private void ProduceCompleteImage()
+        {
+            AdcpDatabaseReader reader = new AdcpDatabaseReader();
+            Cache<long, DataSet.Ensemble> ensembles = reader.GetAllEnsembles(SelectedProject);
+
+            // Create the image
+            // This will generate the image
+            // Then save it to PNG in CombineWithProjectImage
+            CombineWithProjectImage(CreateImage(ensembles));
+        }
+
+        /// <summary>
         /// Create a bitmap based off the ensemble given.
         /// This will verify the data exist to create the 
         /// bitmap.  It will then generate an array of velocity
@@ -412,88 +429,6 @@ namespace RTI
                         return CreateImage(ensemble);
                     }
                 }
-
-                //// Ensure the correct dataset exist
-                //if (ensemble.IsEnsembleAvail && ensemble.IsAncillaryAvail && ensemble.IsEarthVelocityAvail)
-                //{
-                //    //// Set bottom track data
-                //    //if (ensemble.IsBottomTrackAvail)
-                //    //{
-                //    //    SetBottomTrackValues(ensemble);
-                //    //}
-
-                //    //// Set GPS Speed value if its available
-                //    //double gpsSpeed = DataSet.Ensemble.BAD_VELOCITY;
-                //    //if (ensemble.IsNmeaAvail)
-                //    //{
-                //    //    if (ensemble.NmeaData.IsGpvtgAvail())
-                //    //    {
-                //    //        if (ensemble.NmeaData.GPVTG.Speed.Value != DotSpatial.Positioning.Speed.Invalid.Value)
-                //    //        {
-                //    //            gpsSpeed = ensemble.NmeaData.GPVTG.Speed.Value;
-                //    //        }
-                //    //    }
-                //    //}
-
-                //    float btEast = DataSet.Ensemble.BAD_VELOCITY;
-                //    float btNorth = DataSet.Ensemble.BAD_VELOCITY;
-                //    float btVert = DataSet.Ensemble.BAD_VELOCITY;
-                //    double gpsSpeed = DataSet.Ensemble.BAD_VELOCITY;
-
-                //    // If available, get Bottom Track velocities
-                //    if (ensemble.IsBottomTrackAvail)
-                //    {
-                //        btEast = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_0_INDEX];
-                //        btNorth = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_1_INDEX];
-                //        btVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_2_INDEX];
-                //    }
-
-                //    // If available, get a GPS speed
-                //    if (ensemble.IsNmeaAvail)
-                //    {
-                //        if (ensemble.NmeaData.IsGpvtgAvail())
-                //        {
-                //            if (ensemble.NmeaData.GPVTG.Speed.Value != DotSpatial.Positioning.Speed.Invalid.Value)
-                //            {
-                //                gpsSpeed = ensemble.NmeaData.GPVTG.Speed.Value;
-                //            }
-                //            else
-                //            {
-                //                // Set GPS Speed to bad velocity
-                //                gpsSpeed = DataSet.Ensemble.BAD_VELOCITY;
-                //            }
-                //        }
-                //    }
-
-                //    // If the Bottom Track data is good, store it
-                //    // and use it.
-                //    if (btEast != DataSet.Ensemble.BAD_VELOCITY &&
-                //        btNorth != DataSet.Ensemble.BAD_VELOCITY &&
-                //        btVert != DataSet.Ensemble.BAD_VELOCITY)
-                //    {
-                //        _prevGoodBtEast = btEast;
-                //        _prevGoodBtNorth = btNorth;
-                //        _prevGoodBtVert = btVert;
-                //    }
-                //    // Bottom Track data is bad, so try and use GPS speed
-                //    else
-                //    {
-                //        // Check if GPS is good, if it is not, then set the bottom track
-                //        // velocities to the previous, and use them.
-                //        if (gpsSpeed == DataSet.Ensemble.BAD_VELOCITY)
-                //        {
-                //            btEast = _prevGoodBtEast;
-                //            btNorth = _prevGoodBtNorth;
-                //            btVert = _prevGoodBtVert;
-                //        }
-                //    }
-
-                //    // Get the VelocityVector array for the ensemble
-                //    DataSet.VelocityVector[] vv = ensemble.EarthVelocityData.GetVelocityVectors(btEast, btNorth, btVert, gpsSpeed);
-
-                //    // Add the VelocityVector to the image
-                //    return CreateImage(vv);
-                //}
             }
             
             // If the ensemble was bad, return an empty bitmap
@@ -570,6 +505,135 @@ namespace RTI
 
             return bitmap;
         }
+
+        /// <summary>
+        /// Create an image based off the ensembles' VelocityVector 
+        /// array given. This will generate a column of
+        /// rectangles for each ensemble.  Each rectangle will be filled with
+        /// a color based off the magnitude.
+        /// </summary>
+        /// <param name="ensembles">Ensembles for each bin column.</param>
+        /// <returns>Bitmap of rectangles.</returns>
+        private Bitmap CreateImage(Cache<long, DataSet.Ensemble> ensembles)
+        {
+            // Bottom Track line color
+            SolidBrush btBrush = new SolidBrush(System.Drawing.Color.White);
+
+            // There can be up to 12 configurations
+            // Get the first 12 ensemble to know the size of the velocity vectors
+            int vvLength = 1;
+            if (ensembles.Count() > 12)
+            {
+                for (int x = 0; x < 12; x++)
+                {
+                    // Get the velocity vector if it exist
+                    var ens = ensembles.IndexValue(0);
+                    if (ens.IsEarthVelocityAvail && ens.EarthVelocityData.IsVelocityVectorAvail)
+                    {
+                        DataSet.VelocityVector[] vv = ens.EarthVelocityData.VelocityVectors;
+                        
+                        // Set the max value
+                        if (vv.Length > vvLength)
+                        {
+                            vvLength = vv.Length;
+                        }
+                    }
+                }
+            }
+            // If less then 12, check all the ensembles
+            else if(ensembles.Count() > 0)
+            {
+                for (int x = 0; x < ensembles.Count(); x++)
+                {
+                    // Get the velocity vector if it exist
+                    var ens = ensembles.IndexValue(0);
+                    if (ens.IsEarthVelocityAvail && ens.EarthVelocityData.IsVelocityVectorAvail)
+                    {
+                        DataSet.VelocityVector[] vv = ens.EarthVelocityData.VelocityVectors;
+
+                        // Set the max value
+                        if (vv.Length > vvLength)
+                        {
+                            vvLength = vv.Length;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // There is no data, so create a blank image
+                return new Bitmap(1, 1);
+            }
+
+            int width = RECT_SIZE + ensembles.Count();              // A rectangle for each ensemble
+            int height = RECT_SIZE * vvLength;                      // The height is the number of bins
+
+            // Create the bitmap
+            Bitmap bitmap = new Bitmap(width, height);
+
+            // Go through each ensemble and add to the bitmap
+            for (int ensCount = 0; ensCount < ensembles.Count(); ensCount++)
+            {
+                // Get the ensemble
+                var ensemble = ensembles.IndexValue(ensCount);
+
+                if(!ensemble.IsEarthVelocityAvail || !ensemble.EarthVelocityData.IsVelocityVectorAvail)
+                {
+                    continue;
+                }
+
+                // Get the Bottom Track Range
+                // Then determine which bin the range is in
+                double btRange = DataSet.Ensemble.BAD_RANGE;
+                if (ensemble.IsBottomTrackAvail)
+                {
+                    btRange = ensemble.BottomTrackData.GetAverageRange();
+                }
+
+                double btBin = 1;
+                if (ensemble.IsAncillaryAvail)
+                {
+                    btBin = btRange / ensemble.AncillaryData.BinSize;
+                }
+
+                using (Graphics gfx = Graphics.FromImage(bitmap))
+                {
+                    for (int bin = 0; bin < ensemble.EarthVelocityData.VelocityVectors.Length; bin++)
+                    {
+                        // Get Color
+                        using (SolidBrush brush = new SolidBrush(GenerateColor(ensemble.EarthVelocityData.VelocityVectors[bin].Magnitude)))
+                        {
+
+                            // Draw Rectangle
+                            gfx.FillRectangle(
+                                brush,                  // Color
+                                0 + ensCount,           // X
+                                bin * RECT_SIZE,        // Y
+                                RECT_SIZE,              // Width
+                                RECT_SIZE);             // Height
+
+                            // Draw Bottom Track Line
+                            // Only draw the line if the range is greater than 0
+                            if (btRange > 0)
+                            {
+                                gfx.FillRectangle(
+                                    btBrush,                                // Color
+                                    0 + ensCount,                           // X
+                                    (int)Math.Round(btBin * RECT_SIZE),     // Y
+                                    RECT_SIZE,                              // Width
+                                    (int)Math.Round(RECT_SIZE / 2.0));      // Height
+                            }
+
+                            // Save results
+                            gfx.Save();
+                        }
+                    }
+                }
+            }
+
+            return bitmap;
+        }
+
 
         /// <summary>
         /// Combine the existing project image with the image given.

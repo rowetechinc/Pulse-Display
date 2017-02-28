@@ -405,84 +405,132 @@
 
 
             <!--Calculated Values-->
-            <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="5" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Grid Margin="5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="5" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Results" FontWeight="Bold" FontSize="26.667" HorizontalAlignment="Center" Foreground="{StaticResource PulseFontColor}" Margin="5" />
+                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Results" FontWeight="Bold" FontSize="26.667" HorizontalAlignment="Center" Foreground="{StaticResource PulseFontColor}" Margin="5" />
 
-                    <!--Bottom Track Range-->
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Bottom Track Range: " Margin="5" />
-                    <Border Grid.Row="1" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock  Text="{Binding Path=PredictedBottomRange}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
-                    <TextBlock Grid.Row="1" Grid.Column="2" Text="meters" Margin="5" />
+                        <!--Bottom Track Range-->
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Bottom Track Range: " Margin="5" />
+                        <Border Grid.Row="1" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock  Text="{Binding Path=PredictedBottomRange}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="meters" Margin="5" />
 
-                    <!--Water Profile Range-->
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Profile Range: " Margin="5" />
-                    <Border Grid.Row="2" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=PredictedProfileRange}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
-                    <TextBlock Grid.Row="2" Grid.Column="2" Text="meters" Margin="5" />
+                        <!--Water Profile Range-->
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Max Profile Range: " Margin="5" />
+                        <Border Grid.Row="2" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=PredictedProfileRange}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="meters" Margin="5" />
 
-                    <!--Max Velocity-->
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Maximum Velocity: " Margin="5" />
-                    <Border Grid.Row="3" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=MaximumVelocity}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
-                    <TextBlock Grid.Row="3" Grid.Column="2" Text="meters/sec" Margin="5" />
+                        <!--Water Profile Range Bin Size-->
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Cfg Profile Range: " Margin="5" />
+                        <Border Grid.Row="3" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5" ToolTip="Based off Blank, Number of Bins and Bin Size.">
+                            <TextBlock Text="{Binding Path=ProfileRangeBinSize}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="3" Grid.Column="2" Text="meters" Margin="5" />
 
-                    <!--Standard Deviation-->
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Standard Deviation: " Margin="5" />
-                    <Border Grid.Row="4" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=StandardDeviation}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
-                    <TextBlock Grid.Row="4" Grid.Column="2" Text="meters/sec" Margin="5" />
+                        <!--Max Velocity-->
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Maximum Velocity: " Margin="5" />
+                        <Border Grid.Row="4" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=MaximumVelocity}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="4" Grid.Column="2" Text="meters/sec" Margin="5" />
 
-                    <!--First Bin Position-->
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="First Bin Position: " Margin="5" />
-                    <Border Grid.Row="5" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=ProfileFirstBinPosition}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
-                    <TextBlock Grid.Row="5" Grid.Column="2" Text="meters" Margin="5" />
+                        <!--Standard Deviation-->
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Standard Deviation: " Margin="5" />
+                        <Border Grid.Row="5" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=StandardDeviation}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="5" Grid.Column="2" Text="meters/sec" Margin="5" />
 
-                    <!--Data Size-->
-                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Data Size: " Margin="5" />
-                    <Border Grid.Row="6" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=DataSize}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
-                    </Border>
+                        <!--First Bin Position-->
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="First Bin Position: " Margin="5" />
+                        <Border Grid.Row="6" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=ProfileFirstBinPosition}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
+                        <TextBlock Grid.Row="6" Grid.Column="2" Text="meters" Margin="5" />
 
-                    <!--Number of Battery Packs-->
-                    <TextBlock Grid.Row="7" Grid.Column="0" Text="Number of Battery Packs: " Margin="5" />
-                    <Border Grid.Row="7" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=NumberBatteryPacks}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center" />
-                    </Border>
-                    <TextBlock Grid.Row="7" Grid.Column="2" Text="packs" Margin="5" />
+                        <!--Data Size-->
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="Data Size: " Margin="5" />
+                        <Border Grid.Row="7" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=DataSize}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center"  />
+                        </Border>
 
-                    <!--Watt/Hours-->
-                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Watt/Hours: " Margin="5" />
-                    <Border Grid.Row="8" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
-                        <TextBlock Text="{Binding Path=WattHours}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center" />
-                    </Border>
+                        <!--Number of Battery Packs-->
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="Number of Battery Packs: " Margin="5" />
+                        <Border Grid.Row="8" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=NumberBatteryPacks}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center" />
+                        </Border>
+                        <TextBlock Grid.Row="8" Grid.Column="2" Text="packs" Margin="5" />
 
-                </Grid>
-            </Border>
+                        <!--Watt/Hours-->
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="Watt/Hours: " Margin="5" />
+                        <Border Grid.Row="9" Grid.Column="1" Background="{StaticResource PulseBackBorder4Color}" CornerRadius="3" Margin="5">
+                            <TextBlock Text="{Binding Path=WattHours}" Margin="5" Foreground="{StaticResource PulseFontOrangeColor}" HorizontalAlignment="Center" />
+                        </Border>
 
+                    </Grid>
+                </Border>
+
+                <!--Command Set-->
+                <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="5" Margin="5" Grid.RowSpan="2">
+                    <Grid>
+                        <StackPanel >
+                            <TextBlock FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" Text="Prediction Model Command File" Margin="5" />
+
+                            <ScrollViewer Grid.Row="0" Height="310" Margin="5" VerticalAlignment="Top">
+                                <TextBox Text="{Binding Path=AdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
+
+                            </ScrollViewer>
+
+                            <TextBox Text="{Binding Path=secondaryAdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New" Height="107"/>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Save Command File" Margin="5" Command="{Binding Path=SaveCommandSetCommand}" />
+                                <Button Content="Load Command File" Margin="5" Command="{Binding Path=ImportCommandSetCommand}" />
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding CommandSetFilePath}" Margin="5" />
+
+                        </StackPanel>
+
+
+
+                        <!--Clear the input data button-->
+                        <Button Grid.Row="0" Grid.Column="1" Command="{Binding Path=ClearCommandSetCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="15" Height="15">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Visual="{StaticResource sweep}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button>
+
+                    </Grid>
+
+                </Border>
+            </StackPanel>
 
             <!--Ping Expander-->
             <Expander Grid.Row="2" Grid.Column="0" BorderBrush="Black" Background="{StaticResource PulseBackBorder3Color}" Margin="5" HorizontalAlignment="Left" >
@@ -620,46 +668,6 @@
 
 
             </Expander>
-
-
-            <!--Command Set-->
-            <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="5" Margin="5,365,5,126" Grid.RowSpan="2">
-                <Grid>
-                    <StackPanel >
-                        <TextBlock FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" Text="Prediction Model Command File" Margin="5" />
-
-                        <ScrollViewer Grid.Row="0" Height="310" Margin="5" VerticalAlignment="Top">
-                            <TextBox Text="{Binding Path=AdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
-                            
-                        </ScrollViewer>
-                        
-                        <TextBox Text="{Binding Path=secondaryAdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New" Height="107"/>
-                       
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="Save Command File" Margin="5" Command="{Binding Path=SaveCommandSetCommand}" />
-                            <Button Content="Load Command File" Margin="5" Command="{Binding Path=ImportCommandSetCommand}" />
-                        </StackPanel>
-                        
-                        <TextBlock Text="{Binding CommandSetFilePath}" Margin="5" />
-
-                    </StackPanel>
-                    
-                    
-
-                    <!--Clear the input data button-->
-                    <Button Grid.Row="0" Grid.Column="1" Command="{Binding Path=ClearCommandSetCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="15" Height="15">
-                                <Rectangle.Fill>
-                                    <VisualBrush Visual="{StaticResource sweep}" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button>
-
-                </Grid>
-
-            </Border>
 
 
         </Grid>

@@ -200,6 +200,14 @@ namespace RTI
         }
 
         /// <summary>
+        /// Water Profile Range from Bin size.
+        /// </summary>
+        public string ProfileRangeBinSize
+        {
+            get { return Predictor.ProfileRangeBinSize.ToString("0.000"); }
+        }
+
+        /// <summary>
         /// Maximum Velocity.
         /// </summary>
         public string MaximumVelocity
@@ -1140,6 +1148,7 @@ namespace RTI
         public ReactiveCommand<object> ImportCommandSetCommand { get; protected set; }
 
         #endregion
+
         /// <summary>
         /// Create a static class to change bool value to make certain initialization 
         /// commands to happen the first time class is run, but not every time.

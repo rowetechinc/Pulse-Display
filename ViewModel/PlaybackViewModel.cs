@@ -41,6 +41,7 @@
  * 07/27/2015      RC          4.1.5      Set the playback name on a PlaybackEvent.
  * 11/16/2015      RC          4.3.0      Fixed bug in ChangePlaybackSpeed() setting the speed to high or low.
  * 12/03/2015      RC          4.4.0      Added recording to file to the record button.
+ * 02/28/2017      RC          4.4.5      Fixed playback speed and divide by zero.
  * 
  */
 
@@ -896,6 +897,7 @@ namespace RTI
         /// <param name="isIncrement">TRUE if increment the speed.</param>
         private void ChangePlaybackSpeed(int curPlaybackSpeed, bool isIncrement)
         {
+            //Debug.WriteLine("PlaybackSpeed: " + _PlaybackSpeed);
             // Increment or decrement the Timer value
             if (isIncrement)
             {
@@ -906,12 +908,18 @@ namespace RTI
                 PlaybackSpeed = curPlaybackSpeed * 2;
             }
 
+            // To prevent divide by 0
+            if (_PlaybackSpeed == 0)
+            {
+                _PlaybackSpeed = 1;
+            }
+
             if (_PlaybackSpeed > 0)
             {
                 // Set the new timer speed
                 _timer.Interval = _PlaybackSpeed;
 
-                Debug.WriteLine("PlaybackSpeed: " + _PlaybackSpeed);
+                //Debug.WriteLine("New PlaybackSpeed: " + _PlaybackSpeed);
 
                 // Set the image
                 SetPlaybackSpeedIndicatorImage();

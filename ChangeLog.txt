@@ -4,6 +4,8 @@ Pulse-Display-4.4.5
  - In TimeSeriesPlotViewModel, added AddIncomingDataBulk to display all data.
  - In ProjectReportText, removed the await in LoadData().
  - In ProfilePlotViewModel, update the plot when selection changed in UpdateSeriesVisibility().
+ - In ProjectImage, added ProduceCompleteImage() to produce the image in a single pass.
+ - In PlaybackViewModel, fixed playback speed and divide by zero.
 
 Pulse-Display-4.4.4
  - In AdcpPredictor, fixed Maximum velocity for vertical beams.
