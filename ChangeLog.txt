@@ -1,5 +1,7 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.4.6
+
 Pulse-Display-4.4.5
  - In TimeSeriesPlotViewModel, added AddIncomingDataBulk to display all data.
  - In ProjectReportText, removed the await in LoadData().

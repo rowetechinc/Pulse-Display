@@ -29,6 +29,16 @@
             <!--Text Output-->
                 <Border Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" CornerRadius="5" Margin="5">
                     <Grid Margin="5">
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type ToolTip}">
+                                <Setter Property = "Background" Value="Black"/>
+                                <Setter Property = "Foreground" Value="White"/>
+                                <Setter Property = "FontSize" Value="14"/>
+                                <Setter Property = "FontWeight" Value="Bold"/>
+                                <Setter Property = "FontFamily" Value="Courier New"/>
+                            </Style>
+                        </Grid.Resources>
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -57,7 +67,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="19" Background="{StaticResource PulseBorder1Color}" CornerRadius="3" />
+                        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="20" Background="{StaticResource PulseBorder1Color}" CornerRadius="3" />
 
                         <!--Number Ensembles-->
                         <TextBlock Grid.Column="0" Grid.Row="0" Text="Number of Ensembles:" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" Margin="5" />
@@ -146,17 +156,15 @@
 
                         <!--Status-->
                         <TextBlock Grid.Column="0" Grid.Row="17" Text="Status:" HorizontalAlignment="Right" Foreground="White" Margin="5" />
-                        <ScrollViewer Grid.Column="1" Grid.Row="17" Grid.ColumnSpan="2" MaxWidth="200" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible" >
-                            <TextBlock Text="{Binding Path=Status}" HorizontalAlignment="Left" Foreground="White" Margin="5" ToolTip="{Binding Status}" >
-			           				<ToolTipService.ToolTip> 
-										<TextBlock Foreground="White" Background="Black" Text="{Binding Path=Status}" />
-									</ToolTipService.ToolTip>
-								</TextBlock>
-                        </ScrollViewer>
+                            <TextBlock Grid.Column="1" Grid.Row="17" Grid.ColumnSpan="2" MaxWidth="200" Text="{Binding Path=Status}" HorizontalAlignment="Left" Foreground="White" Margin="5" ToolTip="{Binding Status}" />
 
-                        <!--GPS Status-->
-                        <TextBlock Grid.Column="0" Grid.Row="18" Text="GPS Status:" HorizontalAlignment="Right" Foreground="White" Margin="5" />
-                        <TextBlock Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" Text="{Binding Path=GpsStatus}" HorizontalAlignment="Left" Foreground="White" Margin="5"  />
+                        <!--BT Status-->
+                        <TextBlock Grid.Column="0" Grid.Row="18" Text="BT Status:" HorizontalAlignment="Right" Foreground="White" Margin="5" />
+                        <TextBlock Grid.Column="1" Grid.Row="18" Grid.ColumnSpan="2" MaxWidth="200" Text="{Binding Path=BtStatus}" HorizontalAlignment="Left" Foreground="White" Margin="5" ToolTip="{Binding BtStatus}" />
+
+                            <!--GPS Status-->
+                        <TextBlock Grid.Column="0" Grid.Row="19" Text="GPS Status:" HorizontalAlignment="Right" Foreground="White" Margin="5" />
+                        <TextBlock Grid.Column="1" Grid.Row="19" Grid.ColumnSpan="2" Text="{Binding Path=GpsStatus}" HorizontalAlignment="Left" Foreground="White" Margin="5"  />
 
                     </Grid>
                 </Border>

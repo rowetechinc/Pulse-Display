@@ -891,6 +891,23 @@ namespace RTI
         }
 
         /// <summary>
+        /// Bottom Track Status of the system.
+        /// </summary>
+        private string _BtStatus;
+        /// <summary>
+        /// Bottom Track Status of the system.
+        /// </summary>
+        public string BtStatus
+        {
+            get { return _BtStatus; }
+            set
+            {
+                _BtStatus = value;
+                this.NotifyOfPropertyChange(() => this.BtStatus);
+            }
+        }
+
+        /// <summary>
         /// Pressue under water.
         /// </summary>
         private string _pressure;
@@ -1290,6 +1307,7 @@ namespace RTI
             Pitch = "";
             Roll = "";
             Status = "";
+            BtStatus = "";
             GpsStatus = "";
             WaterTemp = "";
             SystemTemp = "";
@@ -2396,6 +2414,15 @@ namespace RTI
                 _sysSerialNumber = "";
             }
 
+            if(ensemble.IsBottomTrackAvail)
+            {
+                _BtStatus = ensemble.BottomTrackData.Status.ToString();
+            }
+            else
+            {
+                _BtStatus = "";
+            }
+
             // Update all the displays
             this.NotifyOfPropertyChange(null);
         }
@@ -2435,6 +2462,7 @@ namespace RTI
                     result.Append(Pitch + ",");                                                   // Last Pitch
                     result.Append(Roll + ",");                                                    // Last Roll
                     result.Append(Status + ",");                                                  // Last Status
+                    result.Append(BtStatus + ",");                                                  // Last BT Status
                     result.Append(GpsStatus + ",");                                               // Last Gps Status
                     result.Append(WaterTemp + ",");                                               // Last Water Temp
                     result.Append(SystemTemp + ",");                                              // Last System Temp
