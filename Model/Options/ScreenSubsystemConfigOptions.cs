@@ -138,9 +138,9 @@ namespace RTI
         private const bool DEFAULT_IS_RETRANSFORM_BT_DATA = false;
 
         /// <summary>
-        /// Flag when retransforming data to use GPS heading.
+        /// Heading source.
         /// </summary>
-        private const bool DEFAULT_IS_RESTRANSFORM_USE_GPS_HEADING = false;
+        private const Transform.HeadingSource DEFAULT_HEADING_SOURCE = Transform.HeadingSource.ADCP;
 
         /// <summary>
         /// Heading offset when retransforming the data.
@@ -245,9 +245,9 @@ namespace RTI
         public bool IsRetransformData { get; set; }
 
         /// <summary>
-        /// Flag when retransforming data to use GPS heading.
+        /// Heading source.
         /// </summary>
-        public bool IsRetransformUseGpsHeading { get; set; }
+        public Transform.HeadingSource RetransformHeadingSource { get; set; }
 
         /// <summary>
         /// Heading offset to use with heading.
@@ -365,7 +365,7 @@ namespace RTI
             WpCorrThresh = DEFAULT_WP_CORR_THRESH;
             BtCorrThresh = DEFAULT_BT_CORR_THRESH;
             BtSnrThresh = DEFAULT_BT_SNR_THRESH;
-            IsRetransformUseGpsHeading = DEFAULT_IS_RESTRANSFORM_USE_GPS_HEADING;
+            RetransformHeadingSource = DEFAULT_HEADING_SOURCE;
             RetransformHeadingOffset = DEFAULT_RETRANSFORM_HEADING_OFFSET;
 
         }

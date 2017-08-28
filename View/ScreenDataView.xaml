@@ -133,8 +133,9 @@
 					<TextBlock Grid.Row="0" Grid.Column="0" Text="Re-Transform Data" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
 					<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsRetransformData}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Use GPS Heading" Margin="5" />
-                    <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding IsRetransformUseGpsHeading}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Heading Source" Margin="5" />
+                    <ComboBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding HeadingSourceList}" SelectedValue="{Binding SelectedHeadingSource}" Margin="5,0,20,5" MinWidth="75" Foreground="White" ToolTip="{Binding GpsHeadingTooltip}" />
+                    <!--CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding IsRetransformUseGpsHeading}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" /-->
 
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Heading Offset" Margin="5" />
                 <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="2" Value="{Binding RetransformHeadingOffset}" Margin="5" Background="White" Foreground="Black" />

@@ -106,7 +106,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Record:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Grid.Row="0" Grid.Column="1" Content="" Foreground="#FFC5CFD1" Margin="5" IsChecked="{Binding Path=IsRawAdcpRecording}" Style="{StaticResource OnOffSwitchStyle}" ToolTip="Record and data coming from the ADCP port." />
+                            <CheckBox Grid.Row="0" Grid.Column="1" Content="" Foreground="#FFC5CFD1" Margin="5" IsChecked="{Binding Path=IsRawAdcpRecording}" Style="{StaticResource OnOffSwitchStyle}" ToolTip="Record any data coming from the ADCP port." />
                             <TextBlock Text="{Binding Path=RawAdcpBytesWritten}" ToolTip="{Binding Path=RawAdcpBytesWritten}" Margin="5" Foreground="White" />
                         </StackPanel>
                     </StackPanel>

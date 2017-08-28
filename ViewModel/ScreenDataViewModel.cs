@@ -386,15 +386,32 @@ namespace RTI
         }
 
         /// <summary>
-        /// Use the GPS heading when retransforming the data.
+        /// List of available heading sources.
         /// </summary>
-        public bool IsRetransformUseGpsHeading
+        private List<Transform.HeadingSource> _HeadingSourceList;
+        /// <summary>
+        /// List of available heading sources.
+        /// </summary>
+        public List<Transform.HeadingSource> HeadingSourceList
         {
-            get { return _Options.IsRetransformUseGpsHeading; }
+            get { return _HeadingSourceList; }
             set
             {
-                _Options.IsRetransformUseGpsHeading = value;
-                this.NotifyOfPropertyChange(() => this.IsRetransformUseGpsHeading);
+                _HeadingSourceList = value;
+                this.NotifyOfPropertyChange(() => this.HeadingSourceList);
+            }
+        }
+
+        /// <summary>
+        /// Selected heading sources.
+        /// </summary>
+        public Transform.HeadingSource SelectedHeadingSource
+        {
+            get { return _Options.RetransformHeadingSource; }
+            set
+            {
+                _Options.RetransformHeadingSource = value;
+                this.NotifyOfPropertyChange(() => this.SelectedHeadingSource);
 
                 // Save the options
                 SaveOptions();
@@ -497,6 +514,9 @@ namespace RTI
             _prevBtVert = DataSet.Ensemble.BAD_VELOCITY;
             _prevHeading = 0.0f;
 
+            //SelectedHeadingSource = Transform.HeadingSource.ADCP;
+            HeadingSourceList = Enum.GetValues(typeof(Transform.HeadingSource)).Cast<Transform.HeadingSource>().ToList();
+
             // Initialize the options
             GetOptionsFromDatabase();
 
@@ -575,8 +595,8 @@ namespace RTI
             if (_Options.IsRetransformData)
             {
                 // Calculate the new Earth velocities
-                Transform.ProfileTransform(ref ensemble, _Options.WpCorrThresh, _Options.IsRetransformUseGpsHeading, _Options.RetransformHeadingOffset);
-                Transform.BottomTrackTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.IsRetransformUseGpsHeading, _Options.RetransformHeadingOffset);
+                Transform.ProfileTransform(ref ensemble, _Options.WpCorrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
+                Transform.BottomTrackTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
             }
 
             // Mark Bad Below Bottom

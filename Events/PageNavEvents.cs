@@ -47,6 +47,7 @@
  * 10/02/2014      RC          4.1.0      Added RtiCompassCal.
  * 06/19/2015      RC          4.1.3      Added TestTankView.
  * 01/15/2015      RC          4.4.2      Added BurnInTestView.
+ * 08/28/2017      RC          4.5.2      Added DataOutputView.
  * 
  */
 
@@ -341,6 +342,11 @@ namespace RTI
             /// Processor Board Test View.
             /// </summary>
             ProcessorBoardTestView,
+
+            /// <summary>
+            /// Data Output View.
+            /// </summary>
+            DataOutputView,
         }
 
         #region Properties
