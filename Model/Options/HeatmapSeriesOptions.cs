@@ -147,7 +147,7 @@ namespace RTI
         {
             Type = HeatmapPlotSeries.HeatmapPlotType.Earth_Velocity_Magnitude;
             MinBin = 0;
-            MaxBin = 100;
+            MaxBin = 200;
             IsFilterData = true;
             MinValue = 0.0;
             MaxValue = 2.0;

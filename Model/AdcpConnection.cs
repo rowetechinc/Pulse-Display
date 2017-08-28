@@ -1295,6 +1295,7 @@ namespace RTI
                 // Create the connection and connect
                 AdcpSerialPort = new AdcpSerialPort(options);
                 AdcpSerialPort.Connect();
+                AdcpSerialPort.SendBreak();
 
                 // Clear the codec of any data
                 _adcpCodec.ClearIncomingData();
@@ -3955,7 +3956,7 @@ namespace RTI
         /// <param name="ensemble">Ensemble as an object.</param>
         /// <param name="source">Source of the ensemble.</param>
         /// <param name="type">Ensemble type.</param>
-        private void ReceiveEnsembleFromCodec(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
+        private void ReceiveEnsembleFromCodec_old(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
         {
             // Add the buffered GPS and NMEA data to the data
 
@@ -4058,6 +4059,94 @@ namespace RTI
                         PublishEnsemble(ensemble, data.Source, data.Type);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Receive the ensemble from the codec, process the data, and pass it to the next subscriber.
+        /// </summary>
+        /// <param name="binaryEnsemble">Binary ensemble.</param>
+        /// <param name="ensemble">Ensemble object.</param>
+        /// <param name="source">Source that the ensemble came from.</param>
+        /// <param name="type">Type of ensemble, averaged data or not averaged.</param>
+        private void ReceiveEnsembleFromCodec(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
+        {
+            // Add the GPS and NMEA data to the ensemble
+            // and clear the buffers
+            string adcpGpsBuffer = "";
+            string gps1Buffer = Gps1BufferData();
+            string gps2Buffer = Gps2BufferData();
+            string nmea1Buffer = Nmea1BufferData();
+            string nmea2Buffer = Nmea2BufferData();
+
+            // Store the GPS data that is already in the ensemble
+            if (ensemble.IsNmeaAvail && ensemble.NmeaData != null)
+            {
+                adcpGpsBuffer = ensemble.NmeaData.ToString();
+            }
+
+            if (!ensemble.IsNmeaAvail || ensemble.NmeaData == null)
+            {
+                ensemble.AddNmeaData(gps1Buffer);
+            }
+            else
+            {
+                ensemble.NmeaData.MergeNmeaData(gps1Buffer);
+            }
+            ensemble.NmeaData.MergeNmeaData(gps2Buffer);
+            ensemble.NmeaData.MergeNmeaData(nmea1Buffer);
+            ensemble.NmeaData.MergeNmeaData(nmea2Buffer);
+
+            // Add the buffers
+            ensemble.AddAdcpGpsData(adcpGpsBuffer);
+            ensemble.AddGps1Data(gps1Buffer);
+            ensemble.AddGps2Data(gps2Buffer);
+            ensemble.AddNmea1Data(nmea1Buffer);
+            ensemble.AddNmea2Data(nmea2Buffer);
+
+            // Check if a project is selected and is recording
+            if (_pm.IsProjectSelected && IsRecording)
+            {
+                // Check if the serial number is set for the project
+                if (_pm.SelectedProject.SerialNumber.IsEmpty())
+                {
+                    if (ensemble.IsEnsembleAvail)
+                    {
+                        _pm.SelectedProject.SerialNumber = ensemble.EnsembleData.SysSerialNumber;
+                    }
+                }
+
+                // Record the data
+                _pm.SelectedProject.RecordBinaryEnsemble(binaryEnsemble);
+                _pm.SelectedProject.RecordDbEnsemble(ensemble);
+            }
+
+            // Check if validation testing
+            if (IsValidationTestRecording)
+            {
+                WriteValidationTestData(binaryEnsemble, ensemble);
+            }
+
+            // Set the ensemble
+            DataSet.Ensemble newEnsemble = ensemble;
+
+            // Create the velocity vectors for the ensemble
+            DataSet.VelocityVectorHelper.CreateVelocityVector(ref newEnsemble);
+
+            // Vessel Mount Options
+            VesselMountScreen(ref newEnsemble);
+
+            // Screen the data
+            _screenDataVM.ScreenData(ref newEnsemble);
+
+            // Average the data
+            _averagingVM.AverageEnsemble(newEnsemble);
+
+            // Publish the data
+            // Do not publish the data if you are importing data
+            if (!IsImporting)
+            {
+                PublishEnsemble(newEnsemble, source, type);
             }
         }
 

@@ -35,6 +35,7 @@
  * 10/29/2015      RC          4.3.0      Fixed AccumulateWpEarth() to remove the boat speed.  Changed Direction error to an angle and not a percentage.
  * 01/14/2015      RC          4.4.2      Allow 3 beams systems when using bottom track data.
  * 06/20/2016      RC          4.4.3      Added vertical velocity to distanced traveled.
+ * 04/26/2017      RC          4.4.6      Test for NaN for Latitude or Longitude in AccumulateGps().
  * 
  */
 
@@ -685,7 +686,7 @@ namespace RTI
             {
                 if (ensemble.IsNmeaAvail)
                 {
-                    if (ensemble.NmeaData.IsGpggaAvail() && !ensemble.NmeaData.GPGGA.Position.IsInvalid)
+                    if (ensemble.NmeaData.IsGpggaAvail() && !ensemble.NmeaData.GPGGA.Position.IsInvalid && ensemble.NmeaData.GPGGA.Position.Longitude.DecimalDegrees != Double.NaN )
                     {
                         GpsMag = _firstGpsPos.DistanceTo(ensemble.NmeaData.GPGGA.Position).ToMeters().Value;     // Meters           Distance Made Good
                         GpsDir = _firstGpsPos.BearingTo(ensemble.NmeaData.GPGGA.Position).DecimalDegrees;        // Decimal Degrees  Course Made Good

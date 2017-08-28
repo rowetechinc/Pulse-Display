@@ -1,6 +1,12 @@
 ﻿Pulse_Display Changelog
 
 Pulse-Display-4.4.6
+ - Moved PulseDiaglogViewModel.
+ - Added PredictionModel.
+ - In DistanceTraveled, test for NaN for Latitude or Longitude in AccumulateGps().
+ - In ScreenDataViewModel, in SetPreviousBottomTrackVelocity() checked if VTG message exists.
+ - In TimeSeriesPlotViewModel, check if the series type is set in GenerateReport().
+ - In TerminalAdcpViewModel, added some additional command buttons.
 
 Pulse-Display-4.4.5
  - In TimeSeriesPlotViewModel, added AddIncomingDataBulk to display all data.

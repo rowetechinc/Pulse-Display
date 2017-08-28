@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" 
-             d:DesignHeight="1000" d:DesignWidth="1200"
+             mc:Ignorable="d"
 			 >
     <ScrollViewer Foreground="{StaticResource PulseFontColor}"
                   HorizontalScrollBarVisibility="Visible">
@@ -46,6 +45,9 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -125,7 +127,7 @@
                 <TextBlock Grid.Row="8" Grid.Column="0" Text="CWPBS: " Margin="5" />
                 <extToolkit:DoubleUpDown Grid.Row="8" Grid.Column="1" Value="{Binding Path=CWPBS}" Margin="5" Minimum="0" Background="White" Foreground="Black" ToolTip="{Binding Path=CWPBS_Desc}"/>
                 <TextBlock Grid.Row="8" Grid.Column="2" Text="meters" Margin="5" />
-                
+
                 <!--CWPBN-->
                 <TextBlock Grid.Row="9" Grid.Column="0" Text="CWPBN: " Margin="5" />
                 <extToolkit:IntegerUpDown Grid.Row="9" Grid.Column="1" Value="{Binding Path=CWPBN}" Margin="5" Minimum="0" Background="White" Foreground="Black" ToolTip="{Binding Path=CWPBN_Desc}" />
@@ -144,7 +146,7 @@
                 <!--CBTON-->
                 <TextBlock Grid.Row="12" Grid.Column="0" Text="CBTON: " Margin="5" />
                 <CheckBox Grid.Row="12" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding CBTON}" HorizontalAlignment="Left" ToolTip="{Binding Path=CBTON_Desc}" />
-                
+
                 <!--CBTBB-->
                 <TextBlock Grid.Row="13" Grid.Column="0" Text="CBTBB Mode: " Margin="5" />
                 <ComboBox Grid.Row="13" Grid.Column="1" Width="150" ItemsSource="{Binding Path=BTBB_List}" SelectedItem="{Binding Path=CBTBB_TransmitPulseType}" Margin="5" ToolTip="{Binding Path=CBTBB_Desc}"/>
@@ -153,6 +155,20 @@
                 <TextBlock Grid.Row="14" Grid.Column="0" Text="CBTTBP: " Margin="5" />
                 <extToolkit:DoubleUpDown Grid.Row="14" Grid.Column="1" Value="{Binding Path=CBTTBP}" Margin="5" Minimum="0" Background="White" Foreground="Black"  ToolTip="{Binding Path=CBTTBP_Desc}" />
                 <TextBlock Grid.Row="14" Grid.Column="2" Text="seconds" Margin="5" />
+
+                <!--CBI-->
+                <TextBlock Grid.Row="15" Grid.Column="0" Text="CBI: " Margin="5" />
+                <CheckBox Grid.Row="15" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding CBI}" HorizontalAlignment="Left" ToolTip="{Binding Path=CBTON_Desc}" />
+
+                <!--CBI Samples per Burst-->
+                <TextBlock Grid.Row="16" Grid.Column="0" Text="Samples per Burst: " Margin="5" />
+                <extToolkit:DoubleUpDown Grid.Row="16" Grid.Column="1" Value="{Binding Path=CBI_NumEnsembles}" IsEnabled="{Binding CBI}" Increment="128" Margin="5" Minimum="0" Background="White" Foreground="Black"  ToolTip="{Binding Path=CBI_Desc}" />
+                <TextBlock Grid.Row="16" Grid.Column="2" Text="ensembles" Margin="5" />
+
+                <!--CBI Burst Interval-->
+                <TextBlock Grid.Row="17" Grid.Column="0" Text="Burst Interval: " Margin="5" />
+                <extToolkit:DoubleUpDown Grid.Row="17" Grid.Column="1" Value="{Binding Path=CBI_BurstInterval}" IsEnabled="{Binding CBI}" Margin="5" Minimum="0" Background="White" Foreground="Black"  ToolTip="{Binding Path=CBI_Desc}" />
+                <TextBlock Grid.Row="17" Grid.Column="2" Text="seconds" Margin="5" />
 
 
             </Grid>
@@ -321,7 +337,7 @@
                             </extToolkit:DoubleUpDown.ToolTip>
                         </extToolkit:DoubleUpDown>
                         <TextBlock Grid.Row="4" Grid.Column="2" Text="seconds" Margin="5" />
-                            <!--CWPBN-->
+                        <!--CWPBN-->
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="CWPBN: " Margin="5" />
                         <extToolkit:IntegerUpDown Grid.Row="5" Grid.Column="1" Value="{Binding Path=CWPBN}" Margin="5" Minimum="0" Background="White" Foreground="Black" ToolTip="{Binding Path=CWPBN_Desc}" />
                         <TextBlock Grid.Row="5" Grid.Column="2" Text="bins" Margin="5" />
@@ -622,7 +638,7 @@
 
                     <!--SystemRcvPower-->
                     <TextBlock Grid.Row="10" Grid.Column="0" Text="System Rcv Power: " Margin="5" />
-                    <extToolkit:DoubleUpDown Grid.Row="10" Grid.Column="1" Text="{Binding Path=SystemRcvPower}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
+                    <TextBlock Grid.Row="10" Grid.Column="1" Text="{Binding Path=SystemRcvPower}" Margin="5" TextAlignment="Right" />
                     <TextBlock Grid.Row="10" Grid.Column="2" Text="watts" Margin="5" />
 
                     <!--SystemSavePower-->
@@ -663,6 +679,103 @@
                     <TextBlock Grid.Row="18" Grid.Column="0" Text="Beams: " Margin="5" />
                     <extToolkit:IntegerUpDown Grid.Row="18" Grid.Column="1" Text="{Binding Path=Beams}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
                     <TextBlock Grid.Row="18" Grid.Column="2" Text="beams" Margin="5" />
+
+                </Grid>
+
+
+            </Expander>
+            <!--CED Options Expander-->
+            <Expander Grid.Row="3" Grid.Column="0" BorderBrush="Black" Background="{StaticResource PulseBackBorder3Color}" Margin="5" HorizontalAlignment="Left" >
+                <Expander.Header>
+                    <TextBlock Text="CED Options" VerticalAlignment="Center" Margin="20,0,20,0" FontWeight="Bold" />
+                </Expander.Header>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--CED E0000001-->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="E0000001: " Margin="5" />
+                    <CheckBox Grid.Row="1" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000001 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000002-->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="E0000002: " Margin="5" />
+                    <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000002 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000003-->
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="E0000003: " Margin="5" />
+                    <CheckBox Grid.Row="3" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000003 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000004-->
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="E0000004: " Margin="5" />
+                    <CheckBox Grid.Row="4" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000004 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000005-->
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="E0000005: " Margin="5" />
+                    <CheckBox Grid.Row="5" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000005 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000006-->
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="E0000006: " Margin="5" />
+                    <CheckBox Grid.Row="6" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000006 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000007-->
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="E0000007: " Margin="5" />
+                    <CheckBox Grid.Row="7" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000007 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000008-->
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="E0000008: " Margin="5" />
+                    <CheckBox Grid.Row="8" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000008 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000009-->
+                    <TextBlock Grid.Row="9" Grid.Column="0" Text="E0000009: " Margin="5" />
+                    <CheckBox Grid.Row="9" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000009 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000010-->
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="E0000010: " Margin="5" />
+                    <CheckBox Grid.Row="10" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000010 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000011-->
+                    <TextBlock Grid.Row="11" Grid.Column="0" Text="E0000011: " Margin="5" />
+                    <CheckBox Grid.Row="11" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000011 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000012-->
+                    <TextBlock Grid.Row="12" Grid.Column="0" Text="E0000012: " Margin="5" />
+                    <CheckBox Grid.Row="12" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000012 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000013-->
+                    <TextBlock Grid.Row="13" Grid.Column="0" Text="E0000013: " Margin="5" />
+                    <CheckBox Grid.Row="13" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000013 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000014-->
+                    <TextBlock Grid.Row="14" Grid.Column="0" Text="E0000014: " Margin="5" />
+                    <CheckBox Grid.Row="14" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000014 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
+                    <!--CED E0000015-->
+                    <TextBlock Grid.Row="15" Grid.Column="0" Text="E0000015: " Margin="5" />
+                    <CheckBox Grid.Row="15" Grid.Column="1" Margin="5" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=E0000015 }" HorizontalAlignment="Left" ToolTip="E0000001" />
+
 
                 </Grid>
 

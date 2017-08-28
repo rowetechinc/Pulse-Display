@@ -500,7 +500,7 @@
 
 						<!-- Number of Samples -->
 						<TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Number of Samples: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
-						<extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="1" Margin="5" Minimum="12" Maximum="32" Value="{Binding CompassCalNumSamples}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" />
+                            <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="1" Margin="5" Minimum="12" Maximum="32" Value="{Binding CompassCalNumSamples}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" Foreground="Black" />
 
 						<!-- Cal Stable Check -->
 						<TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Calibration Stable Check: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
@@ -508,7 +508,7 @@
 
 						<!-- Declination -->
 						<TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Text="Declination: " HorizontalAlignment="Right" Foreground="{StaticResource PulseFontColor}" />
-						<extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" Minimum="-180.0" Maximum="180.0" Value="{Binding CompassCalDeclination}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" />
+                            <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="1" Margin="5" Minimum="-180.0" Maximum="180.0" Value="{Binding CompassCalDeclination}" HorizontalAlignment="Left" MinWidth="90" UseLayoutRounding="True" Increment="1" Background="White" Foreground="Black" />
 
 					</Grid>
 				</Border>

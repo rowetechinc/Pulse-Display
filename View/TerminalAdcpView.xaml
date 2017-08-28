@@ -6,8 +6,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="850" d:DesignWidth="1280">
     <UserControl.Resources>
-        <Style x:Key="{x:Type ToolTip}" TargetType="{x:Type ToolTip}">
-            <Setter Property="Background" Value="Black" />
+        <Style TargetType="{x:Type ToolTip}">
+            <!--Setter Property = "HorizontalOffset" Value="50"/>
+					<Setter Property = "VerticalOffset" Value="50"/-->
+            <Setter Property = "Background" Value="Black"/>
+            <Setter Property = "Foreground" Value="White"/>
+            <Setter Property = "FontSize" Value="14"/>
+            <Setter Property = "FontWeight" Value="Bold"/>
+            <Setter Property = "FontFamily" Value="Courier New"/>
         </Style>
     </UserControl.Resources>
 
@@ -19,6 +25,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="0.45*" />
 		</Grid.ColumnDefinitions>
 				
@@ -55,7 +62,8 @@
                     <TextBlock Text="Serial" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Margin="5" />
                     <StackPanel Orientation="Horizontal">
                         <ComboBox ItemsSource="{Binding CommPortList}" Width="115" SelectedItem="{Binding Path=SelectedAdcpCommPort}" Margin="5" />
-                        <Button Content="Scan" Command="{Binding Path=ScanSerialPortsCommand}" Margin="5"/>
+                        <Button Content="Scan" Command="{Binding Path=ScanSerialPortsCommand}" Margin="5" ToolTip="Refresh the COMM ports available." />
+                        <Button Content="Find ADCP" Command="{Binding Path=FindAdcpCommand}" Margin="5" ToolTip="Search for any available ADCP." />
                     </StackPanel>
                     <ComboBox ItemsSource="{Binding BaudRateList}" SelectedItem="{Binding Path=SelectedAdcpBaudRate}" Margin="5" />
                     <Expander Header="Advanced" Background="{StaticResource PulseBackBorder1Color}" BorderBrush="Transparent">
@@ -98,7 +106,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Record:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
                         <StackPanel Orientation="Horizontal">
-                            <CheckBox Grid.Row="0" Grid.Column="1" Content="" Foreground="#FFC5CFD1" Margin="5" IsChecked="{Binding Path=IsRawAdcpRecording}" Style="{StaticResource OnOffSwitchStyle}" />
+                            <CheckBox Grid.Row="0" Grid.Column="1" Content="" Foreground="#FFC5CFD1" Margin="5" IsChecked="{Binding Path=IsRawAdcpRecording}" Style="{StaticResource OnOffSwitchStyle}" ToolTip="Record and data coming from the ADCP port." />
                             <TextBlock Text="{Binding Path=RawAdcpBytesWritten}" ToolTip="{Binding Path=RawAdcpBytesWritten}" Margin="5" Foreground="White" />
                         </StackPanel>
                     </StackPanel>
@@ -109,60 +117,71 @@
         </StackPanel>
 
         <!--Input and Output-->
-		<StackPanel Grid.Row="0" Grid.Column="1">
-		    <ScrollViewer Height="325" Margin="5" ScrollChanged="ScrollViewer_ScrollChanged">
-                <TextBox Text="{Binding Path=AdcpReceiveBuffer, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" MinWidth="300" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
-			</ScrollViewer>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-				<!--Editable Combobox Textbox History http://stackoverflow.com/questions/3373239/wpf-editable-combobox-->
-				<ComboBox Grid.Column="0" HorizontalContentAlignment="Stretch" IsEditable="True" ItemsSource="{Binding AdcpCommandHistory}" SelectedItem="{Binding SelectedAdcpCommand}" Text="{Binding NewAdcpCommand, UpdateSourceTrigger=LostFocus}" PreviewKeyDown="ComboBox_PreviewKeyDown" Margin="5" />
-				<Button Grid.Column="1" Content="Send" HorizontalAlignment="Right" IsDefault="True" Command="{Binding SendCommand}" Margin="5" />
-			</Grid>
-            
-            <!--Buttons-->
-            <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
-                <!--Button Content="Reconnect" Command="{Binding ReconnectCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" /-->
-                <Button Content="Start Ping" Command="{Binding StartPingCommand}" Margin="5" />
-                <Button Content="Stop Ping" Command="{Binding StopPingCommand}" Margin="5" />
-                <Button Content="BREAK" Command="{Binding BreakCommand}" Margin="5" />
-                <Button Content="Clear" Command="{Binding ClearCommand}" Margin="5" />
-                <Button Content="CSHOW" Command="{Binding CSHOWCommand}" Margin="5" />
-                <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" />
-                <Button Content="Force BREAK" Command="{Binding ForceBreakCommand}" Margin="5" />
-            </WrapPanel>
+        <StackPanel Grid.Row="0" Grid.Column="1">
+                <ScrollViewer Height="325" Margin="5" ScrollChanged="ScrollViewer_ScrollChanged">
+                    <Grid>
+                        <TextBox Text="{Binding Path=AdcpReceiveBuffer, Mode=OneWay}" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" MinWidth="300" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
+                        <!--Clear the input data button-->
+                        <Button Grid.Row="0" Grid.Column="1" Command="{Binding Path=ClearCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="15" Height="15">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Visual="{StaticResource sweep}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </ScrollViewer>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <!--Editable Combobox Textbox History http://stackoverflow.com/questions/3373239/wpf-editable-combobox-->
+                    <ComboBox Grid.Column="0" HorizontalContentAlignment="Stretch" IsEditable="True" ItemsSource="{Binding AdcpCommandHistory}" SelectedItem="{Binding SelectedAdcpCommand}" Text="{Binding NewAdcpCommand, UpdateSourceTrigger=LostFocus}" PreviewKeyDown="ComboBox_PreviewKeyDown" Margin="5" />
+                    <Button Grid.Column="1" Content="Send" HorizontalAlignment="Right" IsDefault="True" Command="{Binding SendCommand}" Margin="5" />
+                </Grid>
 
+                <!--Buttons-->
+                <WrapPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                    <!--Button Content="Reconnect" Command="{Binding ReconnectCommand}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" /-->
+                    <Button Content="Start Ping" Command="{Binding StartPingCommand}" Margin="5" />
+                    <Button Content="Stop Ping" Command="{Binding StopPingCommand}" Margin="5" />
+                    <Button Content="BREAK" Command="{Binding BreakCommand}" Margin="5" />
+                    <Button Content="Clear" Command="{Binding ClearCommand}" Margin="5" />
+                    <Button Content="Force BREAK" Command="{Binding ForceBreakCommand}" Margin="5" />
+                </WrapPanel>
         </StackPanel>
-			
-		<!--Clear the input data button-->
-		<Button Grid.Row="0" Grid.Column="1" Command="{Binding Path=ClearCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
-            <StackPanel Orientation="Horizontal">
-				<Rectangle Width="15" Height="15">
-	                <Rectangle.Fill>
-	                    <VisualBrush Visual="{StaticResource sweep}" />
-	                </Rectangle.Fill>
-	            </Rectangle>
-			</StackPanel>
-        </Button>
-			
-		<!--Command Set-->
-        <Grid Grid.Row="0" Grid.Column="2">
+
+        <StackPanel  Grid.Row="0" Grid.Column="2">
+            <Button Content="CSHOW" Command="{Binding CSHOWCommand}" Margin="5" />
+            <Button Content="SLEEP" Command="{Binding SLEEPCommand}" Margin="5" />
+            <Button Content="Set Time" Command="{Binding SetTimeCommand}" Margin="5" />
+            <Button Content="Zero Pressure Sensor" Command="{Binding ZeroPressureSensorCommand}" Margin="5" />
+            <Button Content="Compass Connect" Command="{Binding CompassConnectCommand}" Margin="5" />
+            <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" />
+        </StackPanel>
+
+        <!--Command Set-->
+        <Grid Grid.Row="0" Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ScrollViewer Grid.Row="0" Height="325" Margin="5" VerticalAlignment="Top">
+
+            <TextBlock Grid.Row="0" Text="Command File" FontWeight="Bold" Margin="10,0,0,0" FontSize="16" Foreground="{StaticResource PulseFontColor}" />
+            
+            <ScrollViewer Grid.Row="1" Height="325" Margin="5" VerticalAlignment="Top">
                 <TextBox Text="{Binding Path=AdcpCommandSet}" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Background="{StaticResource PulseBackgroundColor}" Margin="5" Foreground="{StaticResource PulseFontColor}" FontFamily="Courier New"/>
             </ScrollViewer>
 
-            <Button Grid.Row="1" Content="Send Command Set" HorizontalAlignment="Right" Command="{Binding SendCommandSetCommand}" Margin="5" />
-            <Button Grid.Row="1" Content="Import Commands" HorizontalAlignment="Left" Command="{Binding ImportCommandSetCommand}" Margin="10,5,5,5" />
+            <Button Grid.Row="2" Content="Send Command Set" HorizontalAlignment="Right" Command="{Binding SendCommandSetCommand}" Margin="5" ToolTip="Send any commands in the command file list." />
+            <Button Grid.Row="2" Content="Import Commands" HorizontalAlignment="Left" Command="{Binding ImportCommandSetCommand}" Margin="10,5,5,5" ToolTip="Import a command file." />
 
             <!--Clear the command set button-->
-            <Button Grid.Row="0" Command="{Binding Path=ClearCommandSetCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
+            <Button Grid.Row="1" Command="{Binding Path=ClearCommandSetCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,20,0" >
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="15" Height="15">
                         <Rectangle.Fill>

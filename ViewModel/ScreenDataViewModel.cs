@@ -31,6 +31,7 @@
  * 08/20/2014      RC          4.0.1      Added CloseVMCommand.
  * 01/06/2016      RC          4.4.0      Added Retransform heading offset and GPS heading.
  * 05/11/2016      RC          4.4.3      Added ScreenBadHeading.
+ * 04/26/2017      RC          4.4.6      In SetPreviousBottomTrackVelocity() checked if VTG message exists.
  * 
  */
 
@@ -49,6 +50,11 @@ namespace RTI
     public class ScreenDataViewModel : PulseViewModel
     {
         #region Variables
+
+        /// <summary>
+        /// Setup logger to report errors.
+        /// </summary>
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Project manager.
@@ -601,61 +607,77 @@ namespace RTI
         /// <param name="ensemble">Ensemble to get the Bottom Track data.</param>
         private void SetPreviousBottomTrackVelocity(DataSet.Ensemble ensemble)
         {
-            if (_Options.CanUseBottomTrackVel)
+            try
             {
-                // Check that Bottom Track exist
-                if (ensemble.IsBottomTrackAvail)
+                if (_Options.CanUseBottomTrackVel)
                 {
-                    // Check that the values are good
-                    if (ensemble.BottomTrackData.IsEarthVelocityGood())
+                    // Check that Bottom Track exist
+                    if (ensemble.IsBottomTrackAvail)
                     {
-                        // Check that it is not a 3 beam solution
-                        // All the Beam values should be good
-                        if (ensemble.BottomTrackData.IsBeamVelocityGood())
+                        // Check that the values are good
+                        if (ensemble.BottomTrackData.IsEarthVelocityGood())
                         {
-                            _prevBtEast = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_EAST_INDEX];
-                            _prevBtNorth = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_NORTH_INDEX];
-                            _prevBtVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX];
-                        }
-                    }
-                }
-            }
-            
-            if (_Options.CanUseGpsVel && !ensemble.IsBottomTrackAvail)
-            {
-                if (ensemble.IsNmeaAvail)
-                {
-                    // Check if Gps Speed is good
-                    if (ensemble.NmeaData.IsGpvtgAvail())
-                    {
-                        if (ensemble.NmeaData.IsGpsSpeedGood())
-                        {
-                            // Heading defaults from ADCP
-                            double heading = ensemble.AncillaryData.Heading + _Options.GpsHeadingOffset;
-                            // Heading from GPS if its available
-                            if (ensemble.NmeaData.IsGpvtgAvail())
+                            // Check that it is not a 3 beam solution
+                            // All the Beam values should be good
+                            if (ensemble.BottomTrackData.IsBeamVelocityGood())
                             {
-                                heading = ensemble.NmeaData.GPVTG.Bearing.DecimalDegrees + _Options.GpsHeadingOffset;
-                            }
-                            else if (ensemble.NmeaData.IsGphdtAvail())
-                            {
-                                heading = ensemble.NmeaData.GPHDT.Heading.DecimalDegrees + _Options.GpsHeadingOffset;
-                            }
-                            // Speed from the GPS
-                            double speed = ensemble.NmeaData.GPVTG.Speed.ToMetersPerSecond().Value;
-
-                            // Calculate the East and North component of the GPS speed
-                            _prevBtEast = Convert.ToSingle(speed * Math.Sin(MathHelper.DegreeToRadian(heading)));
-                            _prevBtNorth = Convert.ToSingle(speed * Math.Cos(MathHelper.DegreeToRadian(heading)));
-
-                            // We do not have a vertical velocity using GPS speed, so try to use the Bottom Track
-                            if (ensemble.IsBottomTrackAvail && ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX] != DataSet.Ensemble.BAD_VELOCITY)
-                            {
+                                _prevBtEast = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_EAST_INDEX];
+                                _prevBtNorth = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_NORTH_INDEX];
                                 _prevBtVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX];
                             }
                         }
                     }
                 }
+
+                if (_Options.CanUseGpsVel && !ensemble.IsBottomTrackAvail)
+                {
+                    if (ensemble.IsNmeaAvail)
+                    {
+                        // Check if Gps Speed is good
+                        if (ensemble.NmeaData.IsGpvtgAvail())
+                        {
+                            if (ensemble.NmeaData.IsGpsSpeedGood())
+                            {
+                                double heading = 0.0;
+
+                                if (ensemble.IsAncillaryAvail)
+                                {
+                                    // Heading defaults from ADCP
+                                    heading = ensemble.AncillaryData.Heading + _Options.GpsHeadingOffset;
+                                }
+                                // Heading from GPS if its available
+                                else if (ensemble.NmeaData.IsGpvtgAvail())
+                                {
+                                    heading = ensemble.NmeaData.GPVTG.Bearing.DecimalDegrees + _Options.GpsHeadingOffset;
+                                }
+                                else if (ensemble.NmeaData.IsGphdtAvail())
+                                {
+                                    heading = ensemble.NmeaData.GPHDT.Heading.DecimalDegrees + _Options.GpsHeadingOffset;
+                                }
+
+                                if (ensemble.NmeaData.IsGpvtgAvail())
+                                {
+                                    // Speed from the GPS
+                                    double speed = ensemble.NmeaData.GPVTG.Speed.ToMetersPerSecond().Value;
+
+                                    // Calculate the East and North component of the GPS speed
+                                    _prevBtEast = Convert.ToSingle(speed * Math.Sin(MathHelper.DegreeToRadian(heading)));
+                                    _prevBtNorth = Convert.ToSingle(speed * Math.Cos(MathHelper.DegreeToRadian(heading)));
+                                }
+
+                                // We do not have a vertical velocity using GPS speed, so try to use the Bottom Track
+                                if (ensemble.IsBottomTrackAvail && ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX] != DataSet.Ensemble.BAD_VELOCITY)
+                                {
+                                    _prevBtVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                log.Error("Error setting previous bottom track.", e);
             }
         }
 

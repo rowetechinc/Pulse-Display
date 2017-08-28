@@ -118,11 +118,11 @@
 							
 							<!--Beam Number-->
 							<TextBlock Grid.Row="1" Grid.Column="3" Visibility="{Binding Path=IsBeamSelectionVisible, Converter={StaticResource BoolToVisConverter}}"  Text="Beam" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-							<extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="3" Visibility="{Binding Path=IsBeamSelectionVisible, Converter={StaticResource BoolToVisConverter}}"  Minimum="0" Maximum="{Binding Path=MaxBeam}" Value="{Binding Path=SelectedBeam}" Margin="5" />
+                            <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="3" Visibility="{Binding Path=IsBeamSelectionVisible, Converter={StaticResource BoolToVisConverter}}"  Minimum="0" Maximum="{Binding Path=MaxBeam}" Value="{Binding Path=SelectedBeam}" Margin="5" Background="White" Foreground="Black" />
 						
 							<!--Bin-->
 							<TextBlock Grid.Row="1" Grid.Column="4" Text="Bin" Visibility="{Binding Path=IsBinSelectionVisible, Converter={StaticResource BoolToVisConverter}}" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-							<extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="4" Visibility="{Binding Path=IsBinSelectionVisible, Converter={StaticResource BoolToVisConverter}}"  Minimum="0" Maximum="{Binding Path=MaxBin}" Value="{Binding Path=SelectedBin}" Margin="5"  />
+                            <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="4" Visibility="{Binding Path=IsBinSelectionVisible, Converter={StaticResource BoolToVisConverter}}"  Minimum="0" Maximum="{Binding Path=MaxBin}" Value="{Binding Path=SelectedBin}" Margin="5" Background="White" Foreground="Black"  />
 							
 							<!--Add Button-->
 							<Button Grid.Row="2" Grid.Column="5" Width="25" Height="25" Command="{Binding AddSeriesCommand}" Margin="5" Style="{StaticResource ButtonMoveStyle}" HorizontalAlignment="Left">

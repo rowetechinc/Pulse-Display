@@ -37,6 +37,7 @@
  * 08/07/2014      RC          4.0.0      Updated ReactiveCommand to 6.0.
  * 08/22/2014      RC          4.0.2      Added raw recording.
  * 12/02/2015      RC          4.4.0      Added, DataBit, Parity and Stop Bit.
+ * 05/24/2017      RC          4.4.6      Added some additional command buttons.
  * 
  */
 
@@ -228,6 +229,7 @@ namespace RTI
             {
                 _SelectedAdcpConnOption = value;
                 this.NotifyOfPropertyChange(() => this.SelectedAdcpConnOption);
+                this.NotifyOfPropertyChange(() => this.CanFindAdcp);
 
                 SetSelectedAdcpConn(value);
             }
@@ -783,6 +785,55 @@ namespace RTI
 
         #endregion
 
+        #region Find ADCP
+
+        /// <summary>
+        /// Flag if we can find the ADCP.
+        /// </summary>
+        public bool CanFindAdcp
+        {
+            get
+            {
+                // Make sure its a serial connection
+                if (_SelectedAdcpConnOption.AdcpCommType == AdcpConnection.AdcpCommTypes.Ethernet || _SelectedAdcpConnOption.AdcpCommType == AdcpConnection.AdcpCommTypes.TCP)
+                {
+                    return false;
+                }
+
+                // Make sure it has not already been pressed
+                if(_IsFindingAdcp)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Flag if we are find the ADCP.
+        /// </summary>
+        private bool _IsFindingAdcp;
+        /// <summary>
+        /// Flag if we are find the ADCP.
+        /// </summary>
+        public bool IsFindingAdcp
+        {
+            get
+            {
+                return _IsFindingAdcp;
+            }
+            set
+            {
+                _IsFindingAdcp = value;
+                this.NotifyOfPropertyChange(() => this.IsFindingAdcp);
+                this.NotifyOfPropertyChange(() => this.CanFindAdcp);
+            }
+        }
+        
+
+        #endregion
+
         #endregion
 
         #region Commands
@@ -823,9 +874,29 @@ namespace RTI
         public ReactiveCommand<System.Reactive.Unit> CompassDisconnectCommand { get; protected set; }
 
         /// <summary>
+        /// Command to Connect the ADCP from the compass.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> CompassConnectCommand { get; protected set; }
+
+        /// <summary>
         /// Command to send the command CSHOW to see all the settings.
         /// </summary>
         public ReactiveCommand<System.Reactive.Unit> CSHOWCommand { get; protected set; }
+
+        /// <summary>
+        /// Command to send the command SLEEP.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> SLEEPCommand { get; protected set; }
+
+        /// <summary>
+        /// Command to send the command set the time.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> SetTimeCommand { get; protected set; }
+
+        /// <summary>
+        /// Command to send the command zero the pressure sensor.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> ZeroPressureSensorCommand { get; protected set; }
 
         /// <summary>
         /// Command to send a list of commands found in AdcpCommandSet.
@@ -848,6 +919,11 @@ namespace RTI
         public ReactiveCommand<System.Reactive.Unit> ScanSerialPortsCommand { get; protected set; }
 
         /// <summary>
+        /// Command to find the ADCP.
+        /// </summary>
+        public ReactiveCommand<object> FindAdcpCommand { get; protected set; }
+
+        /// <summary>
         /// Command to send a test ping on the ethernet port.
         /// </summary>
         public ReactiveCommand<System.Reactive.Unit> TestPingEthernetCommand { get; protected set; }
@@ -863,6 +939,8 @@ namespace RTI
         {
             // Pulse Manager
             _pm = IoC.Get<PulseManager>();
+
+            IsFindingAdcp = false;
 
             // Update the display
             _displayTimer = new System.Timers.Timer(500);
@@ -923,7 +1001,27 @@ namespace RTI
             // CSHOW command
             CSHOWCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                         // Pass the AdcpConnection
                                                                         x => x.Value != null),                                                          // Verify the Serial port object exist
-                                                                        _ => Task.Run(() => CshowCommandExec()));                                       // CSHOW command                             
+                                                                        _ => Task.Run(() => CshowCommandExec()));                                       // CSHOW command        
+
+            // SLEEP command
+            SLEEPCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                         // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => SleepCommandExec()));                                       // SLEEP command  
+
+            // Set time command
+            SetTimeCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                       // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => SetTimeCommandExec()));                                     // Set Time command  
+
+            // Zero Pressure Sensor command
+            ZeroPressureSensorCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                            // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => ZeroPressureCommandExec()));                                // Zero Pressure Sensor command  
+
+            // Connect Compass command
+            CompassConnectCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => CompassConnectCommandExec()));                              // Compass Connect command  
 
             // Send Command Set command
             SendCommandSetCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                // Pass the AdcpConnection
@@ -947,6 +1045,11 @@ namespace RTI
 
             // Scan for Serial Port command
             ScanSerialPortsCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => ScanSerialPorts()));                                           // Scan for the serial ports
+
+            // Find any ADCP command
+            FindAdcpCommand = ReactiveCommand.Create(this.WhenAny(_ => _.CanFindAdcp, x => x.Value));
+            FindAdcpCommand.Subscribe(_ => Task.Run(() => FindAdcp()));
+
 
             if (_adcpConnection.AdcpCommType == AdcpConnection.AdcpCommTypes.Serial)
             {
@@ -1098,12 +1201,48 @@ namespace RTI
         }
 
         /// <summary>
+        /// Send the command to Connect the compass.
+        /// </summary>
+        /// <returns></returns>
+        private void CompassConnectCommandExec()
+        {
+            _adcpConnection.AdcpSerialPort.StartCompassMode();
+        }
+
+        /// <summary>
         /// Send the command to CSHOW.
         /// </summary>
         /// <returns></returns>
         private void CshowCommandExec()
         {
             _adcpConnection.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_CSHOW);
+        }
+
+        /// <summary>
+        /// Send the command to SLEEP.
+        /// </summary>
+        /// <returns></returns>
+        private void SleepCommandExec()
+        {
+            _adcpConnection.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_SLEEP);
+        }
+
+        /// <summary>
+        /// Send the command to Set the time.
+        /// </summary>
+        /// <returns></returns>
+        private void SetTimeCommandExec()
+        {
+            _adcpConnection.SetLocalSystemDateTime();
+        }
+
+        /// <summary>
+        /// Send the command to zero the pressure sensor.
+        /// </summary>
+        /// <returns></returns>
+        private void ZeroPressureCommandExec()
+        {
+            _adcpConnection.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_CPZ);
         }
 
         /// <summary>
@@ -1341,6 +1480,43 @@ namespace RTI
         {
             _adcpConnection.TestEthernetConnection();
             this.NotifyOfPropertyChange(() => this.AdcpReceiveBuffer);
+        }
+
+        #endregion
+
+        #region Find ADCP
+
+        private async Task<List<AdcpSerialPort.AdcpSerialOptions>> FindAdcp()
+        {
+            List<AdcpSerialPort.AdcpSerialOptions> serialConnOptions = new List<AdcpSerialPort.AdcpSerialOptions>();
+
+            IsFindingAdcp = true;
+
+            if (_adcpConnection.AdcpSerialPort != null)
+            {
+                _adcpConnection.DisconnectAdcpSerial();
+                // Scan all the serial ports
+                await Task.Run(() => serialConnOptions = _adcpConnection.ScanSerialConnection());
+
+                // If any good serial ports were found, use the first serial port
+                if (serialConnOptions.Count > 0)
+                {
+                    // Set the selected ports
+                    SelectedAdcpCommPort = serialConnOptions.First().SerialOptions.Port;
+                    //_serialOptions.Port = serialConnOptions.First().SerialOptions.Port;
+                    SelectedAdcpBaudRate = serialConnOptions.First().SerialOptions.BaudRate;
+                    //_serialOptions.BaudRate = serialConnOptions.First().SerialOptions.BaudRate;
+                    //this.NotifyOfPropertyChange(() => this.SelectedCommPort);
+                    //this.NotifyOfPropertyChange(() => this.SelectedBaud);
+
+                    // Reconnect the ADCP serial connection
+                    //ReconnectAdcpSerial(_serialOptions);
+                }
+            }
+
+            IsFindingAdcp = false;
+
+            return serialConnOptions;
         }
 
         #endregion

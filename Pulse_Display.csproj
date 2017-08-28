@@ -209,6 +209,7 @@
     <Compile Include="Model\Options\BackscatterOptions.cs" />
     <Compile Include="Model\Options\ViewDataGraphicalOptions.cs" />
     <Compile Include="Model\Options\ViewDataWavesOptions.cs" />
+    <Compile Include="Model\PredictionModelInput.cs" />
     <Compile Include="Model\ProductImage.cs" />
     <Compile Include="Model\ProjectManagerDatabaseWriter.cs" />
     <Compile Include="Model\ProjectReportText.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Plot\VelocityPlotSpectrum.cs" />
     <Compile Include="Plot\VelocityPlotSurface.cs" />
     <Compile Include="Plot\VelocityPlotSurfaceModel.cs" />
+    <Compile Include="Model\PredictionModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -277,6 +279,7 @@
     <Compile Include="ViewModel\HeatmapPlotViewModel.cs" />
     <Compile Include="ViewModel\PlaybackViewModel.cs" />
     <Compile Include="ViewModel\ProfilePlotViewModel.cs" />
+    <Compile Include="ViewModel\PulseDialogViewModel.cs" />
     <Compile Include="ViewModel\PulseViewModel.cs" />
     <Compile Include="ViewModel\ScreenDataBaseViewModel.cs" />
     <Compile Include="ViewModel\ScreenDataViewModel.cs" />

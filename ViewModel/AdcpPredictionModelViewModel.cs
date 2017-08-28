@@ -63,7 +63,7 @@ namespace RTI
         /// <summary>
         /// ADCP Predictor User Input to save to the database.
         /// </summary>
-        AdcpPredictorUserInput _UserInput;
+        PredictionModelInput _UserInput;
 
         /// <summary>
         /// ADCP Configuration to keep the command file.
@@ -102,7 +102,7 @@ namespace RTI
             AdcpCommandSet = "";
         }
 
-        
+
 
 
         #endregion
@@ -122,7 +122,7 @@ namespace RTI
         /// <summary>
         /// Selected Subsystem.
         /// </summary>
-        public RTI.SubsystemList.SubsystemCodeDesc SelectedSubsystemss
+        public RTI.SubsystemList.SubsystemCodeDesc SelectedSubsystemsSimple
         {
             get { return _SelectedSubsystem; }
             set
@@ -146,10 +146,10 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SubSystem = new Subsystem(value.Code);
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Set defaults to ADCP Config
-               
+
                 SetAdcpDefaults();
                 // Save Configuration
                 //AddSubsystemConfig();
@@ -165,11 +165,11 @@ namespace RTI
         /// <summary>
         /// ADCP Predictor
         /// </summary>
-        private AdcpPredictor _Predictor;
+        private PredictionModel _Predictor;
         /// <summary>
         /// ADCP Predictor
         /// </summary>
-        public AdcpPredictor Predictor
+        public PredictionModel Predictor
         {
             get { return _Predictor; }
             set
@@ -188,7 +188,7 @@ namespace RTI
         /// </summary>
         public string PredictedBottomRange
         {
-            get { return Predictor.PredictedBottomRange.ToString("0.000"); }
+            get { return Predictor.GetPredictedRange(_UserInput).BottomTrack.ToString("0.000"); }
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace RTI
         /// </summary>
         public string PredictedProfileRange
         {
-            get { return Predictor.PredictedProfileRange.ToString("0.000"); }
+            get { return Predictor.GetPredictedRange(_UserInput).WaterProfile.ToString("0.000"); }
         }
 
         /// <summary>
@@ -204,7 +204,8 @@ namespace RTI
         /// </summary>
         public string ProfileRangeBinSize
         {
-            get { return Predictor.ProfileRangeBinSize.ToString("0.000"); }
+            get { return Predictor.GetPredictedRange(_UserInput).ProfileRangeSettings.ToString("0.000");
+            }
         }
 
         /// <summary>
@@ -212,7 +213,7 @@ namespace RTI
         /// </summary>
         public string MaximumVelocity
         {
-            get { return Predictor.MaximumVelocity.ToString("0.000"); }
+            get { return Predictor.GetMaxVelocity(_UserInput).ToString("0.000"); }
         }
 
         /// <summary>
@@ -220,7 +221,7 @@ namespace RTI
         /// </summary>
         public string StandardDeviation
         {
-            get { return Predictor.StandardDeviation.ToString("0.000"); }
+            get { return Predictor.GetStandardDeviation(_UserInput).ToString("0.000"); }
         }
 
         /// <summary>
@@ -228,7 +229,7 @@ namespace RTI
         /// </summary>
         public string ProfileFirstBinPosition
         {
-            get { return Predictor.ProfileFirstBinPosition.ToString("0.000"); }
+            get { return Predictor.GetPredictedRange(_UserInput).FirstBinPosition.ToString("0.000"); }
         }
 
         /// <summary>
@@ -236,7 +237,7 @@ namespace RTI
         /// </summary>
         public string NumberBatteryPacks
         {
-            get { return Predictor.NumberBatteryPacks.ToString("0.000"); }
+            get { return Predictor.BatteryUsage(_UserInput).ToString("0.000"); }
         }
 
         /// <summary>
@@ -244,7 +245,11 @@ namespace RTI
         /// </summary>
         public string WattHours
         {
-            get { return Predictor.TotalPower.ToString("0.000"); }
+            get {
+                if (!_UserInput.IsBurst)
+                    return Predictor.CalculatePower(_UserInput).ToString("0.000");
+                return Predictor.CalculatePowerBurst(_UserInput).ToString("0.000");
+                }
         }
 
         /// <summary>
@@ -252,7 +257,11 @@ namespace RTI
         /// </summary>
         public string DataSize
         {
-            get { return MathHelper.MemorySizeString(Predictor.DataSizeBytes); }
+            get {
+                if(_UserInput.IsBurst)
+                   return MathHelper.MemorySizeString(Predictor.GetDataStorageBurst(_UserInput));
+                return MathHelper.MemorySizeString(Predictor.GetDataStorage(_UserInput));
+            }
         }
 
         #endregion
@@ -264,10 +273,10 @@ namespace RTI
         /// </summary>
         public uint DeploymentDuration
         {
-            get { return Predictor.DeploymentDuration; }
+            get { return _UserInput.DeploymentDuration; }
             set
             {
-                Predictor.DeploymentDuration = value;
+                _UserInput.DeploymentDuration = value;
                 this.NotifyOfPropertyChange(() => this.DeploymentDuration);
 
                 // Update the Results Properties
@@ -275,8 +284,8 @@ namespace RTI
 
                 // Save the input
                 _UserInput.DeploymentDuration = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
-               
+                _pm.UpdatePredictionModelInput(_UserInput);
+
             }
         }
 
@@ -285,10 +294,10 @@ namespace RTI
         /// </summary>
         public double CEI
         {
-            get { return Predictor.CEI; }
+            get { return _UserInput.CEI; }
             set
             {
-                Predictor.CEI = value;
+                _UserInput.CEI = value;
                 this.NotifyOfPropertyChange(() => this.CEI);
 
                 // Update the Results Properties
@@ -296,7 +305,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CEI = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.Commands.CEI = new Commands.TimeValue((float)value);
@@ -320,10 +329,10 @@ namespace RTI
         /// </summary>
         public bool CWPON
         {
-            get { return Predictor.CWPON; }
+            get { return _UserInput.CWPON; }
             set
             {
-                Predictor.CWPON = value;
+                _UserInput.CWPON = value;
                 this.NotifyOfPropertyChange(() => this.CWPON);
 
                 // Update the Results Properties
@@ -331,12 +340,12 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPON = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPON = value;
                 UpdateCommandSet();
-               
+
             }
         }
 
@@ -356,10 +365,10 @@ namespace RTI
         /// </summary>
         public bool CBTON
         {
-            get { return Predictor.CBTON; }
+            get { return _UserInput.CBTON; }
             set
             {
-                Predictor.CBTON = value;
+                _UserInput.CBTON = value;
                 this.NotifyOfPropertyChange(() => this.CBTON);
 
                 // Update the Results Properties
@@ -367,10 +376,79 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CBTON = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBTON = value;
+                UpdateCommandSet();
+            }
+        }
+
+        /// <summary>
+        /// Turn on or off Burst Settings.
+        /// </summary>
+        public bool CBI
+        {
+            get { return _UserInput.IsBurst; }
+            set
+            {
+                _UserInput.IsBurst = value;
+                this.NotifyOfPropertyChange(() => this.CBI);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.IsBurst = value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI = value;
+                UpdateCommandSet();
+            }
+        }
+
+        /// <summary>
+        /// Turn on or off Burst Settings.
+        /// </summary>
+        public UInt16 CBI_NumEnsembles
+        {
+            get { return (UInt16)_UserInput.CBI_SamplesPerBurst; }
+            set
+            {
+                _UserInput.CBI_SamplesPerBurst= value;
+                this.NotifyOfPropertyChange(() => this.CBI_NumEnsembles);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.CBI_SamplesPerBurst= value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI_NumEnsembles = value;
+                UpdateCommandSet();
+            }
+        }
+
+        public double CBI_BurstInterval
+        {
+            get { return _UserInput.CBI_BurstInterval; }
+            set
+            {
+                _UserInput.CBI_BurstInterval = value;
+                this.NotifyOfPropertyChange(() => this.CBI_BurstInterval);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.CBI_BurstInterval = value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI_BurstInterval = new Commands.TimeValue((float)value);
                 UpdateCommandSet();
             }
         }
@@ -380,10 +458,10 @@ namespace RTI
         /// </summary>
         public float CBTTBP
         {
-            get { return Predictor.CBTTBP; }
+            get { return _UserInput.CBTTBP; }
             set
             {
-                Predictor.CBTTBP = value;
+                _UserInput.CBTTBP = value;
                 this.NotifyOfPropertyChange(() => this.CBTTBP);
 
                 // Update the Results Properties
@@ -391,7 +469,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CBTTBP = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBTTBP = value;
@@ -409,10 +487,10 @@ namespace RTI
         /// </summary>
         public Commands.AdcpSubsystemCommands.eCBTBB_Mode CBTBB_TransmitPulseType
         {
-            get { return Predictor.CBTBB_TransmitPulseType; }
+            get { return _UserInput.CBTBB_TransmitPulseType; }
             set
             {
-                Predictor.CBTBB_TransmitPulseType = value;
+                _UserInput.CBTBB_TransmitPulseType = value;
                 this.NotifyOfPropertyChange(() => this.CBTBB_TransmitPulseType);
 
                 // Update the Results Properties
@@ -420,7 +498,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CBTBB_TransmitPulseType = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBTBB_Mode = value;
@@ -433,10 +511,10 @@ namespace RTI
         /// </summary>
         public float CWPTBP
         {
-            get { return Predictor.CWPTBP; }
+            get { return _UserInput.CWPTBP; }
             set
             {
-                Predictor.CWPTBP = value;
+                _UserInput.CWPTBP = value;
                 this.NotifyOfPropertyChange(() => this.CWPTBP);
 
                 // Update the Results Properties
@@ -444,7 +522,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPTBP = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPTBP = value;
@@ -457,10 +535,10 @@ namespace RTI
         /// </summary>
         public ushort CWPBN
         {
-            get { return Predictor.CWPBN; }
+            get { return _UserInput.CWPBN; }
             set
             {
-                Predictor.CWPBN = value;
+                _UserInput.CWPBN = value;
                 this.NotifyOfPropertyChange(() => this.CWPBN);
 
                 // Update the Results Properties
@@ -468,7 +546,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPBN = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBN = value;
@@ -481,10 +559,10 @@ namespace RTI
         /// </summary>
         public float CWPBS
         {
-            get { return Predictor.CWPBS; }
+            get { return _UserInput.CWPBS; }
             set
             {
-                Predictor.CWPBS = value;
+                _UserInput.CWPBS = value;
                 this.NotifyOfPropertyChange(() => this.CWPBS);
 
                 // Update the Results Properties
@@ -492,12 +570,12 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPBS = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBS = value;
                 UpdateCommandSet();
-               
+
             }
         }
 
@@ -506,10 +584,10 @@ namespace RTI
         /// </summary>
         public float CWPBL
         {
-            get { return Predictor.CWPBL; }
+            get { return _UserInput.CWPBL; }
             set
             {
-                Predictor.CWPBL = value;
+                _UserInput.CWPBL = value;
                 this.NotifyOfPropertyChange(() => this.CWPBL);
 
                 // Update the Results Properties
@@ -517,7 +595,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPBL = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBL = value;
@@ -595,10 +673,10 @@ namespace RTI
         /// </summary>
         public double CWPBB_LagLength
         {
-            get { return Predictor.CWPBB_LagLength; }
+            get { return _UserInput.CWPBB_LagLength; }
             set
             {
-                Predictor.CWPBB_LagLength = value;
+                _UserInput.CWPBB_LagLength = value;
                 this.NotifyOfPropertyChange(() => this.CWPBB_LagLength);
 
                 // Update the Results Properties
@@ -606,7 +684,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPBB_LagLength = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBB_LagLength = (float)value;
@@ -644,10 +722,10 @@ namespace RTI
         /// </summary>
         public Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType CWPBB_TransmitPulseType
         {
-            get { return Predictor.CWPBB_TransmitPulseType; }
+            get { return _UserInput.CWPBB_TransmitPulseType; }
             set
             {
-                Predictor.CWPBB_TransmitPulseType = value;
+                _UserInput.CWPBB_TransmitPulseType = value;
                 this.NotifyOfPropertyChange(() => this.CWPBB_TransmitPulseType);
 
                 // Update the Results Properties
@@ -655,7 +733,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPBB_TransmitPulseType = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBB_TransmitPulseType = value;
@@ -668,22 +746,22 @@ namespace RTI
         /// </summary>
         public ushort CWPP
         {
-            get { return Predictor.CWPP; }
+            get { return _UserInput.CWPP; }
             set
             {
                 // Check if the given value is less than 0.
-                if(value <= 0)
+                if (value <= 0)
                 {
                     value = 1;
                 }
 
                 // If there is only 1 ping, then set the TBP to 0.
-                if(value == 1)
+                if (value == 1)
                 {
                     CWPTBP = 0;
                 }
 
-                Predictor.CWPP = value;
+                _UserInput.CWPP = value;
                 this.NotifyOfPropertyChange(() => this.CWPP);
 
                 // Update the Results Properties
@@ -691,7 +769,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CWPP = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
 
                 // Save Configuration
                 _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPP = value;
@@ -699,7 +777,129 @@ namespace RTI
             }
         }
 
+        public bool E0000001
+        {
+            get { return _UserInput.CED_IsE0000001; }
+            set
+            {
+                _UserInput.CED_IsE0000001 = value;
+                this.NotifyOfPropertyChange(() => this.E0000001);
+                NotifyResultsProperties();
+            }
+        }
+        public bool E0000002
+        {
+            get { return _UserInput.CED_IsE0000002; }
+            set
+            {
+                _UserInput.CED_IsE0000002 = value;
+            }
+        }
 
+        public bool E0000003
+        {
+            get { return _UserInput.CED_IsE0000003; }
+            set
+            {
+                _UserInput.CED_IsE0000003 = value;
+            }
+        }
+        public bool E0000004
+        {
+            get { return _UserInput.CED_IsE0000004; }
+            set
+            {
+                _UserInput.CED_IsE0000004 = value;
+            }
+        }
+        public bool E0000005
+        {
+            get { return _UserInput.CED_IsE0000005; }
+            set
+            {
+                _UserInput.CED_IsE0000005 = value;
+            }
+        }
+        public bool E0000006
+        {
+            get { return _UserInput.CED_IsE0000006; }
+            set
+            {
+                _UserInput.CED_IsE0000006 = value;
+            }
+        }
+        public bool E0000007
+        {
+            get { return _UserInput.CED_IsE0000007; }
+            set
+            {
+                _UserInput.CED_IsE0000007 = value;
+            }
+        }
+        public bool E0000008
+        {
+            get { return _UserInput.CED_IsE0000008; }
+            set
+            {
+                _UserInput.CED_IsE0000008 = value;
+            }
+        }
+        public bool E0000009
+        {
+            get { return _UserInput.CED_IsE0000009; }
+            set
+            {
+                _UserInput.CED_IsE0000009 = value;
+            }
+        }
+        public bool E0000010
+        {
+            get { return _UserInput.CED_IsE0000010; }
+            set
+            {
+                _UserInput.CED_IsE0000010 = value;
+            }
+        }
+        public bool E0000011
+        {
+            get { return _UserInput.CED_IsE0000011; }
+            set
+            {
+                _UserInput.CED_IsE0000011 = value;
+            }
+        }
+        public bool E0000012
+        {
+            get { return _UserInput.CED_IsE0000012; }
+            set
+            {
+                _UserInput.CED_IsE0000012 = value;
+            }
+        }
+        public bool E0000013
+        {
+            get { return _UserInput.CED_IsE0000013; }
+            set
+            {
+                _UserInput.CED_IsE0000013 = value;
+            }
+        }
+        public bool E0000014
+        {
+            get { return _UserInput.CED_IsE0000014; }
+            set
+            {
+                _UserInput.CED_IsE0000014 = value;
+            }
+        }
+        public bool E0000015
+        {
+            get { return _UserInput.CED_IsE0000015; }
+            set
+            {
+                _UserInput.CED_IsE0000015 = value;
+            }
+        }
         #endregion
 
         #region Advanced User Input
@@ -709,10 +909,10 @@ namespace RTI
         /// </summary>
         public int CyclesPerElement
         {
-            get { return Predictor.CyclesPerElement; }
+            get { return _UserInput.CyclesPerElement; }
             set
             {
-                Predictor.CyclesPerElement = value;
+                _UserInput.CyclesPerElement = value;
                 this.NotifyOfPropertyChange(() => this.CyclesPerElement);
                 this.NotifyOfPropertyChange(() => this.CyclesPerElementPercentBandwidth);
 
@@ -721,7 +921,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.CyclesPerElement = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -730,7 +930,7 @@ namespace RTI
         /// </summary>
         public string CyclesPerElementPercentBandwidth
         {
-            get { return (100.0/Predictor.CyclesPerElement).ToString("0.000"); }
+            get { return (100.0 / _UserInput.CyclesPerElement).ToString("0.000"); }
         }
 
         /// <summary>
@@ -738,10 +938,10 @@ namespace RTI
         /// </summary>
         public bool BroadbandPower
         {
-            get { return Predictor.BroadbandPower; }
+            get { return _UserInput.BroadbandPower; }
             set
             {
-                Predictor.BroadbandPower = value;
+                _UserInput.BroadbandPower = value;
                 this.NotifyOfPropertyChange(() => this.BroadbandPower);
 
                 // Update the Results Properties
@@ -749,7 +949,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BroadbandPower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -763,10 +963,10 @@ namespace RTI
         /// </summary>
         public DeploymentOptions.AdcpBatteryType BatteryType
         {
-            get { return Predictor.BatteryType; }
+            get { return _UserInput.BatteryType; }
             set
             {
-                Predictor.BatteryType = value;
+                _UserInput.BatteryType = value;
                 this.NotifyOfPropertyChange(() => this.BatteryType);
 
                 // Update the Results Properties
@@ -774,7 +974,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BatteryType = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -783,10 +983,10 @@ namespace RTI
         /// </summary>
         public double BatteryDerate
         {
-            get { return Predictor.BatteryDerate; }
+            get { return _UserInput.BatteryDerate; }
             set
             {
-                Predictor.BatteryDerate = value;
+                _UserInput.BatteryDerate = value;
                 this.NotifyOfPropertyChange(() => this.BatteryDerate);
 
                 // Update the Results Properties
@@ -794,7 +994,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BatteryDerate = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -803,10 +1003,10 @@ namespace RTI
         /// </summary>
         public double BatterySelfDischargePerYear
         {
-            get { return Predictor.BatterySelfDischargePerYear; }
+            get { return _UserInput.BatterySelfDischargePerYear; }
             set
             {
-                Predictor.BatterySelfDischargePerYear = value;
+                _UserInput.BatterySelfDischargePerYear = value;
                 this.NotifyOfPropertyChange(() => this.BatterySelfDischargePerYear);
 
                 // Update the Results Properties
@@ -814,7 +1014,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BatterySelfDischargePerYear = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -823,10 +1023,10 @@ namespace RTI
         /// </summary>
         public double SpeedOfSound
         {
-            get { return Predictor.SpeedOfSound; }
+            get { return _UserInput.SpeedOfSound; }
             set
             {
-                Predictor.SpeedOfSound = value;
+                _UserInput.SpeedOfSound = value;
                 this.NotifyOfPropertyChange(() => this.SpeedOfSound);
 
                 // Update the Results Properties
@@ -834,7 +1034,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SpeedOfSound = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -843,10 +1043,10 @@ namespace RTI
         /// </summary>
         public double BeamAngle
         {
-            get { return Predictor.BeamAngle; }
+            get { return _UserInput.BeamAngle; }
             set
             {
-                Predictor.BeamAngle = value;
+                _UserInput.BeamAngle = value;
                 this.NotifyOfPropertyChange(() => this.BeamAngle);
 
                 // Update the Results Properties
@@ -854,7 +1054,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BeamAngle = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -863,10 +1063,10 @@ namespace RTI
         /// </summary>
         public double BeamDiameter
         {
-            get { return Predictor.BeamDiameter; }
+            get { return _UserInput.BeamDiameter; }
             set
             {
-                Predictor.BeamDiameter = value;
+                _UserInput.BeamDiameter = value;
                 this.NotifyOfPropertyChange(() => this.BeamDiameter);
 
                 // Update the Results Properties
@@ -874,7 +1074,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.BeamDiameter = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -883,10 +1083,10 @@ namespace RTI
         /// </summary>
         public double SystemBootPower
         {
-            get { return Predictor.SystemBootPower; }
+            get { return _UserInput.SystemBootPower; }
             set
             {
-                Predictor.SystemBootPower = value;
+                _UserInput.SystemBootPower = value;
                 this.NotifyOfPropertyChange(() => this.SystemBootPower);
 
                 // Update the Results Properties
@@ -894,7 +1094,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemBootPower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -903,10 +1103,10 @@ namespace RTI
         /// </summary>
         public double SystemInitPower
         {
-            get { return Predictor.SystemInitPower; }
+            get { return _UserInput.SystemInitPower; }
             set
             {
-                Predictor.SystemInitPower = value;
+                _UserInput.SystemInitPower = value;
                 this.NotifyOfPropertyChange(() => this.SystemInitPower);
 
                 // Update the Results Properties
@@ -914,7 +1114,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemInitPower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -923,19 +1123,8 @@ namespace RTI
         /// </summary>
         public double SystemRcvPower
         {
-            get { return Predictor.SystemRcvPower; }
-            set
-            {
-                Predictor.SystemRcvPower = value;
-                this.NotifyOfPropertyChange(() => this.SystemRcvPower);
-
-                // Update the Results Properties
-                NotifyResultsProperties();
-
-                // Save the input
-                _UserInput.SystemRcvPower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
-            }
+            get { return Predictor.SystemRcvPower(_UserInput.Beams); }
+            
         }
 
         /// <summary>
@@ -943,10 +1132,10 @@ namespace RTI
         /// </summary>
         public double SystemSavePower
         {
-            get { return Predictor.SystemSavePower; }
+            get { return _UserInput.SystemSavePower; }
             set
             {
-                Predictor.SystemSavePower = value;
+                _UserInput.SystemSavePower = value;
                 this.NotifyOfPropertyChange(() => this.SystemSavePower);
 
                 // Update the Results Properties
@@ -954,7 +1143,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemSavePower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -963,10 +1152,10 @@ namespace RTI
         /// </summary>
         public double SystemSleepPower
         {
-            get { return Predictor.SystemSleepPower; }
+            get { return _UserInput.SystemSleepPower; }
             set
             {
-                Predictor.SystemSleepPower = value;
+                _UserInput.SystemSleepPower = value;
                 this.NotifyOfPropertyChange(() => this.SystemSleepPower);
 
                 // Update the Results Properties
@@ -974,7 +1163,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemSleepPower = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -983,10 +1172,10 @@ namespace RTI
         /// </summary>
         public double SystemWakeupTime
         {
-            get { return Predictor.SystemWakeupTime; }
+            get { return _UserInput.SystemWakeupTime; }
             set
             {
-                Predictor.SystemWakeupTime = value;
+                _UserInput.SystemWakeupTime = value;
                 this.NotifyOfPropertyChange(() => this.SystemWakeupTime);
 
                 // Update the Results Properties
@@ -994,7 +1183,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemWakeupTime = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1003,10 +1192,10 @@ namespace RTI
         /// </summary>
         public double SystemInitTime
         {
-            get { return Predictor.SystemInitTime; }
+            get { return _UserInput.SystemInitTime; }
             set
             {
-                Predictor.SystemInitTime = value;
+                _UserInput.SystemInitTime = value;
                 this.NotifyOfPropertyChange(() => this.SystemInitTime);
 
                 // Update the Results Properties
@@ -1014,7 +1203,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemInitTime = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1023,10 +1212,10 @@ namespace RTI
         /// </summary>
         public double SystemSaveTime
         {
-            get { return Predictor.SystemSaveTime; }
+            get { return _UserInput.SystemSaveTime; }
             set
             {
-                Predictor.SystemSaveTime = value;
+                _UserInput.SystemSaveTime = value;
                 this.NotifyOfPropertyChange(() => this.SystemSaveTime);
 
                 // Update the Results Properties
@@ -1034,7 +1223,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SystemSaveTime = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1043,10 +1232,10 @@ namespace RTI
         /// </summary>
         public double Beta
         {
-            get { return Predictor.Beta; }
+            get { return _UserInput.Beta; }
             set
             {
-                Predictor.Beta = value;
+                _UserInput.Beta = value;
                 this.NotifyOfPropertyChange(() => this.Beta);
 
                 // Update the Results Properties
@@ -1054,7 +1243,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.Beta = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1063,10 +1252,10 @@ namespace RTI
         /// </summary>
         public double SNR
         {
-            get { return Predictor.SNR; }
+            get { return _UserInput.SNR; }
             set
             {
-                Predictor.SNR = value;
+                _UserInput.SNR = value;
                 this.NotifyOfPropertyChange(() => this.SNR);
 
                 // Update the Results Properties
@@ -1074,7 +1263,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.SNR = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1083,10 +1272,10 @@ namespace RTI
         /// </summary>
         public int Beams
         {
-            get { return Predictor.Beams; }
+            get { return _UserInput.Beams; }
             set
             {
-                Predictor.Beams = value;
+                _UserInput.Beams = value;
                 this.NotifyOfPropertyChange(() => this.Beams);
 
                 // Update the Results Properties
@@ -1094,7 +1283,7 @@ namespace RTI
 
                 // Save the input
                 _UserInput.Beams = value;
-                _pm.UpdateAdcpPredictorUserInput(_UserInput);
+                _pm.UpdatePredictionModelInput(_UserInput);
             }
         }
 
@@ -1144,7 +1333,7 @@ namespace RTI
         /// <summary>
         /// Command to import a command set.
         /// </summary>
-        
+
         public ReactiveCommand<object> ImportCommandSetCommand { get; protected set; }
 
         #endregion
@@ -1162,23 +1351,24 @@ namespace RTI
         /// <summary>
         /// Initialize the values.
         /// </summary>
-     
+
         public AdcpPredictionModelViewModel()
             : base("Prediction Model")
         {
             // Initialize the values
             _pm = IoC.Get<PulseManager>();
-            _UserInput = _pm.GetAdcpPredictorUserInput();
-            Predictor = new AdcpPredictor(_UserInput);
+            _UserInput = _pm.GetPredictionModelInput();
+           
+            Predictor = new PredictionModel();
             // Populate the subsystem list
             PopulateLists();
             // Add Subsystem to configuration and
             // Setup ADCP Command set
             AddSubsystemConfig();
             UpdateCommandSet();
-        //this.NotifyOfPropertyChange(null);
+            //this.NotifyOfPropertyChange(null);
 
-        SetDefaultCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => SetDefaults()));
+            SetDefaultCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => SetDefaults()));
 
             ClearCommandSetCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => ClearCommandSet()));
 
@@ -1208,7 +1398,6 @@ namespace RTI
 
         }
 
-
         #region Subsystem
 
         /// <summary>
@@ -1218,7 +1407,7 @@ namespace RTI
         private void PopulateLists()
         {
 
-          
+
             try
             {
                 _adcpConfig.Commands.CEI.Second = _adcpConfig.Commands.CEI.Second;
@@ -1230,14 +1419,14 @@ namespace RTI
             // Create the list
             ListOfSubsystems = new SubsystemList();
 
-           // Set selected subsystem
+            // Set selected subsystem
             if (ListOfSubsystems.Count > 0)
             {
                 foreach (var ss in ListOfSubsystems)
                 {
                     if (ss.Code == _UserInput.SubSystem.Code)
                     {
-                        SelectedSubsystemss = ss;
+                        SelectedSubsystemsSimple = ss;
                     }
                 }
             }
@@ -1266,7 +1455,7 @@ namespace RTI
             _UserInput.SubSystem = new Subsystem(code);
 
             // Create a new predictor
-            Predictor = new AdcpPredictor(_UserInput);
+            //Predictor = new PredictionModel();
 
             // Add Subsystem to configuration
             AddSubsystemConfig();
@@ -1285,15 +1474,15 @@ namespace RTI
         private void SetDefaults()
         {
             // Set the new User Input and new predictor
-            _UserInput = new AdcpPredictorUserInput(_UserInput.SubSystem);
+            _UserInput = new PredictionModelInput(_UserInput.SubSystem);
 
-            Predictor = new AdcpPredictor(_UserInput);
+            
 
             // Save the new input
-            _pm.UpdateAdcpPredictorUserInput(_UserInput);
+            _pm.UpdatePredictionModelInput(_UserInput);
 
             // Set defaults to ADCP Config
-           
+
             SetAdcpDefaults();
 
             UpdateCommandSet();
@@ -1316,7 +1505,7 @@ namespace RTI
         private void _SetAdcpDefaults()
         {
             // Set all the values to the prediction input
-           
+
             _adcpConfig.Commands.CEI = new Commands.TimeValue((float)_UserInput.CEI);
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPON = _UserInput.CWPON;
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBTON = _UserInput.CBTON;
@@ -1329,6 +1518,24 @@ namespace RTI
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBB_TransmitPulseType = _UserInput.CWPBB_TransmitPulseType;
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPP = _UserInput.CWPP;
             _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPTBP = _UserInput.CWPTBP;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI = _UserInput.IsBurst;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI_NumEnsembles = (ushort)_UserInput.CBI_SamplesPerBurst;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.CBI_BurstInterval = new Commands.TimeValue((float)_UserInput.CBI_BurstInterval);
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000001 = _UserInput.CED_IsE0000001;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000002 = _UserInput.CED_IsE0000002;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000003 = _UserInput.CED_IsE0000003;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000004 = _UserInput.CED_IsE0000004;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000005 = _UserInput.CED_IsE0000005;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000006 = _UserInput.CED_IsE0000006;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000007 = _UserInput.CED_IsE0000007;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000008 = _UserInput.CED_IsE0000008;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000009 = _UserInput.CED_IsE0000009;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000010 = _UserInput.CED_IsE0000010;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000011 = _UserInput.CED_IsE0000011;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000012 = _UserInput.CED_IsE0000012;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000013 = _UserInput.CED_IsE0000013;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000014 = _UserInput.CED_IsE0000014;
+            _adcpConfig.SubsystemConfigDict.First().Value.Commands.E0000015 = _UserInput.CED_IsE0000015;
         }
 
         #endregion
@@ -1340,6 +1547,7 @@ namespace RTI
         /// </summary>
         private void NotifyResultsProperties()
         {
+           
             // Update all the properties
             this.NotifyOfPropertyChange(null);
 
@@ -1445,25 +1653,28 @@ namespace RTI
             List<string> commands = GetCommandSet();
             try
             {
-                List<string> splitter = secondaryAdcpCommandSet.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                List<string> spaceSplitter = secondaryAdcpCommandSet.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                for (int i = 0; i < splitter.Count; i++)
+                if (secondaryAdcpCommandSet != null)
                 {
-                    for (int k = 0; k < commands.Count; k++)
-                        if (splitter.Count != 0)
-                        {
-                            if (splitter[i].Contains(commands[k].Substring(0, 3)))
+                    List<string> splitter = secondaryAdcpCommandSet.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> spaceSplitter = secondaryAdcpCommandSet.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    for (int i = 0; i < splitter.Count; i++)
+                    {
+                        for (int k = 0; k < commands.Count; k++)
+                            if (splitter.Count != 0)
                             {
-                                splitter.Remove(splitter[i]);
+                                if (splitter[i].Contains(commands[k].Substring(0, 3)))
+                                {
+                                    splitter.Remove(splitter[i]);
+                                }
                             }
-                        }
-                }
-                foreach (string s in splitter)
-                {
-                    sb.AppendLine(s);
+                    }
+                    foreach (string s in splitter)
+                    {
+                        sb.AppendLine(s);
 
+                    }
+                    secondaryAdcpCommandSet = sb.ToString();
                 }
-                secondaryAdcpCommandSet = sb.ToString();
             }
             catch (Exception e)
             {
@@ -1492,7 +1703,6 @@ namespace RTI
         }
 
         #endregion
-
 
         #region Command File
 
@@ -1560,14 +1770,14 @@ namespace RTI
                 if (!AdcpCommandSet.Contains("CEPO"))
                 {
                     AdcpCommandSet = "CEPO " + (SelectedSubsystem + "").Substring(0, 1) + "\n" + AdcpCommandSet;
-                    System.Windows.Forms.MessageBox.Show("No Subsystem Detected, using Subsystem " + (SelectedSubsystem + "").Substring(0, 1) + ".\n Please set a Subsystem type.");
+                  //  System.Windows.Forms.MessageBox.Show("No Subsystem Detected, using Subsystem " + (SelectedSubsystem + "").Substring(0, 1) + ".\n Please set a Subsystem type.");
                 }
             }
             catch (Exception e)//$exception	{"Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it. This exception is only raised if a debugger is attached to the process."}	System.Threading.ThreadStateException
 
             {
                 Error();
-                log.Error(string.Format("Error reading command set from {0}", fileName), e);
+               // log.Error(string.Format("Error reading command set from {0}", fileName), e);
             }
         }
 
@@ -1691,15 +1901,15 @@ namespace RTI
         private void Error()
         {
 
-            System.Windows.Forms.MessageBox.Show("An error occurred in the command set.");
+          //  System.Windows.Forms.MessageBox.Show("An error occurred in the command set.");
         }
         private void Error(string Command, string error)
         {
-            System.Windows.Forms.MessageBox.Show("An error was found in the command set.\nYour " + Command+ " command has an error. "+error);
+         //   System.Windows.Forms.MessageBox.Show("An error was found in the command set.\nYour " + Command + " command has an error. " + error);
         }
         private void Error(string Command)
         {
-            System.Windows.Forms.MessageBox.Show("An error was found in the command set.\nYour " + Command + " command has an error.");
+           // System.Windows.Forms.MessageBox.Show("An error was found in the command set.\nYour " + Command + " command has an error.");
         }
 
 
@@ -1724,7 +1934,7 @@ namespace RTI
             CWPBS = _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBS;
             CWPBB_LagLength = _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBB_LagLength;
             CWPBB_TransmitPulseType = _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPBB_TransmitPulseType;
-            CWPTBP = _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPTBP;
+            CWPTBP = _adcpConfig.SubsystemConfigDict.First().Value.Commands.CWPTBP; 
             NotifyResultsProperties();
         }
 

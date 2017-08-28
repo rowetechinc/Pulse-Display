@@ -77,15 +77,15 @@
                             </StackPanel-->
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Min Value:" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-                                <extToolkit:DoubleUpDown Value="{Binding Path=MinValue}" Increment="0.1" Margin="5" Background="White" />
+                                <extToolkit:DoubleUpDown Value="{Binding Path=MinValue}" Increment="0.1" Margin="5" Background="White" Foreground="Black"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Max Value:" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-                                <extToolkit:DoubleUpDown Value="{Binding Path=MaxValue}" Increment="0.1" Margin="5" Background="White" />
+                                <extToolkit:DoubleUpDown Value="{Binding Path=MaxValue}" Increment="0.1" Margin="5" Background="White" Foreground="Black" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Legend MajorStep:" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-                                <extToolkit:DoubleUpDown Value="{Binding Path=ColorAxisMajorStep}" Increment="0.1" Margin="5" Background="White" />
+                                <extToolkit:DoubleUpDown Value="{Binding Path=ColorAxisMajorStep}" Increment="0.1" Margin="5" Background="White" Foreground="Black" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Interperlate:" Foreground="{StaticResource PulseFontColor}" Margin="5" />
@@ -106,13 +106,13 @@
                             <!--Min Bin-->
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Min Bin" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-                                <extToolkit:IntegerUpDown  Minimum="0" Maximum="{Binding Path=MaxBin}" Value="{Binding Path=MinBin}" Margin="5" Background="White" />
+                                <extToolkit:IntegerUpDown  Minimum="0" Maximum="{Binding Path=MaxBin}" Value="{Binding Path=MinBin}" Margin="5" Background="White" Foreground="Black" />
                             </StackPanel>
 
                             <!--Max Bin-->
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Max Bin" Foreground="{StaticResource PulseFontColor}" Margin="5" />
-                                <extToolkit:IntegerUpDown Minimum="{Binding Path=MinBin}" Maximum="200" Value="{Binding Path=MaxBin}" Margin="5" Background="White"  />
+                                <extToolkit:IntegerUpDown Minimum="{Binding Path=MinBin}" Maximum="200" Value="{Binding Path=MaxBin}" Margin="5" Background="White" Foreground="Black"  />
                             </StackPanel>
 
                             <!--Bottom Track Line-->

@@ -243,7 +243,15 @@ namespace RTI
             _continue = true;
             _eventWaitData = new EventWaitHandle(false, EventResetMode.AutoReset);
             _processDataThread = new Thread(ProcessDataThread);
-            _processDataThread.Name = "Project Image: " + prj.ProjectName;
+            if(prj != null)
+            {
+                _processDataThread.Name = "Project Image: " + prj.ProjectName;
+            }
+            else
+            {
+                _processDataThread.Name = "Project Image";
+            }
+            
             _processDataThread.Start();
         }
 

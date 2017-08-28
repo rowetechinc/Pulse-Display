@@ -49,7 +49,7 @@
 				
 				<!--GPS Heading Offset-->
 				<TextBlock Grid.Row="3" Grid.Column="1" Text="Heading Offset" Margin="5" />
-                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="2" Value="{Binding GpsHeadingOffset}" Minimum="-180" Maximum="360" VerticalAlignment="Center" Margin="5" Background="White" />
+                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="2" Value="{Binding GpsHeadingOffset}" Minimum="-180" Maximum="360" VerticalAlignment="Center" Margin="5" Background="White" Foreground="Black" />
 			</Grid>
 		</Border>
 		
@@ -87,7 +87,7 @@
 				<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsForce3BeamSolution}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
 				
 				<TextBlock Grid.Row="1" Grid.Column="1" Text="Bad Beam" Margin="5" />
-                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="2" Value="{Binding ForceBeamBad}" Minimum="0" Maximum="3" Margin="5" Background="White" />
+                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="2" Value="{Binding ForceBeamBad}" Minimum="0" Maximum="3" Margin="5" Background="White" Foreground="Black" />
 			</Grid>
 		</Border>
 		
@@ -109,7 +109,7 @@
 				<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsForce3BottomTrackBeamSolution}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
 				
 				<TextBlock Grid.Row="1" Grid.Column="1" Text="Bad Beam" Margin="5" />
-                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="2" Value="{Binding ForceBottomTrackBeamBad}" Minimum="0" Maximum="3" Margin="5" Background="White" />
+                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="2" Value="{Binding ForceBottomTrackBeamBad}" Minimum="0" Maximum="3" Margin="5" Background="White" Foreground="Black" />
 			</Grid>
 		</Border>
 		
@@ -137,16 +137,16 @@
                     <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding IsRetransformUseGpsHeading}" HorizontalAlignment="Left" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
 
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="Heading Offset" Margin="5" />
-                <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="2" Value="{Binding RetransformHeadingOffset}" Margin="5" Background="White" />
+                <extToolkit:IntegerUpDown Grid.Row="2" Grid.Column="2" Value="{Binding RetransformHeadingOffset}" Margin="5" Background="White" Foreground="Black" />
 
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="WP Corr Thresh" Margin="5" />
-                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="2" Value="{Binding WpCorrThresh}" Minimum="0" Maximum="1.0" Increment="0.1" Margin="5" FormatString="0.000" Background="White" />
+                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="2" Value="{Binding WpCorrThresh}" Minimum="0" Maximum="1.0" Increment="0.1" Margin="5" FormatString="0.000" Background="White" Foreground="Black" />
 					
 					<TextBlock Grid.Row="4" Grid.Column="1" Text="BT Corr Thresh" Margin="5" />
-                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="2" Value="{Binding BtCorrThresh}" Minimum="0" Maximum="1.0" Increment="0.1" Margin="5" FormatString="0.000" Background="White" />
+                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="2" Value="{Binding BtCorrThresh}" Minimum="0" Maximum="1.0" Increment="0.1" Margin="5" FormatString="0.000" Background="White" Foreground="Black" />
 					
 					<TextBlock Grid.Row="5" Grid.Column="1" Text="BT SNR Thresh" Margin="5" />
-                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="2" Value="{Binding BtSnrThresh}" Minimum="0" Maximum="255" Increment="1" Margin="5" FormatString="0.000" Background="White" />
+                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="2" Value="{Binding BtSnrThresh}" Minimum="0" Maximum="255" Increment="1" Margin="5" FormatString="0.000" Background="White" Foreground="Black" />
 			</Grid>
 		</Border>
 		

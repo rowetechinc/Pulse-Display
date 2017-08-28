@@ -1303,7 +1303,7 @@ namespace RTI
             if (options == null)
             {
                 _options = new HeatmapSeriesOptions();
-                SelectedPalette = OxyPalettes.Hue64;
+                SelectedPalette = OxyPalettes.Jet(64);
                 MinValue = _options.MinValue;
                 MaxValue = _options.MaxValue;
             }
@@ -1377,7 +1377,7 @@ namespace RTI
                     break;
                 case HeatmapPlotSeries.HeatmapPlotType.Earth_Velocity_Magnitude:
                     MinValue = 0;
-                    MaxValue = 5;
+                    MaxValue = 2;
                     ColorAxisMajorStep = 0.5;
                     break;
                 default:

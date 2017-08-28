@@ -100,7 +100,7 @@
                                 <!--TextBlock Grid.Row="0" Grid.Column="0" Text="Average by Time Duration" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsStaByTimer}" IsEnabled="{Binding RelativeSource={RelativeSource Self}, Path=IsStaByTimerDisabled}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" /-->
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Time:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaAvgTimerMilliseconds, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaAvgTimerMilliseconds, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="millisec" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Average by Samples-->
@@ -137,11 +137,11 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Reference Layer Average" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsReferenceLayerAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Min Layer:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Max Layer:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                             </Grid>
@@ -165,7 +165,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Correlation" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsCorrelationAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -188,7 +188,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Amplitude" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsAmplitudeAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -211,7 +211,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Beam Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsBeamVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -234,7 +234,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Instrument Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsInstrumentVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -257,7 +257,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Earth Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding StaIsEarthVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -288,37 +288,37 @@
 
                                 <!--Range Scale-->
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Range Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackRangeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackRangeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="m" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--SNR Scale-->
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="SNR Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackSnrScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackSnrScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Amplitude Scale-->
                                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Amp Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="2" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="2" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="2" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Correlation Scale-->
                                 <TextBlock Grid.Row="3" Grid.Column="2" Text="Corr Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="3" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Beam Velocity-->
                                 <TextBlock Grid.Row="4" Grid.Column="2" Text="Beam Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="4" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Instrument Velocity-->
                                 <TextBlock Grid.Row="5" Grid.Column="2" Text="Instr Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="5" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Earth Velocity-->
                                 <TextBlock Grid.Row="6" Grid.Column="2" Text="Earth Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="6" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="6" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding StaBottomTrackEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="6" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -401,14 +401,14 @@
                                 <!--TextBlock Grid.Row="0" Grid.Column="0" Text="Average by Time Duration" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsLtaByTimer}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" /-->
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Time:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaAvgTimerMilliseconds, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaAvgTimerMilliseconds, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="millisec" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Average by Samples-->
                                 <!--TextBlock Grid.Row="1" Grid.Column="0" Text="Average by Samples" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsLtaByNumSamples}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" /-->
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Samples:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaNumSamples, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaNumSamples, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="1" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="ensembles" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Running Avg:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
                                 <CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{Binding LtaIsSampleRunningAvg}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
@@ -456,11 +456,11 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Reference Layer Average" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsReferenceLayerAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Min Layer:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Max Layer:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" />
+                                <extToolkit:IntegerUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaMinRefLayer, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Minimum="0" Maximum="199" Increment="1" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                             </Grid>
@@ -484,7 +484,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Correlation" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsCorrelationAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -507,7 +507,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Amplitude" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsAmplitudeAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -530,7 +530,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Beam Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsBeamVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -553,7 +553,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Instrument Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsInstrumentVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -576,7 +576,7 @@
                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Earth Velocity" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" />
                                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding LtaIsEarthVelocityAveraging}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>
@@ -607,37 +607,37 @@
 
                                 <!--Range Scale-->
                                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Range Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackRangeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="0" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackRangeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="0" Grid.Column="4" Text="m" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--SNR Scale-->
                                 <TextBlock Grid.Row="1" Grid.Column="2" Text="SNR Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackSnrScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="1" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackSnrScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="1" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Amplitude Scale-->
                                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Amp Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="2" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="2" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackAmplitudeScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="2" Grid.Column="4" Text="dB" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Correlation Scale-->
                                 <TextBlock Grid.Row="3" Grid.Column="2" Text="Corr Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="3" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackCorrelationScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="3" Grid.Column="4" Text="%" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Beam Velocity-->
                                 <TextBlock Grid.Row="4" Grid.Column="2" Text="Beam Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="4" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackBeamVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="4" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Instrument Velocity-->
                                 <TextBlock Grid.Row="5" Grid.Column="2" Text="Instr Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="5" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackInstrumentVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="5" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
 
                                 <!--Earth Velocity-->
                                 <TextBlock Grid.Row="6" Grid.Column="2" Text="Earth Vel Scale:" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" FontSize="10.667"/>
-                                <extToolkit:DoubleUpDown Grid.Row="6" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" />
+                                <extToolkit:DoubleUpDown Grid.Row="6" Grid.Column="3" Margin="5" MinWidth="70" Value="{Binding LtaBottomTrackEarthVelocityScale, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Increment="1.0" FormatString="0.000" Background="White" Foreground="Black" />
                                 <TextBlock Grid.Row="6" Grid.Column="4" Text="m/s" VerticalAlignment="Center" Margin="5" FontSize="10.667" Foreground="{StaticResource PulseFontColor}" />
                             </Grid>
                         </Border>

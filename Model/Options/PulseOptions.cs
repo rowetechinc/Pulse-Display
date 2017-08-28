@@ -156,9 +156,9 @@ namespace RTI
         public AdcpEthernetOptions EthernetOptions { get; set; }
 
         /// <summary>
-        /// ADCP Predition Model User Input.
+        /// ADCP Prediction Model User Input.
         /// </summary>
-        public AdcpPredictorUserInput PredictorUserInput { get; set; }
+        public PredictionModelInput PredictorUserInput { get; set; }
 
         /// <summary>
         /// The selected project ID.  This will store the
@@ -256,7 +256,7 @@ namespace RTI
                                 bool isGps1Enabled, bool isGps2Enabled, bool isNmea1Enabled, bool isNmea2Enabled, 
                                 SerialOptions gps1Options, SerialOptions gps2Options, SerialOptions nmea1Options, SerialOptions nmea2Options, 
                                 AdcpEthernetOptions ethernetOption, 
-                                AdcpPredictorUserInput predictorUserInput, 
+                                PredictionModelInput predictorUserInput, 
                                 int selectedProjectID, ValidationTestViewOptions validationViewOptions, ViewDataGraphicalOptions graphicalViewOptions,
                                 BackscatterOptions backscatterOptions, AverageOptions averageOptions, TankTestOptions tankTestOptions, ViewDataWavesOptions viewDataWavesOptions,
                                 AdcpConfiguration adcpConfig, RecoverDataOptions recoverDataOptions,
@@ -314,7 +314,7 @@ namespace RTI
             IsNmea1SerialEnabled = false;
             IsNmea2SerialEnabled = false;
             EthernetOptions = new AdcpEthernetOptions();
-            PredictorUserInput = new AdcpPredictorUserInput();
+            PredictorUserInput = new PredictionModelInput();
             SelectedProjectID = 0;
             ValidationViewOptions = new ValidationTestViewOptions();
             GraphicalViewOptions = new ViewDataGraphicalOptions();

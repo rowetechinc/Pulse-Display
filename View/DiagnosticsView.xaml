@@ -6,7 +6,7 @@
              xmlns:mahapps="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="600">
-    <ScrollViewer Foreground="{StaticResource PulseFontColor}">
+    <ScrollViewer Foreground="{StaticResource PulseFontColor}" VerticalScrollBarVisibility="Visible">
         <Grid  Grid.IsSharedSizeScope="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

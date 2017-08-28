@@ -1414,7 +1414,7 @@ namespace RTI
         /// Update the Pulse database with the latest Adcp Predictor User Input.
         /// </summary>
         /// <param name="input">Adcp Predictor User Input.</param>
-        public void UpdateAdcpPredictorUserInput(AdcpPredictorUserInput input)
+        public void UpdatePredictionModelInput(PredictionModelInput input)
         {
             // Update the ADCP Predictor User Input
             _PulseOptions.PredictorUserInput = input;
@@ -1425,7 +1425,7 @@ namespace RTI
         /// Get the last used ADCP Predictor User Input.
         /// </summary>
         /// <returns>Last ADCP Predictor User Input.</returns>
-        public AdcpPredictorUserInput GetAdcpPredictorUserInput()
+        public PredictionModelInput GetPredictionModelInput()
         {
             return _PulseOptions.PredictorUserInput;
         }
@@ -1690,7 +1690,10 @@ namespace RTI
             img.GenerateImage(prj, 0.0, 2.0);
             img.Dispose();
 
-            prj.Dispose();
+            if (prj != null)
+            {
+                prj.Dispose();
+            }
         }
 
 

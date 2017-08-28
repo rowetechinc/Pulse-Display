@@ -196,7 +196,7 @@
                                 <StackPanel>
                                     <!--Declination-->
                                     <TextBlock Text="BT Heading Offset:" Foreground="#FFC5CFD1" HorizontalAlignment="Center" Margin="5,0" />
-                                    <extToolkit:DecimalUpDown Text="{Binding Declination, UpdateSourceTrigger=PropertyChanged}" Margin="5" HorizontalAlignment="Center" Width="50" Background="White" />
+                                    <extToolkit:DecimalUpDown Text="{Binding Declination, UpdateSourceTrigger=PropertyChanged}" Margin="5" HorizontalAlignment="Center" Width="50" Background="White" Foreground="Black" />
                                 </StackPanel>
 
                                 <StackPanel>

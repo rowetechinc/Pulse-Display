@@ -138,6 +138,104 @@ namespace RTI
 
         #endregion
 
+        #region Burst Interval
+
+        /// <summary>
+        /// Default Bottom Track on.
+        /// </summary>
+        public const bool DEFAULT_CBI = false;
+
+        /// <summary>
+        /// Default ensemble interval in seconds.
+        /// </summary>
+        public const int DEFAULT_CBI_NumEnsembles = 4096;
+
+        /// <summary>
+        /// Default ensemble interval in seconds.
+        /// </summary>
+        public const int DEFAULT_CBI_BurstInterval = 3600;
+        #endregion
+
+        #region CED
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000001 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000002 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000003 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000004 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000005 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000006 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000007 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000008 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000009 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000010 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000011 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000012 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000013 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000014 = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const bool DEFAULT_E0000015 = true;
+
+
+        #endregion
+
         #region Bottom Track
 
         /// <summary>
@@ -326,8 +424,7 @@ namespace RTI
         /// Seconds between ensembles.
         /// Time per ensemble.
         /// </summary>
-        public double CEI { get;
-            set; }
+        public double CEI { get;  set; }
 
         /// <summary>
         /// Speed of sound in meters/second.
@@ -359,6 +456,57 @@ namespace RTI
         /// Bottom Track broadband Transmit Pulse Type.
         /// </summary>
         public RTI.Commands.AdcpSubsystemCommands.eCBTBB_Mode CBTBB_TransmitPulseType { get; set; }
+
+        /// <summary>
+        /// On/Off for Burst Mode.
+        /// TRUE = Burst Mode On (Burst Settings On)
+        /// FALSE = Bottom Track Off (Burst Settings Off)
+        /// </summary>
+        public bool CBI { get; set; }
+
+        /// <summary>
+        /// Number of Ensembles per Burst
+        /// </summary>
+        public UInt16 CBI_NumEnsembles { get; set; }
+
+        /// <summary>
+        /// Burst Time Interval
+        /// </summary>
+        public double CBI_BurstInterval { get; set; }
+
+        #endregion
+
+        #region CED
+
+        public bool E0000001 { get; set; }
+
+        public bool E0000002 { get; set; }
+
+        public bool E0000003 { get; set; }
+
+        public bool E0000004 { get; set; }
+
+        public bool E0000005 { get; set; }
+
+        public bool E0000006 { get; set; }
+
+        public bool E0000007 { get; set; }
+
+        public bool E0000008 { get; set; }
+
+        public bool E0000009 { get; set; }
+
+        public bool E0000010 { get; set; }
+
+        public bool E0000011 { get; set; }
+
+        public bool E0000012 { get; set; }
+
+        public bool E0000013 { get; set; }
+
+        public bool E0000014 { get; set; }
+
+        public bool E0000015 { get; set; }
 
         #endregion
 
@@ -535,6 +683,28 @@ namespace RTI
 
             // Commands
             CEI = DEFAULT_CEI;
+
+            // CBI Commands
+            CBI = DEFAULT_CBI;
+            CBI_NumEnsembles = DEFAULT_CBI_NumEnsembles;
+            CBI_BurstInterval = DEFAULT_CBI_BurstInterval;
+
+            // CED Commands
+            E0000001 = DEFAULT_E0000001;
+            E0000002 = DEFAULT_E0000002;
+            E0000003 = DEFAULT_E0000003;
+            E0000004 = DEFAULT_E0000004;
+            E0000005 = DEFAULT_E0000005;
+            E0000006 = DEFAULT_E0000006;
+            E0000007 = DEFAULT_E0000007;
+            E0000008 = DEFAULT_E0000008;
+            E0000009 = DEFAULT_E0000009;
+            E0000010 = DEFAULT_E0000010;
+            E0000011 = DEFAULT_E0000011;
+            E0000012 = DEFAULT_E0000012;
+            E0000013 = DEFAULT_E0000013;
+            E0000014 = DEFAULT_E0000014;
+            E0000015 = DEFAULT_E0000015;
 
             // WP Commands
             CWPON = DEFAULT_CWPON;
@@ -1516,6 +1686,40 @@ namespace RTI
         /// </summary>
         public double NbFudge { get; set; }
 
+        #region CED
+
+        public bool E0000001 { get; set; }
+
+        public bool E0000002 { get; set; }
+
+        public bool E0000003 { get; set; }
+
+        public bool E0000004 { get; set; }
+
+        public bool E0000005 { get; set; }
+
+        public bool E0000006 { get; set; }
+
+        public bool E0000007 { get; set; }
+
+        public bool E0000008 { get; set; }
+
+        public bool E0000009 { get; set; }
+
+        public bool E0000010 { get; set; }
+
+        public bool E0000011 { get; set; }
+
+        public bool E0000012 { get; set; }
+
+        public bool E0000013 { get; set; }
+
+        public bool E0000014 { get; set; }
+
+        public bool E0000015 { get; set; }
+
+        #endregion
+
         #region Bottom Track
 
         /// <summary>
@@ -1591,10 +1795,17 @@ namespace RTI
         public ushort CWPP { get; set; }
 
         /// <summary>
+        /// On/Off for Burst Mode.
+        /// TRUE = Burst Mode On (Burst Settings On)
+        /// FALSE = Bottom Track Off (Burst Settings Off)
+        /// </summary>
+        public bool CBI { get; set; }
+
+        /// <summary>
         /// Number of ensembles per burst.
         /// Number of ensembles.
         /// </summary>
-        public ushort CBI_NumEnsembles { get; set; }
+        public UInt16 CBI_NumEnsembles { get; set; }
 
         /// <summary>
         /// Number of seconds per interval within a
@@ -1839,7 +2050,7 @@ namespace RTI
         {
             get
             {
-                return Math.Cos(BeamAngleRadian) / Math.Cos( DEFAULT_BEAM_ANGLE_1200000 / 180.0 * Math.PI); ;
+                return Math.Cos(BeamAngleRadian) / Math.Cos( DEFAULT_BEAM_ANGLE_1200000 / 180.0 * Math.PI);
             }
         }
 
@@ -2093,7 +2304,7 @@ namespace RTI
         {
             get
             {
-                return Math.Cos(BeamAngleRadian) / Math.Cos( DEFAULT_BEAM_ANGLE_600000 / 180.0 * Math.PI); ;;
+                return Math.Cos(BeamAngleRadian) / Math.Cos( DEFAULT_BEAM_ANGLE_600000 / 180.0 * Math.PI);
             }
         }
 
@@ -3216,7 +3427,7 @@ namespace RTI
             {
                 if (Select_38000)
                 {
-                    return 3.0 * Math.Sqrt(2.0 * 0.000001 * uF_38000 * XmtV_75000);
+                    return 3.0 * Math.Sqrt(2.0 * 0.000001 * uF_38000 * XmtV_38000);
                 }
 
                 // Return 0 if not selected.
@@ -3321,13 +3532,13 @@ namespace RTI
             {
                 if (CBTON)
                 {
-                    long value = (long)Math.Round(CWPP / 10.0);
+                    double value = CWPP / 10.0;
                     if (value < 1)
                     {
                         return NumEnsembles;
                     }
 
-                    return value * NumEnsembles;
+                    return (long)Math.Round(CWPP / 10.0) * NumEnsembles;
                 }
 
                 return 0;
@@ -3712,7 +3923,7 @@ namespace RTI
                     freqMult = 2;
                 }
 
-                return (ReceiveTime * SystemRcvPower * NumEnsembles * CWPP) / 3600.0 * freqMult;
+                return (ReceiveTime * SystemRcvPower * NumEnsembles *  CWPP) / 3600.0 * freqMult;
             }
         }
 
@@ -3770,7 +3981,11 @@ namespace RTI
         {
             get
             {
-                return BtTransmitPower + BtReceivePower + WakeupPower  + InitPower + TransmitPower + ReceivePower + SavePower + SleepPower + CapChargePower;
+                if(CBI)
+                {
+                    return (BtTransmitPower + BtReceivePower + WakeupPower + InitPower + TransmitPower + ReceivePower + SavePower + SleepPower + CapChargePower) * NumBursts;
+                }
+                return (BtTransmitPower + BtReceivePower + WakeupPower  + InitPower + TransmitPower + ReceivePower + SavePower + SleepPower + CapChargePower);
             }
         }
 
@@ -4156,12 +4371,43 @@ namespace RTI
                     return 0;
                 }
 
+                if(CBI)
+                {
+                    return (long)CBI_NumEnsembles;
+                }
+
                 // Convert deployment duration to seconds
                 // Then divide by time per ensemble which is in seconds
                 return (long)Math.Round((DeploymentDuration * 24.0 * 3600.0) / CEI);
             }
         }
 
+        /// <summary>
+        /// Calculate the number of total ensembles that will be created.
+        /// Based off the deployment duration and the number of ensembles
+        /// per second that will be created.
+        /// Value in Number of ensembles.
+        /// </summary>
+        public long NumTotalEnsembles
+        {
+            get
+            {
+                // Check for divide by 0
+                if (CEI == 0)
+                {
+                    return 0;
+                }
+
+                if (CBI)
+                {
+                    return (long)CBI_NumEnsembles * NumBursts;
+                }
+
+                // Convert deployment duration to seconds
+                // Then divide by time per ensemble which is in seconds
+                return (long)Math.Round((DeploymentDuration * 24.0 * 3600.0) / CEI);
+            }
+        }
         /// <summary>
         /// Calculate the number of bytes in the Profile overhead.
         /// Value in bytes.
@@ -4285,7 +4531,13 @@ namespace RTI
         {
             get
             {
-                return ProfileOverhead + BytesPerBin + BytesBottomTrack + BytesOverhead + BytesChecksum + BytesWrapper + BytesNoPing;
+                // BytesPerEnsemble(E0000001(true/false) + E0000002(true/false) + ... + E0000015(true/false)) + CheckSum + Wrapper
+                long temp = (long) (BytesChecksum + BytesWrapper + ((4*(CWPBN * Beams + 7)) * Convert.ToInt32(E0000001)) + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000002)) + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000003))
+                    + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000004)) + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000005)) + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000006)) + ((4 * (CWPBN * Beams + 7)) * Convert.ToInt32(E0000007))
+                    + (120 * Convert.ToInt32(E0000008)) + (104 * Convert.ToInt32(E0000009)) + ((4 * (14 + 15 * Beams+7)) * Convert.ToInt32(E0000010)) + (0 * Convert.ToInt32(E0000011))
+                     + (120 * Convert.ToInt32(E0000012)) + (148 * Convert.ToInt32(E0000013)) + (120 * Convert.ToInt32(E0000014)) + ( (4 * (8 * Beams + 1 + 7)) * Convert.ToInt32(E0000015)));
+                return temp;
+                //return ProfileOverhead + BytesPerBin + BytesBottomTrack + BytesOverhead + BytesChecksum + BytesWrapper + BytesNoPing;
             }
         }
 
@@ -4365,11 +4617,11 @@ namespace RTI
         {
             get
             {
-                // Ensure is burst is enabled
-                if (CBI_NumEnsembles > 0 && CBI_BurstInterval > 0)
+                // Ensure burst is enabled
+                if (CBI)
                 {
-                    // secondsPerBurst = BURST + CEI
-                    double secondsPerBurst = (CBI_NumEnsembles * CEI) + CBI_BurstInterval;
+                    // secondsPerBurst = BURST
+                    double secondsPerBurst =  CBI_BurstInterval;
 
                     // Number seconds for the entire deployment
                     // divided by the number of seconds per burst
@@ -4482,7 +4734,7 @@ namespace RTI
                     }
                     else
                     {
-                        pos = (LagSamples * (CodeRepeats - 1.0) * MetersPerSample + 2.0 * CWPBS + CWPBB_LagLength) / 2.0;
+                        pos = (LagSamples * (CodeRepeats - 1.0) * MetersPerSample + CWPBS + CWPBB_LagLength) / 2.0;
                     }
                 }
 
@@ -4501,9 +4753,10 @@ namespace RTI
             get
             {
                 // Burst mode
-                if (NumBursts > 0)
+                if (CBI)
                 {
-                    return NumBursts * BytesPerBurst;
+                    return (long)((DeploymentDuration*3600*24/CBI_BurstInterval)*CBI_NumEnsembles)*EnsembleSizeBytes;
+                    //return NumBursts * BytesPerBurst;
                 }
 
                 return NumEnsembles * EnsembleSizeBytes;
@@ -4568,6 +4821,27 @@ namespace RTI
             CBTTBP = input.CBTTBP;
             CBTBB_TransmitPulseType = input.CBTBB_TransmitPulseType;
 
+            // CBI Commands
+            CBI_BurstInterval = input.CBI_BurstInterval;
+            CBI_NumEnsembles = input.CBI_NumEnsembles;
+
+            // CED Options
+            E0000001 = input.E0000001;
+            E0000002 = input.E0000002;
+            E0000003 = input.E0000003;
+            E0000004 = input.E0000004;
+            E0000005 = input.E0000005;
+            E0000006 = input.E0000006;
+            E0000007 = input.E0000007;
+            E0000008 = input.E0000008;
+            E0000009 = input.E0000009;
+            E0000010 = input.E0000010;
+            E0000011 = input.E0000011;
+            E0000012 = input.E0000012;
+            E0000013 = input.E0000013;
+            E0000014 = input.E0000014;
+            E0000015 = input.E0000015;
+
             // Batteries
             BatteryType = input.BatteryType;
             BatteryDerate = input.BatteryDerate;
@@ -4595,6 +4869,7 @@ namespace RTI
             SystemWakeupTime = input.SystemWakeupTime;
             SystemInitTime = input.SystemInitTime;
             SystemSaveTime = input.SystemSaveTime;
+
         }
 
         #region Subsystem
@@ -5404,6 +5679,8 @@ namespace RTI
         }
 
         #endregion
+
+
 
 
     }

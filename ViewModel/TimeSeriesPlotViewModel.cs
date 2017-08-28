@@ -45,6 +45,7 @@
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
  * 12/07/2015      RC          4.4.0      Added GenerateReport to create HTML files.
  * 02/17/2017      RC          4.4.5      Added AddIncomingDataBulk to display all data.
+ * 05/20/2017      RC          4.4.6      Check if the series type is set in GenerateReport().
  * 
  */
 
@@ -1931,7 +1932,15 @@ namespace RTI
             // Copy data
             foreach(TimeSeries series in _plot.Series)
             {
-                var newSeries = new TimeSeries(series.Type, series.Beam, series.Bin, series.Color, isFiltered, null);
+                TimeSeries newSeries = null;
+                if (series.Type == null)
+                {
+                    newSeries = new TimeSeries(this.SelectedSeriesType, series.Beam, series.Bin, series.Color, isFiltered, null);
+                }
+                else
+                {
+                    newSeries = new TimeSeries(series.Type, series.Beam, series.Bin, series.Color, isFiltered, null);
+                }
                 foreach(var pt in series.Points)
                 {
                     newSeries.Points.Add(pt);
