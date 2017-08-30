@@ -1551,28 +1551,28 @@ namespace RTI
             // Update all the properties
             this.NotifyOfPropertyChange(null);
 
-            this.NotifyOfPropertyChange(() => this.PredictedBottomRange);
-            this.NotifyOfPropertyChange(() => this.PredictedProfileRange);
-            this.NotifyOfPropertyChange(() => this.MaximumVelocity);
-            this.NotifyOfPropertyChange(() => this.StandardDeviation);
-            this.NotifyOfPropertyChange(() => this.ProfileFirstBinPosition);
-            this.NotifyOfPropertyChange(() => this.NumberBatteryPacks);
-            this.NotifyOfPropertyChange(() => this.DataSize);
-            this.NotifyOfPropertyChange(() => this.WattHours);
+            //this.NotifyOfPropertyChange(() => this.PredictedBottomRange);
+            //this.NotifyOfPropertyChange(() => this.PredictedProfileRange);
+            //this.NotifyOfPropertyChange(() => this.MaximumVelocity);
+            //this.NotifyOfPropertyChange(() => this.StandardDeviation);
+            //this.NotifyOfPropertyChange(() => this.ProfileFirstBinPosition);
+            //this.NotifyOfPropertyChange(() => this.NumberBatteryPacks);
+            //this.NotifyOfPropertyChange(() => this.DataSize);
+            //this.NotifyOfPropertyChange(() => this.WattHours);
 
-            this.NotifyOfPropertyChange(() => this.DeploymentDuration);
-            this.NotifyOfPropertyChange(() => this.CEI);
-            this.NotifyOfPropertyChange(() => this.CWPON);
-            this.NotifyOfPropertyChange(() => this.CBTON);
-            this.NotifyOfPropertyChange(() => this.CBTTBP);
-            this.NotifyOfPropertyChange(() => this.CBTBB_TransmitPulseType);
-            this.NotifyOfPropertyChange(() => this.CWPTBP);
-            this.NotifyOfPropertyChange(() => this.CWPBB_LagLength);
-            this.NotifyOfPropertyChange(() => this.CWPBN);
-            this.NotifyOfPropertyChange(() => this.CWPBS);
-            this.NotifyOfPropertyChange(() => this.CWPBL);
-            this.NotifyOfPropertyChange(() => this.CWPBB_TransmitPulseType);
-            this.NotifyOfPropertyChange(() => this.CWPP);
+            //this.NotifyOfPropertyChange(() => this.DeploymentDuration);
+            //this.NotifyOfPropertyChange(() => this.CEI);
+            //this.NotifyOfPropertyChange(() => this.CWPON);
+            //this.NotifyOfPropertyChange(() => this.CBTON);
+            //this.NotifyOfPropertyChange(() => this.CBTTBP);
+            //this.NotifyOfPropertyChange(() => this.CBTBB_TransmitPulseType);
+            //this.NotifyOfPropertyChange(() => this.CWPTBP);
+            //this.NotifyOfPropertyChange(() => this.CWPBB_LagLength);
+            //this.NotifyOfPropertyChange(() => this.CWPBN);
+            //this.NotifyOfPropertyChange(() => this.CWPBS);
+            //this.NotifyOfPropertyChange(() => this.CWPBL);
+            //this.NotifyOfPropertyChange(() => this.CWPBB_TransmitPulseType);
+            //this.NotifyOfPropertyChange(() => this.CWPP);
 
             //this.NotifyOfPropertyChange(() => this.CyclesPerElement);
             //this.NotifyOfPropertyChange(() => this.CyclesPerElementPercentBandwidth);
