@@ -943,7 +943,7 @@ namespace RTI
             IsFindingAdcp = false;
 
             // Update the display
-            _displayTimer = new System.Timers.Timer(500);
+            _displayTimer = new System.Timers.Timer(1000);
             _displayTimer.Elapsed += _displayTimer_Elapsed;
             _displayTimer.AutoReset = true;
             _displayTimer.Enabled = true;

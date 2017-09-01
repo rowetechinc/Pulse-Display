@@ -29,6 +29,7 @@
  * 01/31/2014      RC          3.2.3      Save the GPS options to the selected project.
  * 08/07/2014      RC          4.0.0      Updated ReactiveCommand to 6.0.
  * 08/22/2014      RC          4.0.2      Added raw recording.
+ * 08/31/2017      RC          4.5.2      Slow down the update of the display.
  * 
  */
 
@@ -100,6 +101,11 @@ namespace RTI
         /// The type of terminal.
         /// </summary>
         private TerminalNavType _terminalType;
+
+        /// <summary>
+        /// Timer to reduce the number of update calls the terminal window.
+        /// </summary>
+        private System.Timers.Timer _displayTimer;
 
         #endregion
 
@@ -549,6 +555,12 @@ namespace RTI
             // Get the singleton ADCP connection
             _adcpConnection = adcpConn;
 
+            // Update the display
+            _displayTimer = new System.Timers.Timer(1000);
+            _displayTimer.Elapsed += _displayTimer_Elapsed;
+            _displayTimer.AutoReset = true;
+            _displayTimer.Enabled = true;
+
             // Create eventhandlers for serial connection/disconnection
             SubscribeSerialConnectionEvents();
 
@@ -857,11 +869,11 @@ namespace RTI
         /// <param name="data">Data received from the GPS serial port.</param>
         private void GpsSerialPort_ReceiveGpsSerialDataEvent(string data)
         {
-            this.NotifyOfPropertyChange(() => this.GpsReceiveBuffer);
+            //this.NotifyOfPropertyChange(() => this.GpsReceiveBuffer);
 
-            this.NotifyOfPropertyChange(() => this.IsRawGpsRecording);
-            this.NotifyOfPropertyChange(() => this.RawGpsBytesWritten);
-            this.NotifyOfPropertyChange(() => this.RawGpsFileName);
+            //this.NotifyOfPropertyChange(() => this.IsRawGpsRecording);
+            //this.NotifyOfPropertyChange(() => this.RawGpsBytesWritten);
+            //this.NotifyOfPropertyChange(() => this.RawGpsFileName);
         }
 
         /// <summary>
@@ -1543,6 +1555,26 @@ namespace RTI
         }
 
         #endregion
+
+        #endregion
+
+        #region Update Display
+
+        /// <summary>
+        /// Reduce the number of times the display is updated.
+        /// This will update the display based off the timer and not
+        /// based off when data is received.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void _displayTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            this.NotifyOfPropertyChange(() => this.GpsReceiveBuffer);
+
+            this.NotifyOfPropertyChange(() => this.IsRawGpsRecording);
+            this.NotifyOfPropertyChange(() => this.RawGpsBytesWritten);
+            this.NotifyOfPropertyChange(() => this.RawGpsFileName);
+        }
 
         #endregion
 
