@@ -1,5 +1,7 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.4.7
+
 Pulse-Display-4.4.6
  - Moved PulseDiaglogViewModel.
  - Added PredictionModel.
