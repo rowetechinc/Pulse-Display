@@ -32,6 +32,7 @@
  * 01/06/2016      RC          4.4.0      Added Retransform heading offset and GPS heading.
  * 05/11/2016      RC          4.4.3      Added ScreenBadHeading.
  * 04/26/2017      RC          4.4.6      In SetPreviousBottomTrackVelocity() checked if VTG message exists.
+ * 09/05/2017      RC          4.4.7      Fixed RemovedShip to include instrument and ship transform.
  * 
  */
 
@@ -69,17 +70,47 @@ namespace RTI
         /// <summary>
         /// Previous Good Bottom Track East velocity.
         /// </summary>
-        private float _prevBtEast;
+        private float _prevBtEast = DataSet.Ensemble.BAD_VELOCITY;
 
         /// <summary>
         /// Previous Good Bottom Track North velocity.
         /// </summary>
-        private float _prevBtNorth;
+        private float _prevBtNorth = DataSet.Ensemble.BAD_VELOCITY;
 
         /// <summary>
         /// Previous Good Bottom Track Vertical velocity.
         /// </summary>
-        private float _prevBtVert;
+        private float _prevBtVert = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed X.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedX = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed Y.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedY = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed Z.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedZ = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed Transverse.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedTransverse = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed Longitundial.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedLongitudinal = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous Ship Speed Normal.  Used to remove ship speed from Velocity data.
+        /// </summary>
+        private float _prevShipSpeedNormal = DataSet.Ensemble.BAD_VELOCITY;
 
         /// <summary>
         /// Use the previous good heading, if heading drops out.
@@ -597,6 +628,13 @@ namespace RTI
                 // Calculate the new Earth velocities
                 Transform.ProfileTransform(ref ensemble, _Options.WpCorrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
                 Transform.BottomTrackTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
+
+                // WaterMass transform data
+                // This will also create the ship data
+                if (ensemble.IsInstrumentWaterMassAvail)
+                {
+                    Transform.WaterMassTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset, 0.0f);
+                }
             }
 
             // Mark Bad Below Bottom
@@ -609,10 +647,15 @@ namespace RTI
             if (_Options.IsRemoveShipSpeed)
             {
                 ScreenData.RemoveShipSpeed.RemoveVelocity(ref ensemble, _prevBtEast, _prevBtNorth, _prevBtVert, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel, _Options.GpsHeadingOffset);
+                ScreenData.RemoveShipSpeed.RemoveVelocityInstrument(ref ensemble, _prevShipSpeedX, _prevShipSpeedY, _prevShipSpeedZ, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel, _Options.GpsHeadingOffset);
+                ScreenData.RemoveShipSpeed.RemoveVelocityShip(ref ensemble, _prevShipSpeedTransverse, _prevShipSpeedLongitudinal, _prevShipSpeedNormal, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel, _Options.GpsHeadingOffset);
+
+                // Create the new velocity vectors based off the new data
+                DataSet.VelocityVectorHelper.CreateVelocityVector(ref ensemble);
             }
 
-            // Record the Bottom for previous values
-            SetPreviousBottomTrackVelocity(ensemble);
+            // Record the previous ship speed values
+            SetPreviousShipSpeed(ensemble);
         }
 
         #endregion
@@ -620,85 +663,32 @@ namespace RTI
         #region Remove Ship Speed
 
         /// <summary>
-        /// Record the previous ensembles so when trying to remove the ship speed
-        /// if the current Bottom Track values are not good, we can use the previous
-        /// values to get close.
+        /// Store the previous Ship speed for the different velocity coordinate transforms.
         /// </summary>
-        /// <param name="ensemble">Ensemble to get the Bottom Track data.</param>
-        private void SetPreviousBottomTrackVelocity(DataSet.Ensemble ensemble)
+        /// <param name="ens">Ensembles.</param>
+        private void SetPreviousShipSpeed(DataSet.Ensemble ens)
         {
-            try
-            {
-                if (_Options.CanUseBottomTrackVel)
-                {
-                    // Check that Bottom Track exist
-                    if (ensemble.IsBottomTrackAvail)
-                    {
-                        // Check that the values are good
-                        if (ensemble.BottomTrackData.IsEarthVelocityGood())
-                        {
-                            // Check that it is not a 3 beam solution
-                            // All the Beam values should be good
-                            if (ensemble.BottomTrackData.IsBeamVelocityGood())
-                            {
-                                _prevBtEast = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_EAST_INDEX];
-                                _prevBtNorth = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_NORTH_INDEX];
-                                _prevBtVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX];
-                            }
-                        }
-                    }
-                }
+            // EARTH
+            // Record the Bottom for previous values
+            float[] prevShipSpeed = ScreenData.RemoveShipSpeed.GetPreviousShipSpeed(ens, (float)_Options.GpsHeadingOffset, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel);
+            _prevBtEast = prevShipSpeed[0];
+            _prevBtNorth = prevShipSpeed[1];
+            _prevBtVert = prevShipSpeed[2];
 
-                if (_Options.CanUseGpsVel && !ensemble.IsBottomTrackAvail)
-                {
-                    if (ensemble.IsNmeaAvail)
-                    {
-                        // Check if Gps Speed is good
-                        if (ensemble.NmeaData.IsGpvtgAvail())
-                        {
-                            if (ensemble.NmeaData.IsGpsSpeedGood())
-                            {
-                                double heading = 0.0;
+            // Instrument
+            // Record the Bottom for previous values
+            float[] prevShipSpeedInstrument = ScreenData.RemoveShipSpeed.GetPreviousShipSpeedInstrument(ens, (float)_Options.GpsHeadingOffset, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel);
+            _prevShipSpeedX = prevShipSpeedInstrument[0];
+            _prevShipSpeedY = prevShipSpeedInstrument[1];
+            _prevShipSpeedZ = prevShipSpeedInstrument[2];
 
-                                if (ensemble.IsAncillaryAvail)
-                                {
-                                    // Heading defaults from ADCP
-                                    heading = ensemble.AncillaryData.Heading + _Options.GpsHeadingOffset;
-                                }
-                                // Heading from GPS if its available
-                                else if (ensemble.NmeaData.IsGpvtgAvail())
-                                {
-                                    heading = ensemble.NmeaData.GPVTG.Bearing.DecimalDegrees + _Options.GpsHeadingOffset;
-                                }
-                                else if (ensemble.NmeaData.IsGphdtAvail())
-                                {
-                                    heading = ensemble.NmeaData.GPHDT.Heading.DecimalDegrees + _Options.GpsHeadingOffset;
-                                }
+            // Ship
+            // Record the Bottom for previous values
+            float[] prevShipSpeedShip = ScreenData.RemoveShipSpeed.GetPreviousShipSpeedShip(ens, (float)_Options.GpsHeadingOffset, _Options.CanUseBottomTrackVel, _Options.CanUseGpsVel);
+            _prevShipSpeedTransverse = prevShipSpeedShip[0];
+            _prevShipSpeedLongitudinal = prevShipSpeedShip[1];
+            _prevShipSpeedNormal = prevShipSpeedShip[2];
 
-                                if (ensemble.NmeaData.IsGpvtgAvail())
-                                {
-                                    // Speed from the GPS
-                                    double speed = ensemble.NmeaData.GPVTG.Speed.ToMetersPerSecond().Value;
-
-                                    // Calculate the East and North component of the GPS speed
-                                    _prevBtEast = Convert.ToSingle(speed * Math.Sin(MathHelper.DegreeToRadian(heading)));
-                                    _prevBtNorth = Convert.ToSingle(speed * Math.Cos(MathHelper.DegreeToRadian(heading)));
-                                }
-
-                                // We do not have a vertical velocity using GPS speed, so try to use the Bottom Track
-                                if (ensemble.IsBottomTrackAvail && ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX] != DataSet.Ensemble.BAD_VELOCITY)
-                                {
-                                    _prevBtVert = ensemble.BottomTrackData.EarthVelocity[DataSet.Ensemble.BEAM_VERTICAL_INDEX];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                log.Error("Error setting previous bottom track.", e);
-            }
         }
 
         #endregion

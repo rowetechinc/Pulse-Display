@@ -3716,6 +3716,29 @@ namespace RTI
 
         }
 
+        /// <summary>
+        /// Publish the latest raw ensemble to all subscribers.
+        /// This data will NOT be screened, averaged or VM be applied to it.
+        /// </summary>
+        /// <param name="ens">Ensemble to publish.</param>
+        /// <param name="source">Source of ensemble.</param>
+        /// <param name="type">Type of ensemble.</param>
+        private void PublishRawEnsemble(DataSet.Ensemble ens, EnsembleSource source, EnsembleType type)
+        {
+            //if (ReceiveEnsembleEvent != null)
+            //{
+            //    ReceiveEnsembleEvent(ens);
+            //}
+
+            if (ens != null)
+            {
+                //_events.PublishOnUIThread(new EnsembleEvent(ens, source, type));
+                //_events.PublishOnUIThreadAsync(new EnsembleEvent(ens, source, type));
+                _events.PublishOnBackgroundThread(new EnsembleRawEvent(ens, source, type));
+            }
+
+        }
+
         #endregion
 
         #region Publish Long Term Averaged Ensemble
@@ -4125,6 +4148,13 @@ namespace RTI
             if (IsValidationTestRecording)
             {
                 WriteValidationTestData(binaryEnsemble, ensemble);
+            }
+
+            // Publish the raw unscreened and averaged ensemble
+            // Do not publish the data if you are importing data
+            if (!IsImporting)
+            {
+                PublishRawEnsemble(ensemble.Clone(), source, type);
             }
 
             // Set the ensemble

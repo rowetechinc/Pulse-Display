@@ -26,6 +26,7 @@
  * -----------------------------------------------------------------
  * 06/26/2013      RC          3.0.2      Initial coding.
  * 12/06/2013      RC          3.2.0      Added BulkEnsembleEvent and SelectedEnsembleEvent.
+ * 09/05/2017      RC          4.4.7      Added EnsembleRawEvent to handle unprocessed data for data output.
  * 
  */
 
@@ -95,6 +96,7 @@ namespace RTI
 
     /// <summary>
     /// Event to pass around an ensemble.
+    /// This data is screend, averaged, vessel mount options and VelocityVectors applied.
     /// </summary>
     public class EnsembleEvent
     {
@@ -129,6 +131,50 @@ namespace RTI
         /// <param name="source">Source of the ensemble.</param>
         /// <param name="type">Type of ensemble: single or averaged.  Default is SINGLE.</param>
         public EnsembleEvent(DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type = EnsembleType.Single)
+        {
+            Ensemble = ensemble;
+            Source = source;
+            Type = type;
+        }
+    }
+
+    /// <summary>
+    /// Event to pass around a raw ensemble.
+    /// This will be not screened, averaged or vessel mount applied.
+    /// </summary>
+    public class EnsembleRawEvent
+    {
+        #region Properties
+
+        /// <summary>
+        /// Set the source of the ensemble.  
+        /// A live ensemble is an ensemble that is coming live from
+        /// the ADCP.  It can come from the Serial or Ethnernt.  
+        /// A playback ensemble is an ensemble that is playbacked
+        /// from a project.
+        /// </summary>
+        public EnsembleSource Source { get; set; }
+
+        /// <summary>
+        /// Type of ensemble.
+        /// Single or averaged ensemble.
+        /// </summary>
+        public EnsembleType Type { get; set; }
+
+        /// <summary>
+        /// Ensemble.
+        /// </summary>
+        public DataSet.Ensemble Ensemble { get; set; }
+
+        #endregion
+
+        /// <summary>
+        /// Initialize the event.
+        /// </summary>
+        /// <param name="ensemble">Ensemble to send in event.</param>
+        /// <param name="source">Source of the ensemble.</param>
+        /// <param name="type">Type of ensemble: single or averaged.  Default is SINGLE.</param>
+        public EnsembleRawEvent(DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type = EnsembleType.Single)
         {
             Ensemble = ensemble;
             Source = source;

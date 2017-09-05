@@ -1,6 +1,7 @@
 ﻿Pulse_Display Changelog
 
 Pulse-Display-4.4.7
+ - In ScreenDataViewModel, fixed RemovedShip to include instrument and ship transform.
 
 Pulse-Display-4.4.6
  - Moved PulseDiaglogViewModel.

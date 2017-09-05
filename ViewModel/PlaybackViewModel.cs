@@ -678,6 +678,9 @@ namespace RTI
             // Distribute the dataset to all subscribers
             if (data != null)
             {
+                // Publish the ensemble before it is screened and averaged
+                _events.PublishOnBackgroundThread(new EnsembleRawEvent(data.Clone(), EnsembleSource.Playback));
+
                 // Make a copy of the ensemble to pass to all the views
                 DataSet.Ensemble newEnsemble = data.Clone();
 
@@ -690,6 +693,7 @@ namespace RTI
                 // Average the data
                 _averagingVM.AverageEnsemble(newEnsemble);
 
+                // Publish the ensemble after screening and averging the data
                 _events.PublishOnBackgroundThread(new EnsembleEvent(newEnsemble, EnsembleSource.Playback));
             }
         }
