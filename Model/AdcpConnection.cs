@@ -66,6 +66,7 @@
  * 12/03/2015      RC          4.4.0      Changed VT file name to RTI.
  * 05/12/2016      RC          4.4.3      Check for null in StopRawAdcpRecord().
  * 09/28/2016      RC          4.4.4      Increase the time to run the DiagSpectrum test to 180 seconds for dual frequency systems.
+ * 09/17/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
  * 
  */
 
@@ -83,6 +84,7 @@ namespace RTI
     using System.Collections.Concurrent;
     using ReactiveUI;
     using System.Threading.Tasks;
+    using System.Net;
 
 
     /// <summary>
@@ -135,7 +137,15 @@ namespace RTI
             /// This connection is used to received
             /// data from a TCP server.
             /// </summary>
-            TCP
+            TCP,
+
+            /// <summary>
+            /// UDP connection.
+            /// This connection is used to received
+            /// data from a UDP server.
+            /// </summary>
+            UDP
+
         }
 
         /// <summary>
@@ -375,6 +385,11 @@ namespace RTI
         private AdcpTcpIp AdcpTcp { get; set; }
 
         /// <summary>
+        /// UDP connection to the ADCP.
+        /// </summary>
+        private AdcpUdp AdcpUdp { get; set; }
+
+        /// <summary>
         /// Serial port connection to the GPS 1.
         /// </summary>
         public GpsSerialPort Gps1SerialPort { get; set; }
@@ -454,6 +469,10 @@ namespace RTI
                 {
                     return AdcpTcp.ReceiveBufferString;
                 }
+                else if (AdcpCommType == AdcpCommTypes.UDP)
+                {
+                    return AdcpUdp.ReceiveBufferString;
+                }
 
                 return "";
             }
@@ -470,6 +489,10 @@ namespace RTI
                 else if (AdcpCommType == AdcpCommTypes.TCP)
                 {
                     AdcpTcp.ReceiveBufferString = value;
+                }
+                else if (AdcpCommType == AdcpCommTypes.UDP)
+                {
+                    AdcpUdp.ReceiveBufferString = value;
                 }
             }
         }
@@ -803,11 +826,11 @@ namespace RTI
             InitializeGpsConnections();
 
             // Create a default connection
-            AdcpEthernetPort = new AdcpEthernet(new AdcpEthernetOptions() { IpAddrA = _pm.GetEthernetIpAddressA(), IpAddrB = _pm.GetEthernetIpAddressB(), IpAddrC = _pm.GetEthernetIpAddressC(), IpAddrD = _pm.GetEthernetIpAddressD(), Port = _pm.GetEthernetPort() });
+            //AdcpEthernetPort = new AdcpEthernet(new AdcpEthernetOptions() { IpAddrA = _pm.GetEthernetIpAddressA(), IpAddrB = _pm.GetEthernetIpAddressB(), IpAddrC = _pm.GetEthernetIpAddressC(), IpAddrD = _pm.GetEthernetIpAddressD(), Port = _pm.GetEthernetPort() });
 
             // Create TCP connection
-            AdcpTcp = new AdcpTcpIp(new AdcpEthernetOptions() { IpAddrA = _pm.GetEthernetIpAddressA(), IpAddrB = _pm.GetEthernetIpAddressB(), IpAddrC = _pm.GetEthernetIpAddressC(), IpAddrD = _pm.GetEthernetIpAddressD(), Port = _pm.GetEthernetPort() });
-            AdcpTcp.ReceiveRawTcpDataEvent += new AdcpTcpIp.ReceiveRawTcpDataEventHandler(ReceiveAdcpSerialData);
+            //AdcpTcp = new AdcpTcpIp(new AdcpEthernetOptions() { IpAddrA = _pm.GetEthernetIpAddressA(), IpAddrB = _pm.GetEthernetIpAddressB(), IpAddrC = _pm.GetEthernetIpAddressC(), IpAddrD = _pm.GetEthernetIpAddressD(), Port = _pm.GetEthernetPort() });
+            //dcpTcp.ReceiveRawTcpDataEvent += new AdcpTcpIp.ReceiveRawTcpDataEventHandler(ReceiveAdcpSerialData);
 
             // Terminal View Model
             TerminalVM = new TerminalViewModel(this);
@@ -929,6 +952,10 @@ namespace RTI
             {
                 return AdcpTcp.IsOpen();
             }
+            else if(AdcpCommType ==  AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.IsOpen();
+            }
 
             return false;
         }
@@ -982,6 +1009,10 @@ namespace RTI
             else if (AdcpCommType == AdcpCommTypes.TCP)
             {
                 AdcpTcp.SendBreak();
+            }
+            else if(AdcpCommType == AdcpCommTypes.UDP)
+            {
+                AdcpUdp.SendBreak();
             }
         }
 
@@ -1062,6 +1093,10 @@ namespace RTI
             {
                 AdcpTcp.SendData(data);
             }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                AdcpUdp.SendData(data);
+            }
         }
 
         /// <summary>
@@ -1090,6 +1125,10 @@ namespace RTI
             {
                 AdcpTcp.SendData(buffer, offset, count);
             }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                AdcpUdp.SendData(buffer, offset, count);
+            }
         }
 
 
@@ -1115,6 +1154,10 @@ namespace RTI
             else if (AdcpCommType == AdcpCommTypes.TCP)
             {
                 return AdcpTcp.SendDataWaitReply(buffer, timeout);
+            }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.SendData(buffer);
             }
 
             return false;
@@ -1148,6 +1191,11 @@ namespace RTI
             {
                 return AdcpTcp.SendDataGetReply(data, sendBreak, waitTime);
             }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                AdcpUdp.SendData(data);
+                return "";
+            }
 
             return "";
         }
@@ -1170,6 +1218,10 @@ namespace RTI
             else if (AdcpCommType == AdcpCommTypes.TCP)
             {
                 return AdcpTcp.SendCommands(commands);
+            }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.SendCommands(commands);
             }
 
             return false;
@@ -1199,6 +1251,10 @@ namespace RTI
             {
                 return AdcpTcp.StartPinging();
             }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.SendData(RTI.Commands.AdcpCommands.CMD_START_PINGING);
+            }
 
             return false;
         }
@@ -1227,6 +1283,11 @@ namespace RTI
             {
                 return AdcpTcp.StartPinging(useLocal);
             }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.SendData(RTI.Commands.AdcpCommands.CMD_START_PINGING);
+            }
+            
 
             return false;
         }
@@ -1250,6 +1311,10 @@ namespace RTI
             else if (AdcpCommType == AdcpCommTypes.TCP)
             {
                 return AdcpTcp.StopPinging();
+            }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
+            {
+                return AdcpUdp.SendData(RTI.Commands.AdcpCommands.CMD_STOP_PINGING);
             }
 
             return false;
@@ -2140,13 +2205,19 @@ namespace RTI
 
         #endregion
 
-        #region Ethernet
+        #region ADCP Ethernet
 
         /// <summary>
         /// Connect to the ADCP ethernet port.
         /// </summary>
         public void ConnectAdcpEthernet()
         {
+            if (AdcpEthernetPort == null)
+            {
+                // Create a default connection
+                AdcpEthernetPort = new AdcpEthernet(new AdcpEthernetOptions() { IpAddrA = _pm.GetEthernetIpAddressA(), IpAddrB = _pm.GetEthernetIpAddressB(), IpAddrC = _pm.GetEthernetIpAddressC(), IpAddrD = _pm.GetEthernetIpAddressD(), Port = _pm.GetEthernetPort() });
+            }
+
             if (AdcpEthernetPort != null)
             {
                 // Subscribe to receive ADCP data
@@ -2407,6 +2478,62 @@ namespace RTI
         }
 
         #endregion
+
+        #region UDP
+
+        /// <summary>
+        /// Connect to the ADCP ethernet port.
+        /// </summary>
+        public void ConnectAdcpUdp()
+        {
+            // Disconnect if connected
+            if(AdcpUdp != null)
+            {
+                DisconnectAdcpUdp();
+            }
+
+            // Get the IP address
+            //var ipAddrA = _pm.GetEthernetIpAddressA().ToString();
+            //var ipAddrB = _pm.GetEthernetIpAddressB().ToString();
+            //var ipAddrC = _pm.GetEthernetIpAddressC().ToString();
+            //var ipAddrD = _pm.GetEthernetIpAddressD().ToString();
+            //string ipStr = ipAddrA + "." + ipAddrB + "." + ipAddrC + "." + ipAddrD;
+
+            //// Set the endpoint with IP and port
+            //IPAddress ip = IPAddress.Parse(ipStr);
+            //IPAddress ip = IPAddress.Any;               // To listen, use ANY IP Address, To send, use IP address and port
+            int port = (int)_pm.GetEthernetPort();
+            //var endpt = new IPEndPoint(ip, port);
+
+            //// Make the connection
+            //AdcpUdp = new AdcpUdp(endpt);
+
+            AdcpUdp = new AdcpUdp(port);
+
+            if (AdcpUdp != null)
+            {
+                // Subscribe to receive ADCP data
+                AdcpUdp.ReceiveRawUdpDataEvent += new AdcpUdp.ReceiveRawUdpDataEventHandler(ReceiveAdcpSerialData);
+            }
+        }
+
+        /// <summary>
+        /// Disconnect to the ADCP ethernet port.
+        /// </summary>
+        public void DisconnectAdcpUdp()
+        {
+            if (AdcpUdp != null)
+            {
+                // Subscribe to receive ADCP data
+                AdcpUdp.ReceiveRawUdpDataEvent -= ReceiveAdcpSerialData;
+
+                AdcpUdp.Dispose();
+                AdcpUdp = null;
+            }
+        }
+
+        #endregion
+
 
         #region Download
 
@@ -4569,7 +4696,9 @@ namespace RTI
                 {
                     // Block until awoken when data is received
                     // Timeout every 60 seconds to see if shutdown occured
-                    _eventWaitData.WaitOne();
+                    _eventWaitData.WaitOne(60000);
+
+                    //Debug.WriteLine("AdcpConnection:ReceiveDataThread: STart");
 
                     // If wakeup was called to kill thread
                     if (!_continue)
@@ -4611,6 +4740,8 @@ namespace RTI
                             }
                         }
                     }
+
+                    //Debug.WriteLine("AdcpConnection:ReceiveDataThread: End");
 
                 }
                 catch (ThreadAbortException)

@@ -30,6 +30,7 @@
  * 07/15/2014      RC          3.4.0      Changed the default serial number.  Also i have the subsystem type expanded by default.
  * 08/07/2014      RC          4.0.0      Updated ReactiveCommand to 6.0.
  * 08/01/2015      RC          4.1.3      Added an event to know when the serial number changes. 
+ * 09/13/2017      RC          4.4.7      Added UpdateSerialNumber() to add a new serial number.
  * 
  */
 
@@ -373,6 +374,17 @@ namespace RTI
         public override void Dispose()
         {
 
+        }
+
+        /// <summary>
+        /// Update the serial number with a given serial number.
+        /// </summary>
+        /// <param name="serialNumber">New serial number.</param>
+        public void UpdateSerialNumber(SerialNumber serialNumber)
+        {
+            _SerialNumber = serialNumber;
+
+            UpdateProperties();
         }
 
         /// <summary>

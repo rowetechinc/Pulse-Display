@@ -2,6 +2,10 @@
 
 Pulse-Display-4.4.7
  - In ScreenDataViewModel, fixed RemovedShip to include instrument and ship transform.
+ - In AdcpConnection, added AdcpUdp and removed AdcpTcp.
+ - In TerminalAdcpViewModel, added AdcpUdp and removed AdcpTcp.
+ - In SerialNumberGeneratorVM, added UpdateSerialNumber() to add a new serial number.
+ - In TerminalAdcpViewModel, in ScanSerialPorts(), made it also reconnect the serial port.
 
 Pulse-Display-4.4.6
  - Moved PulseDiaglogViewModel.

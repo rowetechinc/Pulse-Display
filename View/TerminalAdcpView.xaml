@@ -30,7 +30,7 @@
 		</Grid.ColumnDefinitions>
 				
 		<!--Serial Port Settings-->
-        <StackPanel Grid.Row="0" Grid.Column="0" Background="{StaticResource PulseBackBorder3Color}">
+        <StackPanel Grid.Row="0" Grid.Column="0" Background="{StaticResource PulseBackBorder3Color}" ToolTip="{Binding CommPortTooltip}">
 
             <TextBlock Text="ADCP Communication Port" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Margin="5" />
             <!--List of the Comm Options-->
@@ -63,7 +63,7 @@
                     <StackPanel Orientation="Horizontal">
                         <ComboBox ItemsSource="{Binding CommPortList}" Width="115" SelectedItem="{Binding Path=SelectedAdcpCommPort}" Margin="5" />
                         <Button Content="Scan" Command="{Binding Path=ScanSerialPortsCommand}" Margin="5" ToolTip="Refresh the COMM ports available." />
-                        <Button Content="Find ADCP" Command="{Binding Path=FindAdcpCommand}" Margin="5" ToolTip="Search for any available ADCP." />
+                        <!--Button Content="Find ADCP" Command="{Binding Path=FindAdcpCommand}" Margin="5" ToolTip="Search for any available ADCP." /-->
                     </StackPanel>
                     <ComboBox ItemsSource="{Binding BaudRateList}" SelectedItem="{Binding Path=SelectedAdcpBaudRate}" Margin="5" />
                     <Expander Header="Advanced" Background="{StaticResource PulseBackBorder1Color}" BorderBrush="Transparent">
@@ -93,7 +93,7 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Port:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
+                        <TextBlock Text="UDP Port:" Foreground="{StaticResource PulseFontColor}" FontSize="16" FontWeight="Bold" Margin="5" />
                         <TextBox Text="{Binding Path=EtherPort}" Width="75" Margin="5" />
                     </StackPanel>
 
@@ -155,12 +155,13 @@
         </StackPanel>
 
         <StackPanel  Grid.Row="0" Grid.Column="2">
-            <Button Content="CSHOW" Command="{Binding CSHOWCommand}" Margin="5" />
-            <Button Content="SLEEP" Command="{Binding SLEEPCommand}" Margin="5" />
-            <Button Content="Set Time" Command="{Binding SetTimeCommand}" Margin="5" />
-            <Button Content="Zero Pressure Sensor" Command="{Binding ZeroPressureSensorCommand}" Margin="5" />
-            <Button Content="Compass Connect" Command="{Binding CompassConnectCommand}" Margin="5" />
-            <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" />
+            <Button Content="CSHOW" Command="{Binding CSHOWCommand}" Margin="5" ToolTip="Display the current configuration." />
+            <Button Content="CEMAC" Command="{Binding CEMACCommand}" Margin="5" ToolTip="Turn on the ethernet communicaton." />
+            <Button Content="SLEEP" Command="{Binding SLEEPCommand}" Margin="5" ToolTip="Put the ADCP to sleep to conserve power."/>
+            <Button Content="Set Time" Command="{Binding SetTimeCommand}" Margin="5" ToolTip="Set the time to the current PC time."/>
+            <Button Content="Zero Pressure Sensor" Command="{Binding ZeroPressureSensorCommand}" Margin="5" ToolTip="Zero the pressure sensor.  Do above the water." />
+            <Button Content="Compass Connect" Command="{Binding CompassConnectCommand}" Margin="5" ToolTip="Change communication to the internal PNI compass." />
+            <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" ToolTip="Stop communication with the internal PNI compass." />
         </StackPanel>
 
         <!--Command Set-->

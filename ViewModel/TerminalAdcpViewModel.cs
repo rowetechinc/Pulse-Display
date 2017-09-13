@@ -38,6 +38,8 @@
  * 08/22/2014      RC          4.0.2      Added raw recording.
  * 12/02/2015      RC          4.4.0      Added, DataBit, Parity and Stop Bit.
  * 05/24/2017      RC          4.4.6      Added some additional command buttons.
+ * 09/13/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
+ *                                         In ScanSerialPorts(), made it also reconnect the serial port.
  * 
  */
 
@@ -834,6 +836,38 @@ namespace RTI
 
         #endregion
 
+        #region Tooltips
+
+        /// <summary>
+        /// Set the tooltip for the command port.
+        /// </summary>
+        public string CommPortTooltip
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Serial Communication");
+                sb.AppendLine("  Set the serial COMM port and Baud rate at a minimum.");
+                sb.AppendLine("  Under Advanced you can set additional settings.");
+                sb.AppendLine("  This will output data from the selected serial port.  It is assumed to be ADCP data.  All formats are accepted.");
+                sb.AppendLine(" ");
+                sb.AppendLine("ADCP Ethernet");
+                sb.AppendLine("  Set the IP address of the ADCP.  The IP address is set using the IP command.");
+                sb.AppendLine("  Send the CEMAC command to turn the ethernet port on.");
+                sb.AppendLine("  This will use the PING (ICMP) command to send and receive data through the ethernet port.");
+                sb.AppendLine("  This will will NOT receive live ADCP data.  It is used primarily for downloading data and sending commands.");
+                sb.AppendLine(" ");
+                sb.AppendLine("ADCP UDP");
+                sb.AppendLine("  Set the UDP Port of the ADCP. The UDP port is set using the UDP command.");
+                sb.AppendLine("  Send the CEMAC command to turn the ethernet port on.");
+                sb.AppendLine("  This will output DVL data through the UDP port.");
+
+                return sb.ToString();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Commands
@@ -882,6 +916,11 @@ namespace RTI
         /// Command to send the command CSHOW to see all the settings.
         /// </summary>
         public ReactiveCommand<System.Reactive.Unit> CSHOWCommand { get; protected set; }
+
+        /// <summary>
+        /// Command to send the command CEMAC to see all the settings.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> CEMACCommand { get; protected set; }
 
         /// <summary>
         /// Command to send the command SLEEP.
@@ -953,7 +992,8 @@ namespace RTI
             AdcpCommOptionsList = new ReactiveList<AdcpCommOptions>();
             AdcpCommOptionsList.Add(new AdcpCommOptions(AdcpConnection.AdcpCommTypes.Serial, "Serial"));
             AdcpCommOptionsList.Add(new AdcpCommOptions(AdcpConnection.AdcpCommTypes.Ethernet, "ADCP Ethernet"));
-            AdcpCommOptionsList.Add(new AdcpCommOptions(AdcpConnection.AdcpCommTypes.TCP, "TCP"));
+            //AdcpCommOptionsList.Add(new AdcpCommOptions(AdcpConnection.AdcpCommTypes.TCP, "TCP"));
+            AdcpCommOptionsList.Add(new AdcpCommOptions(AdcpConnection.AdcpCommTypes.UDP, "ADCP UDP"));
 
             // Get the singleton ADCP connection
             _adcpConnection = adcpConn;
@@ -1001,7 +1041,12 @@ namespace RTI
             // CSHOW command
             CSHOWCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                         // Pass the AdcpConnection
                                                                         x => x.Value != null),                                                          // Verify the Serial port object exist
-                                                                        _ => Task.Run(() => CshowCommandExec()));                                       // CSHOW command        
+                                                                        _ => Task.Run(() => CshowCommandExec()));                                       // CSHOW command    
+
+            // CSHOW command
+            CEMACCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                         // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => CemacCommandExec()));                                       // CEMAC command    
 
             // SLEEP command
             SLEEPCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                         // Pass the AdcpConnection
@@ -1060,6 +1105,10 @@ namespace RTI
                 _SelectedAdcpConnOption = AdcpCommOptionsList[1];
             }
             else if (_adcpConnection.AdcpCommType == AdcpConnection.AdcpCommTypes.TCP)
+            {
+                _SelectedAdcpConnOption = AdcpCommOptionsList[2];
+            }
+            else if (_adcpConnection.AdcpCommType == AdcpConnection.AdcpCommTypes.UDP)
             {
                 _SelectedAdcpConnOption = AdcpCommOptionsList[2];
             }
@@ -1216,6 +1265,15 @@ namespace RTI
         private void CshowCommandExec()
         {
             _adcpConnection.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_CSHOW);
+        }
+
+        /// <summary>
+        /// Send the command to CEMAC.
+        /// </summary>
+        /// <returns></returns>
+        private void CemacCommandExec()
+        {
+            _adcpConnection.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_CEMAC);
         }
 
         /// <summary>
@@ -1401,6 +1459,9 @@ namespace RTI
                     SelectedAdcpCommPort = CommPortList[0];
                 }
             }
+
+            // Also try to reconnect the settings, someone may have clicked this to reconnect
+            _adcpConnection.ReconnectAdcpSerial(new SerialOptions() { Port = SelectedAdcpCommPort, BaudRate = SelectedAdcpBaudRate, DataBits = SelectedDataBit, Parity = SelectedParity, StopBits = SelectedStopBit });
         }
 
         /// <summary>
@@ -1438,7 +1499,8 @@ namespace RTI
 
                     // Disconnect the ethernet port
                     _adcpConnection.DisconnectAdcpEthernet();
-                    _adcpConnection.DisconnectTcp();
+                    //_adcpConnection.DisconnectTcp();
+                    _adcpConnection.DisconnectAdcpUdp();
                 }
                 // ADCP Ethernet port
                 // This is the ethernet port within the ADCP
@@ -1447,7 +1509,8 @@ namespace RTI
                     // Disconnect all previous connections
                     _adcpConnection.DisconnectAdcpSerial();
                     _adcpConnection.DisconnectAdcpEthernet();
-                    _adcpConnection.DisconnectTcp();
+                    //_adcpConnection.DisconnectTcp();
+                    _adcpConnection.DisconnectAdcpUdp();
 
                     // Connect to the ethernet port
                     _adcpConnection.ConnectAdcpEthernet();
@@ -1460,10 +1523,22 @@ namespace RTI
                     // Disconnect all previous connections
                     _adcpConnection.DisconnectAdcpSerial();
                     _adcpConnection.DisconnectAdcpEthernet();
-                    _adcpConnection.DisconnectTcp();
+                    //_adcpConnection.DisconnectTcp();
+                    _adcpConnection.ConnectAdcpUdp();
 
                     // Connect to TCP server
-                    _adcpConnection.ConnectTcp();
+                    //_adcpConnection.ConnectTcp();
+                }
+                else if(option.AdcpCommType == AdcpConnection.AdcpCommTypes.UDP)
+                {
+                    // Disconnect all previous connections
+                    _adcpConnection.DisconnectAdcpSerial();
+                    _adcpConnection.DisconnectAdcpEthernet();
+                    //_adcpConnection.DisconnectTcp();
+                    _adcpConnection.DisconnectAdcpUdp();
+
+                    // Connect to UDP port
+                    _adcpConnection.ConnectAdcpUdp();
                 }
             //}
         }
