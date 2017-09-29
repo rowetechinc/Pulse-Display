@@ -832,7 +832,79 @@ namespace RTI
                 this.NotifyOfPropertyChange(() => this.CanFindAdcp);
             }
         }
-        
+
+
+        #endregion
+
+        #region Advanced BREAK
+
+        /// <summary>
+        /// Number of Wait states to wait during BREAK.
+        /// </summary>
+        private int _WaitState;
+        /// <summary>
+        /// Number of Wait states to wait during BREAK.
+        /// </summary>
+        public int WaitState
+        {
+            get { return _WaitState; }
+            set
+            {
+                _WaitState = value;
+                this.NotifyOfPropertyChange(() => this.WaitState);
+            }
+        }
+
+        /// <summary>
+        /// Number of Wait states to wait after BREAK.
+        /// </summary>
+        private int _WaitStateAfterBreak;
+        /// <summary>
+        /// Number of Wait states to wait after BREAK.
+        /// </summary>
+        public int WaitStateAfterBreak
+        {
+            get { return _WaitStateAfterBreak; }
+            set
+            {
+                _WaitStateAfterBreak = value;
+                this.NotifyOfPropertyChange(() => this.WaitStateAfterBreak);
+            }
+        }
+
+        /// <summary>
+        /// Send a SOFT BREAK after BREAK if it fails.
+        /// </summary>
+        private bool _IsSoftBreak;
+        /// <summary>
+        /// Send a SOFT BREAK after BREAK if it fails.
+        /// </summary>
+        public bool IsSoftBreak
+        {
+            get { return _IsSoftBreak; }
+            set
+            {
+                _IsSoftBreak = value;
+                this.NotifyOfPropertyChange(() => this.IsSoftBreak);
+            }
+        }
+
+        /// <summary>
+        /// Tooltip for Advanced BREAK.
+        /// </summary>
+        public string AdvancedBreakToolTip
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Advanced BREAK");
+                sb.AppendLine("This will allow the user to customize the BREAK to work for them.");
+                sb.AppendLine("First Option: Number of WAIT_STATES to wait during the BREAK to leave it on.  WAIT_STATE=250ms");
+                sb.AppendLine("Second Option: Number of WAIT_STATES to after the BREAK.  WAIT_STATE=250ms");
+                sb.AppendLine("Third Option: Send a SOFT BREAK if the HARD BREAK fails.");
+                return sb.ToString();
+            }
+        }
 
         #endregion
 
@@ -967,6 +1039,11 @@ namespace RTI
         /// </summary>
         public ReactiveCommand<System.Reactive.Unit> TestPingEthernetCommand { get; protected set; }
 
+        /// <summary>
+        /// Command to send a short BREAK.
+        /// </summary>
+        public ReactiveCommand<System.Reactive.Unit> AdvancedBREAKCommand { get; protected set; }
+
         #endregion
 
         /// <summary>
@@ -986,6 +1063,11 @@ namespace RTI
             _displayTimer.Elapsed += _displayTimer_Elapsed;
             _displayTimer.AutoReset = true;
             _displayTimer.Enabled = true;
+
+            // Advanced BREAK
+            WaitState = 1;
+            WaitStateAfterBreak = 0;
+            IsSoftBreak = false;
 
             // Set the list
             InitList();
@@ -1082,6 +1164,12 @@ namespace RTI
             TestPingEthernetCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                               // Pass the AdcpConnection
                                                                         x => x.Value != null),                                                          // Verify the Serial port object exist
                                                                         _ => Task.Run(() => SendTestEthernetPing()));                                   // Send the command set command                                  
+
+            // Test Ethernet Ping Command
+            AdvancedBREAKCommand = ReactiveCommand.CreateAsyncTask(this.WhenAny(_ => _._adcpConnection,                                                    // Pass the AdcpConnection
+                                                                        x => x.Value != null),                                                          // Verify the Serial port object exist
+                                                                        _ => Task.Run(() => SendAdvancedBREAK()));                                         // Send the command set command                                  
+
 
             // Import Command Set command
             ImportCommandSetCommand = ReactiveCommand.Create(this.WhenAny(_ => _._adcpConnection,                                                       // Pass the AdcpConnection
@@ -1555,6 +1643,19 @@ namespace RTI
         {
             _adcpConnection.TestEthernetConnection();
             this.NotifyOfPropertyChange(() => this.AdcpReceiveBuffer);
+        }
+
+        #endregion
+
+        #region Advanced BREAK
+
+        /// <summary>
+        /// Test the Ethernet connection by sending a ping
+        /// and getting a response back.
+        /// </summary>
+        private void SendAdvancedBREAK()
+        {
+            _adcpConnection.SendAdvancedBreak(_WaitState, _WaitStateAfterBreak, _IsSoftBreak);
         }
 
         #endregion

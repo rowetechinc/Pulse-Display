@@ -67,6 +67,7 @@
  * 05/12/2016      RC          4.4.3      Check for null in StopRawAdcpRecord().
  * 09/28/2016      RC          4.4.4      Increase the time to run the DiagSpectrum test to 180 seconds for dual frequency systems.
  * 09/17/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
+ * 09/28/2017      RC          4.4.7      Added original data format to handle PD0 transformation.
  * 
  */
 
@@ -175,18 +176,25 @@ namespace RTI
             public EnsembleType Type { get; set; }
 
             /// <summary>
+            /// Original Data format when data was decoded.
+            /// </summary>
+            public AdcpCodec.CodecEnum OrigDataFormat { get; set; }
+
+            /// <summary>
             /// Initialize the values.
             /// </summary>
             /// <param name="binaryEnsemble">Binary data of the ensemble.</param>
             /// <param name="ensemble">Ensemble object.</param>
             /// <param name="source">Source of the ensemble.</param>
             /// <param name="type">Type of ensemble.</param>
-            public EnsembleData(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
+            /// <param name="origDataFormat">Original Data format.</param>
+            public EnsembleData(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
             {
                 BinaryEnsemble = binaryEnsemble;
                 Ensemble = ensemble;
                 Source = source;
                 Type = type;
+                OrigDataFormat = origDataFormat;
             }
         }
 
@@ -254,6 +262,11 @@ namespace RTI
             /// Ensemble is the data type stores ensembles.
             /// </summary>
             public DataSet.Ensemble ensemble;
+
+            /// <summary>
+            /// Original data format of the data.
+            /// </summary>
+            public AdcpCodec.CodecEnum dataFormat;
         }
 
         #endregion
@@ -1011,6 +1024,32 @@ namespace RTI
                 AdcpTcp.SendBreak();
             }
             else if(AdcpCommType == AdcpCommTypes.UDP)
+            {
+                AdcpUdp.SendBreak();
+            }
+        }
+
+        /// <summary>
+        /// Send a soft break to the ADCP.
+        /// <param name="waitStates">Number of wait states to wait.</param>
+        /// <param name="stateChangeWaitStates">Number of wait states after done with BREAK.</param>
+        /// <param name="softBreak">Flag if try soft BREAK if hardware BREAK fails.</param>
+        /// </summary>
+        public void SendAdvancedBreak(int waitStates = 5, int stateChangeWaitStates = 4, bool softBreak = true)
+        {
+            if (AdcpCommType == AdcpCommTypes.Serial)
+            {
+                AdcpSerialPort.SendAdvancedBreak(waitStates, stateChangeWaitStates, softBreak);
+            }
+            else if (AdcpCommType == AdcpCommTypes.Ethernet)
+            {
+                AdcpEthernetPort.SendBreak();
+            }
+            else if (AdcpCommType == AdcpCommTypes.TCP)
+            {
+                AdcpTcp.SendBreak();
+            }
+            else if (AdcpCommType == AdcpCommTypes.UDP)
             {
                 AdcpUdp.SendBreak();
             }
@@ -3849,8 +3888,9 @@ namespace RTI
         /// </summary>
         /// <param name="ens">Ensemble to publish.</param>
         /// <param name="source">Source of ensemble.</param>
+        /// <param name="origDataFormat">Original Data format.</param>
         /// <param name="type">Type of ensemble.</param>
-        private void PublishRawEnsemble(DataSet.Ensemble ens, EnsembleSource source, EnsembleType type)
+        private void PublishRawEnsemble(DataSet.Ensemble ens, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
         {
             //if (ReceiveEnsembleEvent != null)
             //{
@@ -3861,7 +3901,7 @@ namespace RTI
             {
                 //_events.PublishOnUIThread(new EnsembleEvent(ens, source, type));
                 //_events.PublishOnUIThreadAsync(new EnsembleEvent(ens, source, type));
-                _events.PublishOnBackgroundThread(new EnsembleRawEvent(ens, source, type));
+                _events.PublishOnBackgroundThread(new EnsembleRawEvent(ens, source, type, origDataFormat));
             }
 
         }
@@ -4106,12 +4146,13 @@ namespace RTI
         /// <param name="ensemble">Ensemble as an object.</param>
         /// <param name="source">Source of the ensemble.</param>
         /// <param name="type">Ensemble type.</param>
-        private void ReceiveEnsembleFromCodec_old(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
+        /// <param name="origDataFormat">Original Data Format.</param>
+        private void ReceiveEnsembleFromCodec_old(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
         {
             // Add the buffered GPS and NMEA data to the data
 
             // Add the data to the buffer
-            _ensembleBuffer.Enqueue(new EnsembleData(binaryEnsemble, ensemble, source, type));
+            _ensembleBuffer.Enqueue(new EnsembleData(binaryEnsemble, ensemble, source, type, origDataFormat));
 
             // Process the data
             //ReceiveEnsembleFromCodecCommand.Execute(null);
@@ -4178,7 +4219,7 @@ namespace RTI
 
                         // Record the data
                         _pm.SelectedProject.RecordBinaryEnsemble(data.BinaryEnsemble);
-                        _pm.SelectedProject.RecordDbEnsemble(data.Ensemble);
+                        _pm.SelectedProject.RecordDbEnsemble(data.Ensemble, data.OrigDataFormat);
                     }
 
                     // Check if validation testing
@@ -4197,7 +4238,7 @@ namespace RTI
                     VesselMountScreen(ref ensemble);
 
                     // Screen the data
-                    _screenDataVM.ScreenData(ref ensemble);
+                    _screenDataVM.ScreenData(ref ensemble, data.OrigDataFormat);
 
                     // Average the data
                     _averagingVM.AverageEnsemble(ensemble);
@@ -4219,7 +4260,8 @@ namespace RTI
         /// <param name="ensemble">Ensemble object.</param>
         /// <param name="source">Source that the ensemble came from.</param>
         /// <param name="type">Type of ensemble, averaged data or not averaged.</param>
-        private void ReceiveEnsembleFromCodec(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type)
+        /// <param name="origDataFormat">The original data format.</param>
+        private void ReceiveEnsembleFromCodec(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
         {
             // Add the GPS and NMEA data to the ensemble
             // and clear the buffers
@@ -4268,7 +4310,7 @@ namespace RTI
 
                 // Record the data
                 _pm.SelectedProject.RecordBinaryEnsemble(binaryEnsemble);
-                _pm.SelectedProject.RecordDbEnsemble(ensemble);
+                _pm.SelectedProject.RecordDbEnsemble(ensemble, origDataFormat);
             }
 
             // Check if validation testing
@@ -4281,7 +4323,7 @@ namespace RTI
             // Do not publish the data if you are importing data
             if (!IsImporting)
             {
-                PublishRawEnsemble(ensemble.Clone(), source, type);
+                PublishRawEnsemble(ensemble.Clone(), source, type, origDataFormat);
             }
 
             // Set the ensemble
@@ -4294,7 +4336,7 @@ namespace RTI
             VesselMountScreen(ref newEnsemble);
 
             // Screen the data
-            _screenDataVM.ScreenData(ref newEnsemble);
+            _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
 
             // Average the data
             _averagingVM.AverageEnsemble(newEnsemble);
@@ -4696,7 +4738,7 @@ namespace RTI
                 {
                     // Block until awoken when data is received
                     // Timeout every 60 seconds to see if shutdown occured
-                    _eventWaitData.WaitOne(60000);
+                    _eventWaitData.WaitOne(1000);
 
                     //Debug.WriteLine("AdcpConnection:ReceiveDataThread: STart");
 
@@ -4718,7 +4760,7 @@ namespace RTI
                                     ProcessAdcpSerialData(data.data);
                                     break;
                                 case ProcessDataTypes.Ensemble:
-                                    ProcessEnsembleData(data.data, data.ensemble);
+                                    ProcessEnsembleData(data.data, data.ensemble, data.dataFormat);
                                     break;
                                 case ProcessDataTypes.GPS1:
                                     ProcessGps1Data(data.data);
@@ -4733,7 +4775,7 @@ namespace RTI
                                     ProcessNmea1Data(data.data);
                                     break;
                                 case ProcessDataTypes.CODEC:
-                                    ProcessCodecData(data.data, data.ensemble);
+                                    ProcessCodecData(data.data, data.ensemble, data.dataFormat);
                                     break;
                                 default:
                                     break;
@@ -4778,13 +4820,14 @@ namespace RTI
         /// </summary>
         /// <param name="rawData">Raw binary data.</param>
         /// <param name="ensemble">Ensemble data.</param>
-        private void ProcessEnsembleData(byte[] rawData, DataSet.Ensemble ensemble)
+        /// <param name="dataFormat">Original Data Format.</param>
+        private void ProcessEnsembleData(byte[] rawData, DataSet.Ensemble ensemble, AdcpCodec.CodecEnum dataFormat)
         {
             // Publish the data to all subscribers of raw data
             PublishReceiveData(rawData);
 
             // Publish the ensemble data
-            _adcpCodec_ProcessDataEvent(rawData, ensemble);
+            _adcpCodec_ProcessDataEvent(rawData, ensemble, dataFormat);
         }
 
         /// <summary>
@@ -4893,7 +4936,8 @@ namespace RTI
         /// </summary>
         /// <param name="rawData">Raw binary data.</param>
         /// <param name="ensemble">Ensemble data.</param>
-        private void ProcessCodecData(byte[] rawData, DataSet.Ensemble ensemble)
+        /// <param name="origDataFormat">Original data format of the data.</param>
+        private void ProcessCodecData(byte[] rawData, DataSet.Ensemble ensemble, AdcpCodec.CodecEnum origDataFormat)
         {
             // Copy the data
             var ens = ensemble.Clone();
@@ -4901,7 +4945,7 @@ namespace RTI
             Buffer.BlockCopy(rawData, 0, raw, 0, rawData.Length);
 
             //await ReceiveEnsembleFromCodec(raw, ens, EnsembleSource.Serial, EnsembleType.Single);
-            ReceiveEnsembleFromCodec(raw, ens, EnsembleSource.Serial, EnsembleType.Single);
+            ReceiveEnsembleFromCodec(raw, ens, EnsembleSource.Serial, EnsembleType.Single, origDataFormat);
         }
 
         #endregion
@@ -5029,10 +5073,11 @@ namespace RTI
         /// </summary>
         /// <param name="binaryEnsemble">Binary data of the ensemble.</param>
         /// <param name="ensemble">Ensemble object.</param>
-        void _adcpCodec_ProcessDataEvent(byte[] binaryEnsemble, DataSet.Ensemble ensemble)
+        /// <param name="dataFormat">The original format the data came in.</param>
+        void _adcpCodec_ProcessDataEvent(byte[] binaryEnsemble, DataSet.Ensemble ensemble, AdcpCodec.CodecEnum dataFormat)
         {
             // Create the data
-            var pd = new ProcessData { type = ProcessDataTypes.CODEC, data = binaryEnsemble, ensemble = ensemble };
+            var pd = new ProcessData { type = ProcessDataTypes.CODEC, data = binaryEnsemble, ensemble = ensemble, dataFormat = dataFormat };
 
             // Queue the data
             _processDataQueue.Enqueue(pd);

@@ -166,6 +166,11 @@ namespace RTI
         /// </summary>
         public DataSet.Ensemble Ensemble { get; set; }
 
+        /// <summary>
+        /// Original Data format.
+        /// </summary>
+        public AdcpCodec.CodecEnum OrigDataFormat { get; set; }
+
         #endregion
 
         /// <summary>
@@ -174,11 +179,13 @@ namespace RTI
         /// <param name="ensemble">Ensemble to send in event.</param>
         /// <param name="source">Source of the ensemble.</param>
         /// <param name="type">Type of ensemble: single or averaged.  Default is SINGLE.</param>
-        public EnsembleRawEvent(DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type = EnsembleType.Single)
+        /// <param name="origDataFormat">Original data forma.</param>
+        public EnsembleRawEvent(DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type = EnsembleType.Single, AdcpCodec.CodecEnum origDataFormat = AdcpCodec.CodecEnum.Binary)
         {
             Ensemble = ensemble;
             Source = source;
             Type = type;
+            OrigDataFormat = origDataFormat;
         }
     }
 

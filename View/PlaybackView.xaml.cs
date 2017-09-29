@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace RTI
 {
@@ -24,7 +25,19 @@ namespace RTI
         /// </summary>
         public PlaybackView()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            Debug.WriteLine("Start Playback Init...");
             InitializeComponent();
+            Debug.WriteLine("End Playback Init.");
+            stopwatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopwatch.Elapsed;
+
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            Debug.WriteLine(elapsedTime);
         }
     }
 }

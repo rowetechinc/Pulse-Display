@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="850" d:DesignWidth="1280">
     <UserControl.Resources>
@@ -162,6 +163,16 @@
             <Button Content="Zero Pressure Sensor" Command="{Binding ZeroPressureSensorCommand}" Margin="5" ToolTip="Zero the pressure sensor.  Do above the water." />
             <Button Content="Compass Connect" Command="{Binding CompassConnectCommand}" Margin="5" ToolTip="Change communication to the internal PNI compass." />
             <Button Content="Compass Disconnect" Command="{Binding CompassDisconnectCommand}" Margin="5" ToolTip="Stop communication with the internal PNI compass." />
+            <Button Command="{Binding AdvancedBREAKCommand}" Margin="5" ToolTip="{Binding AdvancedBreakToolTip}">
+                <StackPanel>
+                    <TextBlock Text="Advanced BREAK" HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <extToolkit:IntegerUpDown Value="{Binding WaitState}" Foreground="White" Minimum="0" Maximum="200" />
+                        <extToolkit:IntegerUpDown Value="{Binding WaitStateAfterBreak}" Foreground="White" Minimum="0" Maximum="200" />
+                        <CheckBox IsChecked="{Binding IsSoftBreak}" Foreground="White" />
+                    </StackPanel>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <!--Command Set-->

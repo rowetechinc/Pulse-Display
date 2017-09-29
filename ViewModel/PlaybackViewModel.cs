@@ -504,6 +504,7 @@ namespace RTI
         public PlaybackViewModel()
             :base("PlaybackViewModel")
         {
+
             // Get Project Manager
             _pm = IoC.Get<PulseManager>();
             _events = IoC.Get<IEventAggregator>();
@@ -552,7 +553,7 @@ namespace RTI
 
             // Command to begin playing back data
             PlayCommand = ReactiveCommand.Create();                          // Start the playback
-            PlayCommand.Subscribe(_ => PlaybackCommandExecute());                                 
+            PlayCommand.Subscribe(_ => PlaybackCommandExecute());
 
             // Command to move the ensemble forward
             StepEnsembleFowardCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => StepEnsembleForward()));
@@ -572,7 +573,7 @@ namespace RTI
             BlinkRecordImageCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => BlinkRecordImage())); 
 
             // Command to display all the data in the project 
-            DisplayAllDataCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => DisplayAllData()));                                    
+            DisplayAllDataCommand = ReactiveCommand.CreateAsyncTask(_ => Task.Run(() => DisplayAllData()));
         }
 
         /// <summary>
@@ -657,7 +658,7 @@ namespace RTI
                         else
                         {
                             // Display the ensemble
-                            ProcessEnsemble(args.Ensemble);
+                            ProcessEnsemble(args.Ensemble, args.OrigDataFormat);
                         }
                     }
                 }
@@ -673,13 +674,14 @@ namespace RTI
         /// Process the incoming data.  This will screen and average the data.
         /// </summary>
         /// <param name="data">Data to display.</param>
-        private void ProcessEnsemble(DataSet.Ensemble data)
+        /// <param name="origDataFormat">Originial Format of the data.</param>
+        private void ProcessEnsemble(DataSet.Ensemble data, AdcpCodec.CodecEnum origDataFormat)
         {
             // Distribute the dataset to all subscribers
             if (data != null)
             {
                 // Publish the ensemble before it is screened and averaged
-                _events.PublishOnBackgroundThread(new EnsembleRawEvent(data.Clone(), EnsembleSource.Playback));
+                _events.PublishOnBackgroundThread(new EnsembleRawEvent(data.Clone(), EnsembleSource.Playback, EnsembleType.Single, origDataFormat));
 
                 // Make a copy of the ensemble to pass to all the views
                 DataSet.Ensemble newEnsemble = data.Clone();
@@ -688,7 +690,7 @@ namespace RTI
                 VesselMountScreen(ref newEnsemble);
 
                 // Screen the data
-                _screenDataVM.ScreenData(ref newEnsemble);
+                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
 
                 // Average the data
                 _averagingVM.AverageEnsemble(newEnsemble);
@@ -716,6 +718,7 @@ namespace RTI
 
                 // Get all the ensembles from the project
                 Cache<long,DataSet.Ensemble> data = _pm.SelectedPlayback.GetAllEnsembles();
+                AdcpCodec.CodecEnum origDataFormat = _pm.SelectedPlayback.GetOrigDataFormat();
 
                 // Set new Total ensembles
                 _TotalEnsembles = (long)data.Count();
@@ -734,7 +737,7 @@ namespace RTI
                     VesselMountScreen(ref newEnsemble);
 
                     // Screen the data
-                    _screenDataVM.ScreenData(ref newEnsemble);
+                    _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
 
                     // Add the screened ensemble to the list
                     screenData.Add(data.IndexKey(x), newEnsemble);

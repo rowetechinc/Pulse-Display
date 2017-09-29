@@ -28,6 +28,7 @@
  * 08/20/2014      RC          4.0.1      Added CloseVmEvent event.  Changed the list of VM to match ViewDataGraphicalViewModel.
  * 08/21/2014      RC          4.0.1      Clear all the VM properly when changing projects.  On activate, make sure the VM will display.
  * 10/07/2015      RC          4.3.0      Changed dictionary to ConcurrentDicitionary.
+ * 09/28/2017      RC          4.4.7      Added original data format to know how to retransform the data.  PD0 is differnt from RTB.
  * 
  */
 
@@ -224,7 +225,8 @@ namespace RTI
         /// Then pass the ensemble to the VM to be screened.
         /// </summary>
         /// <param name="ensemble">Ensemble to screen.</param>
-        public void ScreenData(ref DataSet.Ensemble ensemble)
+        /// <param name="origDataFormat">Original Data format.</param>
+        public void ScreenData(ref DataSet.Ensemble ensemble, AdcpCodec.CodecEnum origDataFormat)
         {
             if (ensemble != null)
             {
@@ -238,7 +240,7 @@ namespace RTI
                         if (vm.Config == ensemble.EnsembleData.SubsystemConfig && vm.Config.Source != EnsembleSource.LTA && vm.Config.Source != EnsembleSource.STA)
                         {
                             // Screen the data based off the options in the VM
-                            vm.ScreenEnsemble(ref ensemble);
+                            vm.ScreenEnsemble(ref ensemble, origDataFormat);
                         }
                     }
                 }

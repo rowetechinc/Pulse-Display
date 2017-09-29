@@ -33,6 +33,8 @@
  * 05/11/2016      RC          4.4.3      Added ScreenBadHeading.
  * 04/26/2017      RC          4.4.6      In SetPreviousBottomTrackVelocity() checked if VTG message exists.
  * 09/05/2017      RC          4.4.7      Fixed RemovedShip to include instrument and ship transform.
+ * 09/28/2017      RC          4.4.7      Added original data format to know how to retransform the data.  PD0 is differnt from RTB.
+ * 09/29/2017      RC          4.4.7      Added FillInMissingWpData() to fill in data when Water Profile is turned off.
  * 
  */
 
@@ -602,10 +604,16 @@ namespace RTI
 
         /// <summary>
         /// Screen the ensembles based off the options selected.
+        /// The original data format is needed because the Re-Transform will be done
+        /// different for PD0 data.
         /// </summary>
         /// <param name="ensemble">Ensemble to screen.</param>
-        public void ScreenEnsemble(ref DataSet.Ensemble ensemble)
+        /// <param name="origDataFormat">Original Data format.</param>
+        public void ScreenEnsemble(ref DataSet.Ensemble ensemble, AdcpCodec.CodecEnum origDataFormat)
         {
+            // Fill in for missing data if only Bottom Track is turned on
+            FillInMissingWpData(ref ensemble);
+
             // Screen for bad heading
             ScreenData.ScreenBadHeading.Screen(ref ensemble, _prevHeading);
             SetPreviousHeading(ensemble);
@@ -613,27 +621,28 @@ namespace RTI
             // Force 3 Beam Solution
             if (_Options.IsForce3BeamSolution)
             {
-                ScreenData.ScreenForce3BeamSolution.Force3BeamSolution(ref ensemble, _Options.ForceBeamBad);
+                ScreenData.ScreenForce3BeamSolution.Force3BeamSolution(ref ensemble, _Options.ForceBeamBad, origDataFormat);
             }
 
             // Force 3 Beam Bottom Track solution
             if (_Options.IsForce3BottomTrackBeamSolution)
             {
-                ScreenData.ScreenForce3BeamSolution.Force3BottomTrackBeamSolution(ref ensemble, _Options.ForceBottomTrackBeamBad);
+                ScreenData.ScreenForce3BeamSolution.Force3BottomTrackBeamSolution(ref ensemble, _Options.ForceBottomTrackBeamBad, origDataFormat);
             }
 
             // Retransform the data
             if (_Options.IsRetransformData)
             {
-                // Calculate the new Earth velocities
-                Transform.ProfileTransform(ref ensemble, _Options.WpCorrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
-                Transform.BottomTrackTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
+                // PD0 has a different cooridiate matrix
+                // And the beams are in different positions
+                Transform.ProfileTransform(ref ensemble, origDataFormat, _Options.WpCorrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
+                Transform.BottomTrackTransform(ref ensemble, origDataFormat, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset);
 
                 // WaterMass transform data
                 // This will also create the ship data
                 if (ensemble.IsInstrumentWaterMassAvail)
                 {
-                    Transform.WaterMassTransform(ref ensemble, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset, 0.0f);
+                    Transform.WaterMassTransform(ref ensemble, origDataFormat, _Options.BtCorrThresh, _Options.BtSnrThresh, _Options.RetransformHeadingSource, _Options.RetransformHeadingOffset, 0.0f);
                 }
             }
 
@@ -704,6 +713,43 @@ namespace RTI
             if(ensemble.IsAncillaryAvail && ensemble.AncillaryData.Heading != 0.0f)
             {
                 _prevHeading = ensemble.AncillaryData.Heading;
+            }
+        }
+
+        #endregion
+
+        #region Missing Water Profile
+
+        /// <summary>
+        /// Fill in missing values if water profile is turned off.  If it is turned off, it sets these values to 0 but
+        /// Bottom Track has the values.
+        /// </summary>
+        /// <param name="ensemble">Ensemble to get the data.</param>
+        public void FillInMissingWpData(ref DataSet.Ensemble ensemble)
+        {
+            if(ensemble.IsBottomTrackAvail && ensemble.IsEnsembleAvail)
+            {
+                // If these values are zero, then most likely WP is turned off
+                // Fill in the data
+                if(ensemble.EnsembleData.NumBeams == 0  && ensemble.EnsembleData.NumBins == 0 && ensemble.BottomTrackData.NumBeams != ensemble.EnsembleData.NumBeams)
+                {
+                    ensemble.EnsembleData.NumBeams = (int)ensemble.BottomTrackData.NumBeams;
+
+                    if (ensemble.IsAncillaryAvail)
+                    {
+                        ensemble.AncillaryData.Heading = ensemble.BottomTrackData.Heading;
+                        ensemble.AncillaryData.Pitch = ensemble.BottomTrackData.Pitch;
+                        ensemble.AncillaryData.Roll = ensemble.BottomTrackData.Roll;
+                        ensemble.AncillaryData.WaterTemp = ensemble.BottomTrackData.WaterTemp;
+                        ensemble.AncillaryData.SystemTemp = ensemble.BottomTrackData.SystemTemp;
+                        ensemble.AncillaryData.Salinity = ensemble.BottomTrackData.Salinity;
+                        ensemble.AncillaryData.Pressure = ensemble.BottomTrackData.Pressure;
+                        ensemble.AncillaryData.TransducerDepth = ensemble.BottomTrackData.TransducerDepth;
+                        ensemble.AncillaryData.SpeedOfSound = ensemble.BottomTrackData.SpeedOfSound;
+                        ensemble.AncillaryData.FirstPingTime = ensemble.BottomTrackData.FirstPingTime;
+                        ensemble.AncillaryData.LastPingTime = ensemble.BottomTrackData.LastPingTime;
+                    }
+                }
             }
         }
 
