@@ -448,7 +448,7 @@ namespace RTI
 
         #region Project Playback
 
-       
+
 
         #endregion
 
@@ -941,6 +941,8 @@ namespace RTI
         /// </summary>
         private void SetPlaybackSpeedIndicatorImage()
         {
+            // Possible use CachingImage(Pulse.Commons.INDICATOR_1).Image to speed up loading the images
+
             if (_PlaybackSpeed >= PLAYBACK_INCREMENT * 8)
                 PlaybackSpeedImage = Pulse.Commons.INDICATOR_1;
             else if (_PlaybackSpeed >= PLAYBACK_INCREMENT * 4)

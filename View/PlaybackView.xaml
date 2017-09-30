@@ -84,27 +84,25 @@
 				</Grid>
 				
 				<!--Playback Speed Decrease-->
-				<Button Margin="3,3,1,3" Command="{Binding Path=DecreaseSpeedCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="20" Height="20" VerticalAlignment="Center">
-    				<!--Rectangle Width="10" Height="10">
-	                    <Rectangle.Fill>
-	                        <VisualBrush Visual="{StaticResource appbar_minus}" />
-	                    </Rectangle.Fill>
-	                </Rectangle-->
-					<Image Grid.Row="0" Source="../Images/remove.png" />		
-				</Button>
+                <Button Margin="3,3,1,3" VirtualizingPanel.IsVirtualizing="False" Command="{Binding Path=DecreaseSpeedCommand, IsAsync=True}"  Width="20" Height="20" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <Rectangle Width="10" Height="10">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_arrow_left}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button>
 				
 				<!--Playback Speed Image-->
-				<Image Margin="1,3,3,1" Source="{Binding PlaybackSpeedImage}" MaxWidth="32" MaxHeight="32" />
-				
-				<!--Playback Speed Increase-->
-				<Button Margin="1,3,3,3" Command="{Binding Path=IncreaseSpeedCommand}" Style="{DynamicResource MetroCircleButtonStyle}" Width="20" Height="20" VerticalAlignment="Center">
-    				<!--Rectangle Width="10" Height="10">
-	                    <Rectangle.Fill>
-	                        <VisualBrush Visual="{StaticResource appbar_add}" />
-	                    </Rectangle.Fill>
-	                </Rectangle-->
-					<Image Grid.Row="0" Source="../Images/add.png" />		
-				</Button>
+                <Image Margin="1,3,3,1" VirtualizingPanel.IsVirtualizing="False" Source="{Binding PlaybackSpeedImage, IsAsync=True}" MaxWidth="32" MaxHeight="32" />
+
+                <!--Playback Speed Increase-->
+                <Button Margin="1,3,3,3" VirtualizingPanel.IsVirtualizing="False"  Command="{Binding Path=IncreaseSpeedCommand, IsAsync=True}"  Width="20" Height="20" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <Rectangle Width="10" Height="10">
+                        <Rectangle.Fill>
+                            <VisualBrush Visual="{StaticResource appbar_arrow_right}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Button>
 				
 				<!--Display All Button-->
 				<Button Command="{Binding DisplayAllDataCommand}" Margin="5" >
@@ -123,7 +121,6 @@
 				
 		<!--Range Selector-->
         <Grid Grid.Column="2" Margin="5">
-        	<!--mahapps:RangeSlider Height="20" RangeStartSelected="{Binding MinPlaybackRange, Mode=TwoWay}" RangeStopSelected="{Binding MaxPlaybackRange, Mode=TwoWay}" /-->
             <Slider Height="20" Minimum="1" Maximum="{Binding TotalEnsembles}" Value="{Binding PlaybackIndex, Mode=TwoWay}" IsSnapToTickEnabled="True" TickFrequency="1" />
 		</Grid>
 		

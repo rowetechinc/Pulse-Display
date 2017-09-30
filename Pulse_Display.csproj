@@ -193,6 +193,7 @@
     <Compile Include="Model\AdcpConnection.cs" />
     <Compile Include="Model\AdcpPredictor.cs" />
     <Compile Include="Model\AdcpStatus.cs" />
+    <Compile Include="Model\CachingImage.cs" />
     <Compile Include="Model\DistanceTraveled.cs" />
     <Compile Include="Model\Options\AverageSubsystemConfigOptions.cs" />
     <Compile Include="Model\Options\ExportDataOptions.cs" />

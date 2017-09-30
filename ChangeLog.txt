@@ -9,6 +9,7 @@ Pulse-Display-4.4.7
  - In AdcpConnection, Added original data format to handle PD0 transformation.
  - In ScreenDataViewModel and ScreenDataBaseViewModel, added original data format to know how to retransform the data.  PD0 is differnt from RTB.
  - In ScreenDataViewModel, added FillInMissingWpData() to fill in data when Water Profile is turned off.
+ - Change the images in PlaybackView.xaml to VisualBrushes.  This decreased startup time dramatically.
 
 Pulse-Display-4.4.6
  - Moved PulseDiaglogViewModel.
