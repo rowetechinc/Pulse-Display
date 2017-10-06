@@ -10,6 +10,7 @@ Pulse-Display-4.4.7
  - In ScreenDataViewModel and ScreenDataBaseViewModel, added original data format to know how to retransform the data.  PD0 is differnt from RTB.
  - In ScreenDataViewModel, added FillInMissingWpData() to fill in data when Water Profile is turned off.
  - Change the images in PlaybackView.xaml to VisualBrushes.  This decreased startup time dramatically.
+ - In DistanceTraveled, in AccumulateGps() verify a good _FirstGpsPos is set.
 
 Pulse-Display-4.4.6
  - Moved PulseDiaglogViewModel.

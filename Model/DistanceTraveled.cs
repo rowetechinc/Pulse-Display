@@ -36,6 +36,7 @@
  * 01/14/2015      RC          4.4.2      Allow 3 beams systems when using bottom track data.
  * 06/20/2016      RC          4.4.3      Added vertical velocity to distanced traveled.
  * 04/26/2017      RC          4.4.6      Test for NaN for Latitude or Longitude in AccumulateGps().
+ * 10/06/2017      RC          4.4.7      In AccumulateGps() verify a good _FirstGpsPos is set.
  * 
  */
 
@@ -667,7 +668,7 @@ namespace RTI
             {
                 if (ensemble.IsNmeaAvail)
                 {
-                    if (ensemble.NmeaData.IsGpggaAvail())
+                    if (ensemble.NmeaData.IsGpggaAvail() && !ensemble.NmeaData.GPGGA.Position.IsInvalid && ensemble.NmeaData.GPGGA.Position.Longitude.DecimalDegrees != Double.NaN)
                     {
                         _firstGpsPos = ensemble.NmeaData.GPGGA.Position;
 
@@ -682,7 +683,7 @@ namespace RTI
             // Calculate the magnitude and direction
             // Use the first position and the current position
             // If the previous postion has not been set, we cannot calculate yet
-            if (_firstGpsPos != DotSpatial.Positioning.Position.Empty)
+            if (_firstGpsPos != DotSpatial.Positioning.Position.Empty && !_firstGpsPos.IsInvalid)
             {
                 if (ensemble.IsNmeaAvail)
                 {
