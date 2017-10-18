@@ -32,6 +32,7 @@
  * 04/15/2015      RC          4.1.2      Added AverageOptions.
  * 06/23/2015      RC          4.1.3      Added TankTestOptions.
  * 08/13/2015      RC          4.2.0      Added ViewDataWavesOptions.
+ * 10/18/2017      RC          4.4.7      Added DataOutputViewOptions.
  * 
  */
 
@@ -207,9 +208,19 @@ namespace RTI
         public ViewNavEvent.ViewId LastViewedPage { get; set; }
 
         /// <summary>
-        /// Recover Data View options.s
+        /// Recover Data View options.
         /// </summary>
         public RecoverDataOptions RecoverDataOptions { get; set; }
+
+        /// <summary>
+        /// DataOutputViewModel options.
+        /// </summary>
+        public DataOutputViewOptions DataOutputOptions { get; set; }
+
+        /// <summary>
+        /// WpMagDirOutputViewOptions options.
+        /// </summary>
+        public WpMagDirOutputViewOptions WpMagDirOutputOptions { get; set; }
 
         #endregion
 
@@ -259,7 +270,7 @@ namespace RTI
                                 PredictionModelInput predictorUserInput, 
                                 int selectedProjectID, ValidationTestViewOptions validationViewOptions, ViewDataGraphicalOptions graphicalViewOptions,
                                 BackscatterOptions backscatterOptions, AverageOptions averageOptions, TankTestOptions tankTestOptions, ViewDataWavesOptions viewDataWavesOptions,
-                                AdcpConfiguration adcpConfig, RecoverDataOptions recoverDataOptions,
+                                AdcpConfiguration adcpConfig, RecoverDataOptions recoverDataOptions, DataOutputViewOptions dataOutputOptions, WpMagDirOutputViewOptions wpMagDirOutputOptions,
                                 ViewNavEvent.ViewId lastViewedPage)
         {
             PrjFolderPath = prjFolderPath;
@@ -286,6 +297,8 @@ namespace RTI
             ViewDataWavesOptions = viewDataWavesOptions;
             AdcpConfig = adcpConfig;
             RecoverDataOptions = recoverDataOptions;
+            DataOutputOptions = dataOutputOptions;
+            WpMagDirOutputOptions = wpMagDirOutputOptions;
             LastViewedPage = lastViewedPage;
 
         }
@@ -324,6 +337,8 @@ namespace RTI
             ViewDataWavesOptions = new ViewDataWavesOptions();
             AdcpConfig = new AdcpConfiguration();
             RecoverDataOptions = new RecoverDataOptions();
+            DataOutputOptions = new DataOutputViewOptions();
+            WpMagDirOutputOptions = new WpMagDirOutputViewOptions();
             LastViewedPage = ViewNavEvent.ViewId.HomeView;
         }
 

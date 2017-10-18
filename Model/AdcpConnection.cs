@@ -1004,7 +1004,7 @@ namespace RTI
 
         #endregion
 
-        #region Send / Receive Data
+        #region Send / Receive Terminal Data
 
         /// <summary>
         /// Send a soft break to the ADCP.
@@ -2572,7 +2572,6 @@ namespace RTI
         }
 
         #endregion
-
 
         #region Download
 

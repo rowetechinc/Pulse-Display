@@ -196,6 +196,7 @@
     <Compile Include="Model\CachingImage.cs" />
     <Compile Include="Model\DistanceTraveled.cs" />
     <Compile Include="Model\Options\AverageSubsystemConfigOptions.cs" />
+    <Compile Include="Model\Options\DataOutputViewOptions.cs" />
     <Compile Include="Model\Options\ExportDataOptions.cs" />
     <Compile Include="Model\Options\PulseConfiguration.cs" />
     <Compile Include="Model\Options\PulseOptions.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Model\Options\BackscatterOptions.cs" />
     <Compile Include="Model\Options\ViewDataGraphicalOptions.cs" />
     <Compile Include="Model\Options\ViewDataWavesOptions.cs" />
+    <Compile Include="Model\Options\WpMagDirOutputViewOptions.cs" />
     <Compile Include="Model\PredictionModelInput.cs" />
     <Compile Include="Model\ProductImage.cs" />
     <Compile Include="Model\ProjectManagerDatabaseWriter.cs" />

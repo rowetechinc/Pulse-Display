@@ -1,4 +1,34 @@
-﻿using System;
+﻿/*
+ * Copyright © 2011 
+ * Rowe Technology Inc.
+ * All rights reserved.
+ * http://www.rowetechinc.com
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification is NOT permitted.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * HISTORY
+ * -----------------------------------------------------------------
+ * Date            Initials    Version    Comments
+ * -----------------------------------------------------------------
+ * 10/18/2017      RC          4.5.0      Fix bug in GetBurstDataStorage() when calculating number of burst per deployment.
+ * 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -2657,7 +2687,7 @@ namespace RTI
         /// <returns>Number of bytes used in the deployment.</returns>
         public long GetDataStorageBurst(PredictionModelInput input)
         {
-            return GetDataStorageBurst(input.CBI_SamplesPerBurst, input.CWPBN, input.DeploymentDuration, input.CEI, input.Beams,
+            return GetDataStorageBurst(input.CBI_SamplesPerBurst, input.CBI_BurstInterval, input.CWPBN, input.DeploymentDuration, input.CEI, input.Beams,
                 input.CED_IsE0000001, input.CED_IsE0000002, input.CED_IsE0000003, input.CED_IsE0000004,
                 input.CED_IsE0000005, input.CED_IsE0000006, input.CED_IsE0000007, input.CED_IsE0000008,
                 input.CED_IsE0000009, input.CED_IsE0000010, input.CED_IsE0000011, input.CED_IsE0000012,
@@ -2668,6 +2698,7 @@ namespace RTI
         /// Calculate the number of bytes used per deployment using burst pinging.
         /// </summary>
         /// <param name="_CBI_SamplesPerBurst_">Number of ensembles in a burst.</param>
+        /// <param name="_CBI_BurstInterval">Length of time for the burst.</param>
         /// <param name="_CWPBN_">Number of bins.</param>
         /// <param name="_DeploymentDuration_">Number of days in the deployment.</param>
         /// <param name="_CEI_">Time between each ensemble.</param>
@@ -2688,7 +2719,7 @@ namespace RTI
         /// <param name="IsE0000014">Flag if E0000014 is turned on.  CED.</param>
         /// <param name="IsE0000015">Flag if E0000015 is turned on.  CED.</param>
         /// <returns>Number of bytes in a deployment using burst timing.</returns>
-        public long GetDataStorageBurst(int _CBI_SamplesPerBurst_, int _CWPBN_, double _DeploymentDuration_, double _CEI_,
+        public long GetDataStorageBurst(int _CBI_SamplesPerBurst_, double _CBI_BurstInterval, int _CWPBN_, double _DeploymentDuration_, double _CEI_,
                                             int _Beams_,
                                             bool IsE0000001,
                                             bool IsE0000002,
@@ -2714,7 +2745,14 @@ namespace RTI
 
             // Get the number of burst per deployment duration
             double deploymentDur = _DeploymentDuration_ * 3600.0 * 24.0;            // Seconds for the deployment duration
-            int numBursts = (int)Math.Round(deploymentDur / _CEI_);                 // Divide total duration by burst duration to get number of burst in the deployment
+
+            double burstDur = _CBI_BurstInterval;                                // Set the burst length
+            if(_CBI_SamplesPerBurst_ * _CEI_ > _CBI_BurstInterval)
+            {
+                burstDur = _CBI_SamplesPerBurst_ * _CEI_;                        // Check if the time it takes to collect the data is greater than the burst interval
+            }
+
+            int numBursts = (int)Math.Round(deploymentDur / burstDur);                 // Divide total duration by burst duration to get number of burst in the deployment
 
             return burstMem * numBursts;  
         }

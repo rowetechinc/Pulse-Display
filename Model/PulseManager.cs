@@ -40,6 +40,7 @@
  * 06/23/2015      RC          4.1.3      Added TankTestOptions.
  * 08/13/2015      RC          4.2.0      Added Waves Options.
  * 12/02/2015      RC          4.4.0      Added, DataBit, Parity and Stop Bit to ADCP serial port.
+ * 10/18/2017      RC          4.4.7      Added DataOutputViewOptions.
  * 
  * 
  */
@@ -1668,6 +1669,54 @@ namespace RTI
         public RecoverDataOptions GetRecoverDataOptions()
         {
             return _PulseOptions.RecoverDataOptions;
+        }
+
+        #endregion
+
+        #region DataOutput View Options
+
+        /// <summary>
+        /// Update the Pulse database with the latest Graphical View Option.
+        /// </summary>
+        /// <param name="selectedProjectID">Graphical View Option.</param>
+        public void UpdateDataOutputViewOptions(DataOutputViewOptions options)
+        {
+            // Update the selected project ID
+            _PulseOptions.DataOutputOptions = options;
+            UpdatePulseOptions(_PulseOptions);
+        }
+
+        /// <summary>
+        /// Get the last Graphical View Option.
+        /// </summary>
+        /// <returns>Last Graphical View Option.</returns>
+        public DataOutputViewOptions GetDataOutputViewOptions()
+        {
+            return _PulseOptions.DataOutputOptions;
+        }
+
+        #endregion
+
+        #region WP Magnitude and Direction View Options
+
+        /// <summary>
+        /// Update the Pulse database with the latest Water Profile Magnitude and Direction View Option.
+        /// </summary>
+        /// <param name="options">Water Profile Magnitude and Direction View Option.</param>
+        public void UpdateWpMagDirOutputViewOptions(WpMagDirOutputViewOptions options)
+        {
+            // Update the selected project ID
+            _PulseOptions.WpMagDirOutputOptions = options;
+            UpdatePulseOptions(_PulseOptions);
+        }
+
+        /// <summary>
+        /// Get the last Graphical View Option.
+        /// </summary>
+        /// <returns>Last Graphical View Option.</returns>
+        public WpMagDirOutputViewOptions GetWpMagDirOutputViewOptions()
+        {
+            return _PulseOptions.WpMagDirOutputOptions;
         }
 
         #endregion
