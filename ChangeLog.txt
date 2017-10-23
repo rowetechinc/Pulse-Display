@@ -4,6 +4,7 @@ Pulse-Display-4.5.0
  - Store options for DataOutputViewModel.
  - Store options for WpMagDirOutputViewModel.
  - In PredictionModel, fix bug in GetBurstDataStorage() when calculating number of burst per deployment.
+ - In PredictionModel, fix bug in CalculatePowerBurst() when calculating number of burst per deployment.
 
 Pulse-Display-4.4.7
  - In ScreenDataViewModel, fixed RemovedShip to include instrument and ship transform.
