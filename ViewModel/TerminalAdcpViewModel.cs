@@ -1656,6 +1656,8 @@ namespace RTI
         private void SendAdvancedBREAK()
         {
             _adcpConnection.SendAdvancedBreak(_WaitState, _WaitStateAfterBreak, _IsSoftBreak);
+            //_adcpConnection.SendDataWaitReply("DVL\r\nTeledyne RD Instruments (c) 2013\r\nAll rights reserved\r\nFirmware Versio: 54:05b\r\nCurrent time is: 00/01/05,2342:50.52\r\n\r\n>\r\n>");
+            //_adcpConnection.SendDataWaitReply("\r\n>\r\n");
         }
 
         #endregion
