@@ -1,5 +1,9 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.6.0
+ - Removed BREAK for ADCP serial port startup.
+ - Changed System Init Time from 0.25sec to 2.4sec in Prediction Model.
+
 Pulse-Display-4.5.0
  - Store options for DataOutputViewModel.
  - Store options for WpMagDirOutputViewModel.

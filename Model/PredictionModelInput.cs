@@ -1,4 +1,35 @@
-﻿using System;
+﻿/*
+ * Copyright © 2011 
+ * Rowe Technology Inc.
+ * All rights reserved.
+ * http://www.rowetechinc.com
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification is NOT permitted.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ * POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * HISTORY
+ * -----------------------------------------------------------------
+ * Date            Initials    Version    Comments
+ * -----------------------------------------------------------------
+ * 10/18/2017      RC          4.5.0      Initial commit
+ * 01/03/2018      RC          4.6.0      Changed System Init Time from 0.25sec to 2.4sec.
+ * 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -211,7 +242,7 @@ namespace RTI
         /// <summary>
         /// Default time for the system to initialize in seconds.
         /// </summary>
-        public const double DEFAULT_SYS_INIT_TIME = 0.25;
+        public const double DEFAULT_SYS_INIT_TIME = 2.4;
 
         /// <summary>
         /// Default time for the system to Save in seconds.

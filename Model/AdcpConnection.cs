@@ -68,6 +68,7 @@
  * 09/28/2016      RC          4.4.4      Increase the time to run the DiagSpectrum test to 180 seconds for dual frequency systems.
  * 09/17/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
  * 09/28/2017      RC          4.4.7      Added original data format to handle PD0 transformation.
+ * 01/03/2018      RC          4.6.0      Do not send a BREAK at startup of serial port.
  * 
  */
 
@@ -1399,7 +1400,7 @@ namespace RTI
                 // Create the connection and connect
                 AdcpSerialPort = new AdcpSerialPort(options);
                 AdcpSerialPort.Connect();
-                AdcpSerialPort.SendBreak();
+                //AdcpSerialPort.SendBreak();
 
                 // Clear the codec of any data
                 _adcpCodec.ClearIncomingData();
