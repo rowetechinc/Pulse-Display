@@ -536,6 +536,7 @@ namespace RTI
                 input.BeamAngle, input.SpeedOfSound,
                 input.SystemBootPower, input.SystemWakeupTime, input.SystemInitPower, input.SystemInitTime, input.BroadbandPower, input.SystemSavePower, input.SystemSaveTime,
                 input.SystemSleepPower, input.BeamDiameter, input.CyclesPerElement,
+                input.Temperature, input.Salinity, input.XdcrDepth,
                 input.IsBurst, input.CBI_SamplesPerBurst);
         }
 
@@ -599,6 +600,9 @@ namespace RTI
                                     double _SystemSleepPower_,
                                     double _BeamDiameter_,
                                     double _CyclesPerElement_,
+                                    double _Temperature_,
+                                    double _Salinity_,
+                                    double _XdcrDepth_,
                                     bool _IsBurst_ = false,
                                     int _EnsemblesPerBurst_ = 0)
         {
@@ -662,7 +666,7 @@ namespace RTI
 
             #region Bottom Track Time
 
-            double bottomTrackRange = GetPredictedRange(_CWPON_, _CWPBB_TransmitPulseType_, _CWPBS_, _CWPBN_, _CWPBL_, _CBTON_, _CBTBB_TransmitPulseType_, _SystemFrequency_, _BeamDiameter_, _CyclesPerElement_, _BeamAngle_, _SpeedOfSound_, _CWPBB_LagLength_, _BroadbandPower_).BottomTrack;
+            double bottomTrackRange = GetPredictedRange(_CWPON_, _CWPBB_TransmitPulseType_, _CWPBS_, _CWPBN_, _CWPBL_, _CBTON_, _CBTBB_TransmitPulseType_, _SystemFrequency_, _BeamDiameter_, _CyclesPerElement_, _BeamAngle_, _SpeedOfSound_, _CWPBB_LagLength_, _BroadbandPower_, _Salinity_, _Temperature_, _XdcrDepth_).BottomTrack;
             double bottomTrackTime = 0.0015 * bottomTrackRange;
 
             #endregion
@@ -1214,7 +1218,9 @@ namespace RTI
                 input.SystemBootPower, input.SystemWakeupTime, input.SystemInitPower, input.SystemInitTime,
                 input.BroadbandPower, input.SystemSavePower, input.SystemSaveTime, input.SystemSleepPower,
                 input.BeamDiameter, 
-                input.CyclesPerElement, input.CBI_SamplesPerBurst, input.CBI_BurstInterval, input.CBI_IsInterleaved);
+                input.CyclesPerElement, 
+                input.Temperature, input.Salinity, input.XdcrDepth,
+                input.CBI_SamplesPerBurst, input.CBI_BurstInterval, input.CBI_IsInterleaved);
         }
 
         /// <summary>
@@ -1278,13 +1284,16 @@ namespace RTI
                                     double _SystemSleepPower_,
                                     double _BeamDiameter_,
                                     double _CyclesPerElement_,
+                                    double _Temperature_,
+                                    double _Salinity_,
+                                    double _XdcrDepth_,
                                     int _CBI_EnsemblesPerBurst_,
                                     double _CBI_BurstInterval_,
                                     bool _CBI_IsInterleaved_)
         {
             // Power per burst
             // Set 1 day for deployment duration so only 1 burst is calculated
-            double burstPwr = CalculatePower(_CEI_, 1, _Beams_, _SystemFrequency_, _CWPON_, _CWPBL_, _CWPBS_, _CWPBN_, _CWPBB_LagLength_, _CWPBB_TransmitPulseType_, _CWPP_, _CWPTBP_, _CBTON_, _CBTBB_TransmitPulseType_, _BeamAngle_, _SpeedOfSound_, _SystemBootPower_, _SystemWakeupTime_, _SystemInitPower_, _SystemInitTime_, _BroadbandPower_, _SystemSavePower_, _SystemSaveTime_, _SystemSleepPower_, _BeamDiameter_, _CyclesPerElement_, true, _CBI_EnsemblesPerBurst_);
+            double burstPwr = CalculatePower(_CEI_, 1, _Beams_, _SystemFrequency_, _CWPON_, _CWPBL_, _CWPBS_, _CWPBN_, _CWPBB_LagLength_, _CWPBB_TransmitPulseType_, _CWPP_, _CWPTBP_, _CBTON_, _CBTBB_TransmitPulseType_, _BeamAngle_, _SpeedOfSound_, _SystemBootPower_, _SystemWakeupTime_, _SystemInitPower_, _SystemInitTime_, _BroadbandPower_, _SystemSavePower_, _SystemSaveTime_, _SystemSleepPower_, _BeamDiameter_, _CyclesPerElement_, _Temperature_, _Salinity_, _XdcrDepth_, true, _CBI_EnsemblesPerBurst_);
 
             // Get the number of burst per deployment duration
             double deploymentDur = _DeploymentDuration_ * 3600.0 * 24.0;                // Seconds for the deployment duration
@@ -1362,7 +1371,8 @@ namespace RTI
             return GetPredictedRange(input.CWPON, input.CWPBB_TransmitPulseType, input.CWPBS, input.CWPBN, input.CWPBL,
                 input.CBTON, input.CBTBB_TransmitPulseType,
                 input.SystemFrequency, input.BeamDiameter, input.CyclesPerElement, input.BeamAngle,
-                input.SpeedOfSound, input.CWPBB_LagLength, input.BroadbandPower);
+                input.SpeedOfSound, input.CWPBB_LagLength, input.BroadbandPower,
+                input.Salinity, input.Temperature, input.XdcrDepth);
         }
 
         /// <summary>
@@ -1383,6 +1393,9 @@ namespace RTI
         /// <param name="_CWPBB_LagLength_">Water Profile Lag length in meters.</param>
         /// <param name="_BroadbandPower_">Flag if using Broadband power.</param>
         /// <param name="_RangeReduction_">Range Reduction Value.</param>
+        /// <param name="_Salinity_">Salinity in ppt.</param>
+        /// <param name="_Temperature_">Temperature in Celcuis.</param>
+        /// <param name="_XdcrDepth_">Tranducer depth in meters.</param>
         /// <returns>Predicted ranges.</returns>
         public PredictedRanges GetPredictedRange(
                                 bool _CWPON_,
@@ -1398,7 +1411,10 @@ namespace RTI
                                 double _BeamAngle_,
                                 double _SpeedOfSound_,
                                 double _CWPBB_LagLength_,
-                                bool _BroadbandPower_)
+                                bool _BroadbandPower_, 
+                                double _Salinity_, 
+                                double _Temperature_, 
+                                double _XdcrDepth_)
         {
             #region WaveLength
 
@@ -1417,6 +1433,13 @@ namespace RTI
             {
                 dI = 20.0 * Math.Log10(Math.PI * _BeamDiameter_ / waveLength);
             }
+
+            #endregion
+
+            #region Absorption
+
+            //double _freq_, double _speedOfSound_, double _salinity_, double _temperature_, double _xdcrDepth_
+            double absorption = CalcAbsorption(_SystemFrequency_, _SpeedOfSound_, _Salinity_, _Temperature_, _XdcrDepth_);
 
             #endregion
 
@@ -1454,6 +1477,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_1200000 = DEFAULT_RANGE_1200000 + ((0.55 - absorption) * DEFAULT_RANGE_1200000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_1200000)
             {
@@ -1466,11 +1495,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_1200000 = 2.0 * rScale_1200000 * (DEFAULT_RANGE_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 15.0 * DEFAULT_BIN_1200000);
+                        btRange_1200000 = 2.0 * rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 15.0 * DEFAULT_BIN_1200000);
                     }
                     else
                     {
-                        btRange_1200000 = 2.0 * rScale_1200000 * (DEFAULT_RANGE_1200000 + DEFAULT_BIN_1200000 * dB_1200000);
+                        btRange_1200000 = 2.0 * rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000);
                     }
                 }
                 else
@@ -1483,11 +1512,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_1200000 = rScale_1200000 * (DEFAULT_RANGE_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 20.0 * DEFAULT_BIN_1200000);
+                        wpRange_1200000 = rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 20.0 * DEFAULT_BIN_1200000);
                     }
                     else
                     {
-                        wpRange_1200000 = rScale_1200000 * (DEFAULT_RANGE_1200000 + DEFAULT_BIN_1200000 * dB_1200000);
+                        wpRange_1200000 = rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000);
                     }
                 }
                 else
@@ -1538,6 +1567,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_600000 = DEFAULT_RANGE_600000 + ((0.55 - absorption) * DEFAULT_RANGE_600000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_600000 && _SystemFrequency_ < DEFAULT_FREQ_1200000)
             {
@@ -1550,11 +1585,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_600000 = 2.0 * rScale_600000 * (DEFAULT_RANGE_600000 + DEFAULT_BIN_600000 * dB_600000 + 15.0 * DEFAULT_BIN_600000);
+                        btRange_600000 = 2.0 * rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000 + 15.0 * DEFAULT_BIN_600000);
                     }
                     else
                     {
-                        btRange_600000 = 2.0 * rScale_600000 * (DEFAULT_RANGE_600000 + DEFAULT_BIN_600000 * dB_600000);
+                        btRange_600000 = 2.0 * rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000);
                     }
                 }
                 else
@@ -1567,11 +1602,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_600000 = rScale_600000 * (DEFAULT_RANGE_600000 + DEFAULT_BIN_600000 * dB_600000 + 20.0 * DEFAULT_BIN_600000);
+                        wpRange_600000 = rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000 + 20.0 * DEFAULT_BIN_600000);
                     }
                     else
                     {
-                        wpRange_600000 = rScale_600000 * (DEFAULT_RANGE_600000 + DEFAULT_BIN_600000 * dB_600000);
+                        wpRange_600000 = rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000);
                     }
                 }
                 else
@@ -1622,6 +1657,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_300000 = DEFAULT_RANGE_300000 + ((0.55 - absorption) * DEFAULT_RANGE_300000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_300000 && _SystemFrequency_ < DEFAULT_FREQ_600000)
             {
@@ -1634,11 +1675,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_300000 = 2.0 * rScale_300000 * (DEFAULT_RANGE_300000 + DEFAULT_BIN_300000 * dB_300000 + 15.0 * DEFAULT_BIN_300000);
+                        btRange_300000 = 2.0 * rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000 + 15.0 * DEFAULT_BIN_300000);
                     }
                     else
                     {
-                        btRange_300000 = 2.0 * rScale_300000 * (DEFAULT_RANGE_300000 + DEFAULT_BIN_300000 * dB_300000);
+                        btRange_300000 = 2.0 * rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000);
                     }
                 }
                 else
@@ -1651,11 +1692,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_300000 = rScale_300000 * (DEFAULT_RANGE_300000 + DEFAULT_BIN_300000 * dB_300000 + 20.0 * DEFAULT_BIN_300000);
+                        wpRange_300000 = rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000 + 20.0 * DEFAULT_BIN_300000);
                     }
                     else
                     {
-                        wpRange_300000 = rScale_300000 * (DEFAULT_RANGE_300000 + DEFAULT_BIN_300000 * dB_300000);
+                        wpRange_300000 = rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000);
                     }
                 }
                 else
@@ -1706,6 +1747,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_150000 = DEFAULT_RANGE_150000 + ((0.55 - absorption) * DEFAULT_RANGE_150000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_150000 && _SystemFrequency_ < DEFAULT_FREQ_300000)
             {
@@ -1718,11 +1765,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_150000 = 2.0 * rScale_150000 * (DEFAULT_RANGE_150000 + DEFAULT_BIN_150000 * dB_150000 + 15.0 * DEFAULT_BIN_150000);
+                        btRange_150000 = 2.0 * rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000 + 15.0 * DEFAULT_BIN_150000);
                     }
                     else
                     {
-                        btRange_150000 = 2.0 * rScale_150000 * (DEFAULT_RANGE_150000 + DEFAULT_BIN_150000 * dB_150000);
+                        btRange_150000 = 2.0 * rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000);
                     }
                 }
                 else
@@ -1734,11 +1781,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_150000 = rScale_150000 * (DEFAULT_RANGE_150000 + DEFAULT_BIN_150000 * dB_150000 + 20.0 * DEFAULT_BIN_150000);
+                        wpRange_150000 = rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000 + 20.0 * DEFAULT_BIN_150000);
                     }
                     else
                     {
-                        wpRange_150000 = rScale_150000 * (DEFAULT_RANGE_150000 + DEFAULT_BIN_150000 * dB_150000);
+                        wpRange_150000 = rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000);
                     }
                 }
                 else
@@ -1789,6 +1836,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_75000 = DEFAULT_RANGE_75000 + ((0.55 - absorption) * DEFAULT_RANGE_75000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_75000 && _SystemFrequency_ < DEFAULT_FREQ_150000)
             {
@@ -1801,11 +1854,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_75000 = 2.0 * rScale_75000 * (DEFAULT_RANGE_75000 + DEFAULT_BIN_75000 * dB_75000 + 15.0 * DEFAULT_BIN_75000);
+                        btRange_75000 = 2.0 * rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000 + 15.0 * DEFAULT_BIN_75000);
                     }
                     else
                     {
-                        btRange_75000 = 2.0 * rScale_75000 * (DEFAULT_RANGE_75000 + DEFAULT_BIN_75000 * dB_75000);
+                        btRange_75000 = 2.0 * rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000);
                     }
                 }
                 else
@@ -1818,11 +1871,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_75000 = rScale_75000 * (DEFAULT_RANGE_75000 + DEFAULT_BIN_75000 * dB_75000 + 20.0 * DEFAULT_BIN_75000);
+                        wpRange_75000 = rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000 + 20.0 * DEFAULT_BIN_75000);
                     }
                     else
                     {
-                        wpRange_75000 = rScale_75000 * (DEFAULT_RANGE_75000 + DEFAULT_BIN_75000 * dB_75000);
+                        wpRange_75000 = rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000);
                     }
                 }
                 else
@@ -1873,6 +1926,12 @@ namespace RTI
 
             #endregion
 
+            #region Absorption Range
+
+            double absorption_range_38000 = DEFAULT_RANGE_38000 + ((0.55 - absorption) * DEFAULT_RANGE_38000);
+
+            #endregion
+
             // If selected, return a value
             if (_SystemFrequency_ > DEFAULT_FREQ_38000 && _SystemFrequency_ < DEFAULT_FREQ_75000)
             {
@@ -1885,11 +1944,11 @@ namespace RTI
                     // Check if NB
                     if (_CBTBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCBTBB_Mode.NARROWBAND_LONG_RANGE)
                     {
-                        btRange_38000 = 2.0 * rScale_38000 * (DEFAULT_RANGE_38000 + DEFAULT_BIN_38000 * dB_38000 + 15.0 * DEFAULT_BIN_38000);
+                        btRange_38000 = 2.0 * rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000 + 15.0 * DEFAULT_BIN_38000);
                     }
                     else
                     {
-                        btRange_38000 = 2.0 * rScale_38000 * (DEFAULT_RANGE_38000 + DEFAULT_BIN_38000 * dB_38000);
+                        btRange_38000 = 2.0 * rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000);
                     }
                 }
                 else
@@ -1902,11 +1961,11 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_38000 = rScale_38000 * (DEFAULT_RANGE_38000 + DEFAULT_BIN_38000 * dB_38000 + 20.0 * DEFAULT_BIN_38000);
+                        wpRange_38000 = rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000 + 20.0 * DEFAULT_BIN_38000);
                     }
                     else
                     {
-                        wpRange_38000 = rScale_38000 * (DEFAULT_RANGE_38000 + DEFAULT_BIN_38000 * dB_38000);
+                        wpRange_38000 = rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000);
                     }
                 }
                 else
@@ -2976,6 +3035,108 @@ namespace RTI
 
         #endregion
 
+        #region Absorption
+
+        /// <summary>
+        /// Absorption of water calculation.
+        /// </summary>
+        /// <param name="_freq_">System frequency in kHz.</param>
+        /// <param name="_speedOfSound_">Speed of sound in m/s</param>
+        /// <param name="_salinity_">Salinity in ppt.</param>
+        /// <param name="_temperature_">Temperature in celcuis.</param>
+        /// <param name="_xdcrDepth_">Depth of the transducer in meters.</param>
+        /// <returns>Absorption of the water in dB/m.</returns>
+        public double CalcAbsorption(double _freq_, double _speedOfSound_, double _salinity_, double _temperature_, double _xdcrDepth_)
+        {
+            if(_speedOfSound_ == 0 || _salinity_ == 0 || _freq_ == 0)
+            {
+                return 0;
+            }
+
+            const double pH = 8.0;
+            const double P1 = 1.0;
+
+            #region Frequency
+ 
+            double freq = _freq_ / 1000.0;
+
+            #endregion
+
+            #region A1
+            
+            // dB Km^-1 KHz^-1
+            double A1 = 8.68 / _speedOfSound_ * Math.Pow(10.0, 0.78 * pH - 5.0);
+
+            #endregion
+
+            #region f1
+
+            // kHz
+            double f1 = 2.8 * Math.Pow(_salinity_ / 35.0, 0.5) * Math.Pow(10.0, 4.0 - 1245 / (273.0 + _temperature_));
+
+            #endregion
+
+            #region A2 
+
+            // dB km^-1 kHz^-1
+            double A2 = 21.44 * _salinity_ / _speedOfSound_ * (1.0 + 0.025 * _temperature_);
+
+            #endregion
+
+            #region P2
+
+            double P2 = 1.0 - 1.37 * Math.Pow(10.0, -4.0) * _xdcrDepth_ + 6.2 * Math.Pow(10, -9.0) * Math.Pow(_xdcrDepth_, 2);
+
+            #endregion
+
+            #region f2
+
+            // kHz
+            double f2 = 8.17 * Math.Pow(10.0, 8.0 - 1990.0 / (273.0 + _temperature_)) / (1.0 + 0.0018 * (_salinity_ - 35.0));
+
+            #endregion
+
+            #region A3
+
+            double A3 = 4.93 * Math.Pow(10.0, -4) - 2.59 * Math.Pow(10.0, -5.0) * _temperature_ + 9.11 * Math.Pow(10.0, -7.0) * Math.Pow(_temperature_, 2.0);
+
+            #endregion
+
+            #region P3
+
+            double P3 = 1.0 - 3.83 * Math.Pow(10.0, -5.0) * _xdcrDepth_ + 4.9 * Math.Pow(10.0, -10.0) * Math.Pow(_xdcrDepth_, 2.0);
+
+            #endregion
+
+            #region Boric Acid Relaxation
+
+            double bar = A1 * P1 * f1 * Math.Pow(freq, 2.0) / (Math.Pow(freq, 2.0) + Math.Pow(f1, 2.0)) / 1000.0; 
+
+            #endregion
+
+            #region MgSO3 Magnesium Sulphate Relaxation
+
+            double msr = A2 * P2 * f2 * Math.Pow(freq, 2.0) / (Math.Pow(freq, 2.0) + Math.Pow(f2, 2.0)) / 1000.0;
+
+            #endregion
+
+            #region Freshwater Attenuation
+
+            double fa = A3 * P3 * Math.Pow(freq, 2.0) / 1000.0;
+
+            #endregion
+
+            #region Absorption
+
+            double absorption = bar + msr + fa;
+
+            #endregion
+
+            return absorption;
+
+        }
+
+        #endregion
 
     }
 }

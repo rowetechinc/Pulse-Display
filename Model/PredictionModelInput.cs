@@ -251,6 +251,25 @@ namespace RTI
 
         #endregion
 
+        #region Absortpion
+
+        /// <summary>
+        /// Default Temperature of the water in celcuis.
+        /// </summary>
+        public const double DEFAULT_TEMPERATURE = 10;
+
+        /// <summary>
+        /// Default salinity of the water.
+        /// </summary>
+        public const double DEFAULT_SALINITY = 35;
+
+        /// <summary>
+        /// Default depth of the transducer.
+        /// </summary>
+        public const double DEFAULT_XDCR_DEPTH = 0;
+
+        #endregion
+
         #endregion
 
         #region Properties
@@ -588,6 +607,25 @@ namespace RTI
 
         #endregion
 
+        #region Absorption
+
+        /// <summary>
+        /// Temperature of the water in degrees Celcuis.
+        /// </summary>
+        public double Temperature { get; set; }
+
+        /// <summary>
+        /// Salinity of the water in ppt.
+        /// </summary>
+        public double Salinity { get; set; }
+
+        /// <summary>
+        /// Depth of the transducer in meters.
+        /// </summary>
+        public double XdcrDepth { get; set; }
+
+        #endregion
+
         #endregion
 
         /// <summary>
@@ -620,6 +658,11 @@ namespace RTI
             CBTON = DEFAULT_CBTON;
             CBTTBP = DEFAULT_CBTTBP;
             CBTBB_TransmitPulseType = DEFAULT_CBTBB_TRANSMIT_PULSE_TYPE;
+
+            // Absorption
+            Temperature = DEFAULT_TEMPERATURE;
+            Salinity = DEFAULT_SALINITY;
+            XdcrDepth = DEFAULT_XDCR_DEPTH;
 
             // CBI
             IsBurst = false;
@@ -712,6 +755,11 @@ namespace RTI
             CBTON = DEFAULT_CBTON;
             CBTTBP = DEFAULT_CBTTBP;
             CBTBB_TransmitPulseType = DEFAULT_CBTBB_TRANSMIT_PULSE_TYPE;
+
+            // Absorption
+            Temperature = DEFAULT_TEMPERATURE;
+            Salinity = DEFAULT_SALINITY;
+            XdcrDepth = DEFAULT_XDCR_DEPTH;
 
             // CBI
             IsBurst = false;
