@@ -26,6 +26,7 @@
  * -----------------------------------------------------------------
  * 10/18/2017      RC          4.5.0      Fix bug in GetBurstDataStorage() when calculating number of burst per deployment.
  * 10/23/2017      RC          4.5.0      fix bug in CalculatePowerBurst() when calculating number of burst per deployment.
+ * 01/12/2018      RC          4.7.0       Added absorption values.
  * 
  */
 
