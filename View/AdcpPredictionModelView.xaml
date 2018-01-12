@@ -586,6 +586,8 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <!--CyclesPerElement-->
@@ -679,6 +681,21 @@
                     <TextBlock Grid.Row="18" Grid.Column="0" Text="Beams: " Margin="5" />
                     <extToolkit:IntegerUpDown Grid.Row="18" Grid.Column="1" Text="{Binding Path=Beams}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
                     <TextBlock Grid.Row="18" Grid.Column="2" Text="beams" Margin="5" />
+
+                    <!--Temperature-->
+                    <TextBlock Grid.Row="19" Grid.Column="0" Text="Temperature: " Margin="5" />
+                    <extToolkit:IntegerUpDown Grid.Row="19" Grid.Column="1" Text="{Binding Path=Temperature}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
+                    <TextBlock Grid.Row="19" Grid.Column="2" Text="C" Margin="5" />
+
+                    <!--Salinity-->
+                    <TextBlock Grid.Row="20" Grid.Column="0" Text="Salinity: " Margin="5" />
+                    <extToolkit:IntegerUpDown Grid.Row="20" Grid.Column="1" Text="{Binding Path=Salinity}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
+                    <TextBlock Grid.Row="20" Grid.Column="2" Text="ppt" Margin="5" />
+
+                    <!--XDCR Depth-->
+                    <TextBlock Grid.Row="21" Grid.Column="0" Text="Tranducer Depth: " Margin="5" />
+                    <extToolkit:IntegerUpDown Grid.Row="21" Grid.Column="1" Text="{Binding Path=XdcrDepth}" Minimum="0" Margin="5" Background="White" Foreground="Black"  />
+                    <TextBlock Grid.Row="21" Grid.Column="2" Text="meters" Margin="5" />
 
                 </Grid>
 

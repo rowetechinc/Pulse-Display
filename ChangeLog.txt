@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.7.0
+ - Added absorption values to prediction model.
+
 Pulse-Display-4.6.0
  - Removed BREAK for ADCP serial port startup.
  - Changed System Init Time from 0.25sec to 2.4sec in Prediction Model.

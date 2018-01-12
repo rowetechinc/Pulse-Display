@@ -26,6 +26,7 @@
  * -----------------------------------------------------------------
  * 10/18/2017      RC          4.5.0      Initial commit
  * 01/03/2018      RC          4.6.0      Changed System Init Time from 0.25sec to 2.4sec.
+ * 01/12/2018      RC          4.7.0       Added absorption values.
  * 
  */
 

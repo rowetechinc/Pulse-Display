@@ -29,6 +29,7 @@
  * 05/20/2015      RC          4.1.3       Update all the properties after setting defaults.
  * 06/07/2016      RC          4.4.3       If CWPP is 1, set CWPTBP to 0.
  * 10/19/2016      RC          4.4.4       Added the Command Set to the display.
+ * 01/12/2018      RC          4.7.0       Added absorption values.
  * 
  */
 
@@ -900,9 +901,82 @@ namespace RTI
                 _UserInput.CED_IsE0000015 = value;
             }
         }
+
+
+
+
         #endregion
 
         #region Advanced User Input
+
+        /// <summary>
+        /// Temperature in Celcuis used in absorption.
+        /// </summary>
+        public double Temperature
+        {
+            get { return _UserInput.Temperature; }
+            set
+            {
+                _UserInput.Temperature = value;
+                this.NotifyOfPropertyChange(() => this.Temperature);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.Temperature = value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
+            }
+        }
+
+        /// <summary>
+        /// Salinity in ppt used in absorption.
+        /// </summary>
+        public double Salinity
+        {
+            get { return _UserInput.Salinity; }
+            set
+            {
+                _UserInput.Salinity = value;
+                this.NotifyOfPropertyChange(() => this.Salinity);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.Salinity = value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
+            }
+        }
+
+        /// <summary>
+        /// Tranducer Depth in meters used in absorption.
+        /// </summary>
+        public double XdcrDepth
+        {
+            get { return _UserInput.XdcrDepth; }
+            set
+            {
+                _UserInput.XdcrDepth = value;
+                this.NotifyOfPropertyChange(() => this.XdcrDepth);
+
+                // Update the Results Properties
+                NotifyResultsProperties();
+
+                // Save the input
+                _UserInput.XdcrDepth = value;
+                _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
+            }
+        }
 
         /// <summary>
         /// Cycles per Element.
@@ -922,6 +996,9 @@ namespace RTI
                 // Save the input
                 _UserInput.CyclesPerElement = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -950,6 +1027,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BroadbandPower = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -975,6 +1055,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BatteryType = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -995,6 +1078,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BatteryDerate = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1015,6 +1101,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BatterySelfDischargePerYear = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1035,6 +1124,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SpeedOfSound = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1055,6 +1147,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BeamAngle = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1075,6 +1170,9 @@ namespace RTI
                 // Save the input
                 _UserInput.BeamDiameter = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1095,6 +1193,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemBootPower = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1115,6 +1216,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemInitPower = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1144,6 +1248,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemSavePower = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1164,6 +1271,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemSleepPower = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1184,6 +1294,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemWakeupTime = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1204,6 +1317,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemInitTime = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1224,6 +1340,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SystemSaveTime = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1244,6 +1363,9 @@ namespace RTI
                 // Save the input
                 _UserInput.Beta = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1264,6 +1386,9 @@ namespace RTI
                 // Save the input
                 _UserInput.SNR = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
@@ -1284,6 +1409,9 @@ namespace RTI
                 // Save the input
                 _UserInput.Beams = value;
                 _pm.UpdatePredictionModelInput(_UserInput);
+
+                // Save Configuration
+                UpdateCommandSet();
             }
         }
 
