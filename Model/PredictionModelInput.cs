@@ -26,8 +26,8 @@
  * -----------------------------------------------------------------
  * 10/18/2017      RC          4.5.0      Initial commit
  * 01/03/2018      RC          4.6.0      Changed System Init Time from 0.25sec to 2.4sec.
- * 01/12/2018      RC          4.7.0       Added absorption values.
- * 
+ * 01/12/2018      RC          4.7.0      Added absorption values.
+ * 01/16/2018      RC          4.7.1      Changed System Init Time from 2.4sec to 2.6sec.
  */
 
 using System;
@@ -243,7 +243,7 @@ namespace RTI
         /// <summary>
         /// Default time for the system to initialize in seconds.
         /// </summary>
-        public const double DEFAULT_SYS_INIT_TIME = 2.4;
+        public const double DEFAULT_SYS_INIT_TIME = 2.6;
 
         /// <summary>
         /// Default time for the system to Save in seconds.

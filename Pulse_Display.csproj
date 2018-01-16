@@ -191,7 +191,6 @@
     <Compile Include="Events\ProjectEvent.cs" />
     <Compile Include="Events\StatusEvent.cs" />
     <Compile Include="Model\AdcpConnection.cs" />
-    <Compile Include="Model\AdcpPredictor.cs" />
     <Compile Include="Model\AdcpStatus.cs" />
     <Compile Include="Model\CachingImage.cs" />
     <Compile Include="Model\DistanceTraveled.cs" />

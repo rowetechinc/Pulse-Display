@@ -27,6 +27,7 @@
  * 10/18/2017      RC          4.5.0      Fix bug in GetBurstDataStorage() when calculating number of burst per deployment.
  * 10/23/2017      RC          4.5.0      fix bug in CalculatePowerBurst() when calculating number of burst per deployment.
  * 01/12/2018      RC          4.7.0      Added absorption values.
+ * 01/16/2018      RC          4.7.1      Updated table for Range and Absorption scale factor.
  * 
  */
 
@@ -207,6 +208,11 @@ namespace RTI
         private int DEFAULT_RANGE_1200000 = 18;
 
         /// <summary>
+        /// Absorption Scale for 1200000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_1200000 = 0.55;
+
+        /// <summary>
         /// Default transmit wattage for 1200000 table.
         /// </summary>
         private int DEFAULT_XMIT_W_1200000 = 5;
@@ -259,6 +265,11 @@ namespace RTI
         /// Default range for 600000 table.
         /// </summary>
         private int DEFAULT_RANGE_600000 = 50;
+
+        /// <summary>
+        /// Absorption Scale for 600000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_600000 = 0.17;
 
         /// <summary>
         /// Default transmit wattage for 600000 table.
@@ -315,6 +326,11 @@ namespace RTI
         private int DEFAULT_RANGE_300000 = 100;
 
         /// <summary>
+        /// Absorption Scale for 300000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_300000 = 0.073;
+
+        /// <summary>
         /// Default transmit wattage for 300000 table.
         /// </summary>
         private int DEFAULT_XMIT_W_300000 = 50;
@@ -366,7 +382,12 @@ namespace RTI
         /// <summary>
         /// Default range for 150000 table.
         /// </summary>
-        private int DEFAULT_RANGE_150000 = 250;
+        private int DEFAULT_RANGE_150000 = 240;
+
+        /// <summary>
+        /// Absorption Scale for 150000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_150000 = 0.045;
 
         /// <summary>
         /// Default transmit wattage for 150000 table.
@@ -420,7 +441,12 @@ namespace RTI
         /// <summary>
         /// Default range for 75000 table.
         /// </summary>
-        private int DEFAULT_RANGE_75000 = 510;
+        private int DEFAULT_RANGE_75000 = 620;
+
+        /// <summary>
+        /// Absorption Scale for 75000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_75000 = 0.025;
 
         /// <summary>
         /// Default transmit wattage for 75000 table.
@@ -475,6 +501,11 @@ namespace RTI
         /// Default range for 38000 table.
         /// </summary>
         private int DEFAULT_RANGE_38000 = 1000;
+
+        /// <summary>
+        /// Absorption Scale for 38000 table.
+        /// </summary>
+        private double ABSORPTION_SCALE_38000 = 0.01;
 
         /// <summary>
         /// Default transmit wattage for 38000 table.
@@ -1480,7 +1511,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_1200000 = DEFAULT_RANGE_1200000 + ((0.55 - absorption) * DEFAULT_RANGE_1200000);
+            double absorption_range_1200000 = DEFAULT_RANGE_1200000 + ((ABSORPTION_SCALE_1200000 - absorption) * DEFAULT_RANGE_1200000);
 
             #endregion
 
@@ -1570,7 +1601,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_600000 = DEFAULT_RANGE_600000 + ((0.55 - absorption) * DEFAULT_RANGE_600000);
+            double absorption_range_600000 = DEFAULT_RANGE_600000 + ((ABSORPTION_SCALE_600000 - absorption) * DEFAULT_RANGE_600000);
 
             #endregion
 
@@ -1660,7 +1691,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_300000 = DEFAULT_RANGE_300000 + ((0.55 - absorption) * DEFAULT_RANGE_300000);
+            double absorption_range_300000 = DEFAULT_RANGE_300000 + ((ABSORPTION_SCALE_300000 - absorption) * DEFAULT_RANGE_300000);
 
             #endregion
 
@@ -1750,7 +1781,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_150000 = DEFAULT_RANGE_150000 + ((0.55 - absorption) * DEFAULT_RANGE_150000);
+            double absorption_range_150000 = DEFAULT_RANGE_150000 + ((ABSORPTION_SCALE_150000 - absorption) * DEFAULT_RANGE_150000);
 
             #endregion
 
@@ -1839,7 +1870,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_75000 = DEFAULT_RANGE_75000 + ((0.55 - absorption) * DEFAULT_RANGE_75000);
+            double absorption_range_75000 = DEFAULT_RANGE_75000 + ((ABSORPTION_SCALE_75000 - absorption) * DEFAULT_RANGE_75000);
 
             #endregion
 
@@ -1929,7 +1960,7 @@ namespace RTI
 
             #region Absorption Range
 
-            double absorption_range_38000 = DEFAULT_RANGE_38000 + ((0.55 - absorption) * DEFAULT_RANGE_38000);
+            double absorption_range_38000 = DEFAULT_RANGE_38000 + ((ABSORPTION_SCALE_38000 - absorption) * DEFAULT_RANGE_38000);
 
             #endregion
 
