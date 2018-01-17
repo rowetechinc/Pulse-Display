@@ -323,7 +323,7 @@ namespace RTI
         /// <summary>
         /// Default range for 300000 table.
         /// </summary>
-        private int DEFAULT_RANGE_300000 = 100;
+        private double DEFAULT_RANGE_300000 = 100.0;
 
         /// <summary>
         /// Absorption Scale for 300000 table.
