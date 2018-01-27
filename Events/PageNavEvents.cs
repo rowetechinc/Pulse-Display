@@ -48,6 +48,7 @@
  * 06/19/2015      RC          4.1.3      Added TestTankView.
  * 01/15/2015      RC          4.4.2      Added BurnInTestView.
  * 08/28/2017      RC          4.5.2      Added DataOutputView.
+ * 01/25/2018      RC          4.7.2      Added ViewDataGraphicalView and ViewDataTextView and ViewData3dView.
  * 
  */
 
@@ -347,6 +348,21 @@ namespace RTI
             /// Data Output View.
             /// </summary>
             DataOutputView,
+
+            /// <summary>
+            /// Tabular Data Output View.
+            /// </summary>
+            ViewDataTextView,
+
+            /// <summary>
+            /// Graphical Data Output View.
+            /// </summary>
+            ViewDataGraphicalView,
+
+            /// <summary>
+            /// 3D Output View.
+            /// </summary>
+            ViewData3dView
         }
 
         #region Properties

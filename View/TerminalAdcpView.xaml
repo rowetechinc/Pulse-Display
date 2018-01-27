@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
 
-    <Grid Background="{DynamicResource PulseBackBorder1Color}">
+    <Grid Background="{StaticResource PulseBackBorder1Color}">
     	<Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
