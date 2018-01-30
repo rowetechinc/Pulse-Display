@@ -394,11 +394,14 @@ namespace RTI
         /// <param name="numBins">Number of bins in the plot.</param>
         private void CreateBase(int numBins)
         {
-            // Create the North and East arrow
-            _northArrow = NorthArrow(numBins);           // Create North arrow
-            _eastArrow = EastArrow(numBins);             // Create East arrow
-            _originTube = CreateOriginTube(numBins);     // Create Origin Tube
-            _cylinder = CreateCylinder(numBins);         // Create cylinder
+            if (numBins > 0)
+            {
+                // Create the North and East arrow
+                _northArrow = NorthArrow(numBins);           // Create North arrow
+                _eastArrow = EastArrow(numBins);             // Create East arrow
+                _originTube = CreateOriginTube(numBins);     // Create Origin Tube
+                _cylinder = CreateCylinder(numBins);         // Create cylinder
+            }
         }
 
         /// <summary>
@@ -599,7 +602,6 @@ namespace RTI
             model.BackMaterial = material;
             #endregion
 
-
             #region Text
             double xAxisLocLabel = 0;
             double yAxisLocLabel = 0;
@@ -618,7 +620,7 @@ namespace RTI
             TextVisual3D txt = new TextVisual3D();
             txt.Position = new Point3D(xAxisLocLabel, yAxisLocLabel, zAxisLocLabel);
             txt.Height = 0.5;
-            txt.Text = string.Format("North {0}", (arrowLength / SCALE_ARROW).ToString("0.0"));   // Need to get the arrowLenght back to m/s
+            txt.Text = string.Format("North {0} m/s", (arrowLength / SCALE_ARROW).ToString("0.0"));   // Need to get the arrowLenght back to m/s
             txt.TextDirection = new Vector3D(1, 0, 0);                                              // Set text to run in line with X axis
             txt.UpDirection = new Vector3D(0, 1, 0);                                                     // Set text to Point Up on Y axis
             txt.Foreground = new SolidColorBrush(Colors.Black);
@@ -707,7 +709,7 @@ namespace RTI
             TextVisual3D txt = new TextVisual3D();
             txt.Position = new Point3D(xAxisLocLabel, yAxisLocLabel, zAxisLocLabel);
             txt.Height = 0.5;
-            txt.Text = string.Format("East {0}", (arrowLength / SCALE_ARROW).ToString("0.0"));
+            txt.Text = string.Format("East {0} m/s", (arrowLength / SCALE_ARROW).ToString("0.0"));
             txt.TextDirection = new Vector3D(0, 0, 1);                      // Set text to run in line with X axis
             txt.UpDirection = new Vector3D(0, 1, 0);                             // Set text to Point Up on Y axis
             txt.Foreground = new SolidColorBrush(Colors.Black);

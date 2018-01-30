@@ -4238,10 +4238,16 @@ namespace RTI
                     VesselMountScreen(ref ensemble);
 
                     // Screen the data
-                    _screenDataVM.ScreenData(ref ensemble, data.OrigDataFormat);
+                    if (_screenDataVM != null)
+                    {
+                        _screenDataVM.ScreenData(ref ensemble, data.OrigDataFormat);
+                    }
 
                     // Average the data
-                    _averagingVM.AverageEnsemble(ensemble);
+                    if (_averagingVM != null)
+                    {
+                        _averagingVM.AverageEnsemble(ensemble);
+                    }
 
                     // Publish the data
                     // Do not publish the data if you are importing data
@@ -4336,10 +4342,16 @@ namespace RTI
             VesselMountScreen(ref newEnsemble);
 
             // Screen the data
-            _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+            if (_screenDataVM != null)
+            {
+                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+            }
 
             // Average the data
-            _averagingVM.AverageEnsemble(newEnsemble);
+            if (_averagingVM != null)
+            {
+                _averagingVM.AverageEnsemble(newEnsemble);
+            }
 
             // Publish the data
             // Do not publish the data if you are importing data
