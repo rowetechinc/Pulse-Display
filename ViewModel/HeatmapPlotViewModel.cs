@@ -27,6 +27,7 @@
  * 03/26/2015      RC          4.1.3       Initial coding
  * 07/26/2016      RC          4.4.3       Set the min and max options for each selected plot type.
  * 08/02/2016      RC          4.4.4       Added Interperlate option to the plot to blend data.
+ * 02/02/2018      RC          4.7.2       Added new default for plot as OxyPalettes.Jet(64).
  * 
  */
 
@@ -1319,7 +1320,7 @@ namespace RTI
                 }
                 else
                 {
-                    SelectedPalette = OxyPalettes.Hue64;
+                    SelectedPalette = OxyPalettes.Jet(64);
                 }
 
                 // Set after the series has been added

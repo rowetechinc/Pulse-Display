@@ -2,6 +2,7 @@
 
 Pulse-Display-4.7.2
  - In PageNaveEvents, added ViewDataGraphicalView and ViewDataTextView.
+ - In HeatmapPlotViewModel, added new default for plot as OxyPalettes.Jet(64).
 
 Pulse-Display-4.7.1
   - In PredictionModelInput, changed System Init Time from 2.4sec to 2.6sec.
