@@ -362,7 +362,12 @@ namespace RTI
             /// <summary>
             /// 3D Output View.
             /// </summary>
-            ViewData3dView
+            ViewData3dView,
+
+            /// <summary>
+            /// DVL output view.
+            /// </summary>
+            ViewDataDvlView
         }
 
         #region Properties
