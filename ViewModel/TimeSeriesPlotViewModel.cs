@@ -46,6 +46,7 @@
  * 12/07/2015      RC          4.4.0      Added GenerateReport to create HTML files.
  * 02/17/2017      RC          4.4.5      Added AddIncomingDataBulk to display all data.
  * 05/20/2017      RC          4.4.6      Check if the series type is set in GenerateReport().
+ * 02/07/2018      RC          4.7.2      Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
  * 
  */
 
@@ -795,15 +796,26 @@ namespace RTI
         /// <summary>
         /// Add the bulk data to the plot to update the plot time series.
         /// </summary>
-        /// <param name="ensemble">Latest data.</param>
+        /// <param name="ensembles">Latest data.</param>
         /// <param name="maxEnsembles">Maximum number of ensembles to display.</param>
-        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        /// <param name="ssConfig">Subsystem Configuration.</param>
+        /// <param name="subsystem">Subsystem Type.</param>
+        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig, int maxEnsembles = 0)
         {
             for (int x = 0; x < ensembles.Count(); x++)
             {
                 EnsWithMax ewm = new EnsWithMax();
                 ewm.Ensemble = ensembles.IndexValue(x);
-                ewm.MaxEnsembles = ensembles.Count();
+
+                // Max ensemble set by user or use the cache size
+                if (maxEnsembles == 0)
+                {
+                    ewm.MaxEnsembles = ensembles.Count();
+                }
+                else
+                {
+                    ewm.MaxEnsembles = maxEnsembles;
+                }
 
                 if (ewm != null)
                 {

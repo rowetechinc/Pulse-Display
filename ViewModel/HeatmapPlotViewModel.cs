@@ -28,6 +28,7 @@
  * 07/26/2016      RC          4.4.3       Set the min and max options for each selected plot type.
  * 08/02/2016      RC          4.4.4       Added Interperlate option to the plot to blend data.
  * 02/02/2018      RC          4.7.2       Added new default for plot as OxyPalettes.Jet(64).
+ * 02/07/2018      RC          4.7.2      Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
  * 
  */
 
@@ -688,15 +689,26 @@ namespace RTI
         /// <summary>
         /// Add the bulk data to the plot to update the plot time series.
         /// </summary>
-        /// <param name="ensemble">Latest data.</param>
-        /// <param name="maxEnsembles">Maximum number of ensembles to display.</param>
-        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig)
+        /// <param name="ensembles">Latest data.</param>
+        /// <param name="maxEnsembles">Maximum number of ensembles to display. If set to 0, use cache size.</param>
+        /// <param name="ssConfig">Subsystem config.</param>
+        /// <param name="subsystem">Subsystem type.</param>
+        public void AddIncomingDataBulk(Cache<long, DataSet.Ensemble> ensembles, Subsystem subsystem, SubsystemDataConfig ssConfig, int maxEnsembles = 0)
         {
             for (int y = 0; y < ensembles.Count(); y++)
             {
                 EnsWithMax ewm = new EnsWithMax();
                 ewm.Ensemble = ensembles.IndexValue(y);
-                ewm.MaxEnsembles = ensembles.Count();
+
+                // Max ensemble set by user or use the cache size
+                if (maxEnsembles == 0)
+                {
+                    ewm.MaxEnsembles = ensembles.Count();
+                }
+                else
+                {
+                    ewm.MaxEnsembles = maxEnsembles;
+                }
 
                 if (ewm != null)
                 {

@@ -69,6 +69,7 @@
  * 09/17/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
  * 09/28/2017      RC          4.4.7      Added original data format to handle PD0 transformation.
  * 01/03/2018      RC          4.6.0      Do not send a BREAK at startup of serial port.
+ * 02/07/2018      RC          4.7.2      Return the file name when recording stops in StopValidationTest().
  * 
  */
 
@@ -2738,7 +2739,7 @@ namespace RTI
         /// Stop writing data to the file.
         /// Close the file
         /// </summary>
-        public void StopValidationTest()
+        public string StopValidationTest()
         {
             // Set flag
             IsValidationTestRecording = false;
@@ -2752,6 +2753,8 @@ namespace RTI
                     _validationTestBinWriter.Close();
                     _validationTestBinWriter.Dispose();
                     _validationTestBinWriter = null;
+
+                    return ValidationTestFileName;
                 }
             }
             catch (Exception e)
@@ -2759,6 +2762,8 @@ namespace RTI
                 // Log error
                 log.Error("Error closing Lake Test results.", e);
             }
+
+            return "";
         }
 
         /// <summary>
