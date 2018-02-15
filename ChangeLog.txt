@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.7.3
+ - Updated PredictionModel to use calculate power differently for a burst.
+
 Pulse-Display-4.7.2
  - In PageNaveEvents, added ViewDataGraphicalView and ViewDataTextView.
  - In HeatmapPlotViewModel, added new default for plot as OxyPalettes.Jet(64).

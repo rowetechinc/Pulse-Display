@@ -28,6 +28,7 @@
  * 10/23/2017      RC          4.5.0      fix bug in CalculatePowerBurst() when calculating number of burst per deployment.
  * 01/12/2018      RC          4.7.0      Added absorption values.
  * 01/16/2018      RC          4.7.1      Updated table for Range and Absorption scale factor.
+ * 02/15/2018      RC          4.7.3      Calculate power differently for a burst.
  * 
  */
 
@@ -1028,7 +1029,15 @@ namespace RTI
 
             #region Transmit Power
 
-            double transmitPower = (transmitCodeTime * beamXmtPowerProfile * _Beams_ * numEnsembles * _CWPP_) / 3600.0;
+            double transmitPower = 0.0;
+            if (!_IsBurst_)
+            {
+                transmitPower = (transmitCodeTime * beamXmtPowerProfile * _Beams_ * numEnsembles * _CWPP_) / 3600.0;
+            }
+            else
+            {
+                transmitPower = (transmitCodeTime * beamXmtPowerProfile * _Beams_ * _EnsemblesPerBurst_ * _CWPP_) / 3600.0;
+            }
 
             #endregion
 
