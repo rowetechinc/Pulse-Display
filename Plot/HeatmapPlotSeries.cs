@@ -475,12 +475,12 @@ namespace RTI
                         Data[ensCount,y] = ens.Data[y];
                     }
 
-                    // If we are drawing the bottom track line
-                    // Set the new value
-                    if (isBottomTrackLine && ens.RangeBin > 0 && ens.RangeBin < ens.Data.Count())
-                    {
-                        Data[ensCount, ens.RangeBin] = MinValue;
-                    }
+                    //// If we are drawing the bottom track line
+                    //// Set the new value
+                    //if (isBottomTrackLine && ens.RangeBin > 0 && ens.RangeBin < ens.Data.Count())
+                    //{
+                    //    Data[ensCount, ens.RangeBin] = MinValue;
+                    //}
 
                     ensCount++;
                 }

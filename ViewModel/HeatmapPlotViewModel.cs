@@ -1107,13 +1107,19 @@ namespace RTI
             lock (Plot.SyncRoot)
             {
                 // Update the time series with the latest data
-                for (int x = 0; x < Plot.Series.Count; x++ )
+                for (int x = 0; x < Plot.Series.Count; x++)
                 {
                     // Heatmap Plot Series
                     if (Plot.Series[x].GetType() == typeof(HeatmapPlotSeries))
                     {
                         // Update the series
                         ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ensemble, maxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
+                    }
+
+                    if (Plot.Series[x].GetType() == typeof(LineSeries))
+                    {
+                        // Add the Bottom Track line data
+                        AddBottomTrackData(x, ensemble, maxEnsembles);
                     }
                 }
             }
@@ -1135,9 +1141,16 @@ namespace RTI
             // Lock the plot for an update
             lock (Plot.SyncRoot)
             {
-                foreach(HeatmapPlotSeries series in Plot.Series)
+                foreach(var series in Plot.Series)
                 {
-                    series.ClearSeries();
+                    if (series.GetType() == typeof(HeatmapPlotSeries))
+                    {
+                        ((HeatmapPlotSeries)series).ClearSeries();
+                    }
+                    else if(series.GetType() == typeof(LineSeries))
+                    {
+                        ((LineSeries)series).Points.Clear();
+                    }
                 }
             }
 
@@ -1233,6 +1246,10 @@ namespace RTI
 
         #region Add Series
 
+        /// <summary>
+        /// Add Heatmap series.  This will use the Ensemble number and the bins to populate the series.
+        /// </summary>
+        /// <param name="options">Heatmap series options.</param>
         public void AddSeries(HeatmapSeriesOptions options)
         {
             // Lock the plot for an update
@@ -1256,6 +1273,91 @@ namespace RTI
 
             // Set Default series option types
             SetDefaultSeriesOptions();
+        }
+
+        /// <summary>
+        /// Add Bottom Track line series.  This will be a line to mark the bottom.
+        /// </summary>
+        public void AddBtSeries()
+        {
+            // Lock the plot for an update
+            lock (Plot.SyncRoot)
+            {
+                // Add the series to the list
+                // Create a series
+                LineSeries series = new LineSeries()
+                {
+                    Color = OxyColors.Red,
+                    MarkerType = MarkerType.Circle,
+                    MarkerSize = 3,
+                    MarkerStroke = OxyColors.White,
+                    MarkerFill = OxyColors.SkyBlue,
+                    MarkerStrokeThickness = 1.5
+                };
+                series.Tag = "Bottom Track";
+                //series.XAxisKey = AxisPosition.Left.ToString();
+                //series.YAxisKey = AxisPosition.Bottom.ToString();
+                Plot.Series.Add(series);
+            }
+
+            // Then refresh the plot
+            Plot.InvalidatePlot(true);
+        }
+
+        #endregion
+
+        #region Update Bottom Track Data
+
+        /// <summary>
+        /// Add the Bottom Track data line.
+        /// </summary>
+        /// <param name="lineSeriesIndex">Line series index in the plot series list.</param>
+        /// <param name="ensemble">Ensemble to add data.</param>
+        /// <param name="maxEnsembles">Maximum number of ensembles to display in the plot.</param>
+        private void AddBottomTrackData(int lineSeriesIndex, DataSet.Ensemble ensemble, int maxEnsembles)
+        {
+            if(ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
+            {
+                // Update the bottom track line series
+                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+
+                // Create a new data point for the bottom track line
+                // This will be the (ensemble count, range bin)
+                ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(((LineSeries)Plot.Series[lineSeriesIndex]).Points.Count, rangeBin));
+
+                // Add 1 because zero based and include the max number
+                while(((LineSeries)Plot.Series[lineSeriesIndex]).Points.Count > maxEnsembles + 1)
+                {
+                    // Shift Points
+                    ShiftBottomTrackLineSeries(lineSeriesIndex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shift the bottom Track line points.  The plot is zero at the beginning always.  
+        /// Remove the first entry.  Then adjust all the index values.
+        /// This will adjust the X value (index).
+        /// </summary>
+        /// <param name="lineSeriesIndex"></param>
+        private void ShiftBottomTrackLineSeries(int lineSeriesIndex)
+        {
+            // Remove the first point (0)
+            ((LineSeries)Plot.Series[lineSeriesIndex]).Points.RemoveAt(0);
+
+            // Copy all the points
+            List<DataPoint> cloneDP = new List<DataPoint>(((LineSeries)Plot.Series[lineSeriesIndex]).Points);
+
+            // Clear the original list
+            ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Clear();
+
+            // Update the index for each point
+            for (int x = 0; x < cloneDP.Count; x++)
+            {
+                DataPoint dp = cloneDP[x];                                                      // Get the data point
+                dp.X = x;                                                                       // Change the index
+                ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Add(dp);                      // Replace the point
+            }
         }
 
         #endregion

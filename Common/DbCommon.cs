@@ -669,7 +669,10 @@ namespace RTI
                 try
                 {
                     var conn = new SQLiteConnection(dbConn);
-                    conn.Open();
+                    if (conn.State != ConnectionState.Open)
+                    {
+                        conn.Open();
+                    }
                     return conn;
                 }
 
@@ -804,20 +807,29 @@ namespace RTI
                             throw new Exception("Database Connection could not be made to PulseDb");
                         }
 
-                        using (DbTransaction dbTrans = cnn.BeginTransaction())
+                        //using (DbTransaction dbTrans = cnn.BeginTransaction())
+                        //{
+                        //    using (DbCommand cmd = cnn.CreateCommand())
+                        //    {
+                        //        cmd.CommandText = query;
+                        //        DbDataReader reader = cmd.ExecuteReader();
+
+                        //        // Load the datatable with query result
+                        //        dt.Load(reader);
+
+                        //        // Close the connection
+                        //        reader.Close();
+                        //        cnn.Close();
+                        //    }
+                        //}
+
+                        using (var command = new SQLiteCommand(query, cnn))
                         {
-                            using (DbCommand cmd = cnn.CreateCommand())
-                            {
-                                cmd.CommandText = query;
-                                DbDataReader reader = cmd.ExecuteReader();
+                            //command.Connection.Open();
+                            SQLiteDataReader reader = command.ExecuteReader();
 
-                                // Load the datatable with query result
-                                dt.Load(reader);
-
-                                // Close the connection
-                                reader.Close();
-                                cnn.Close();
-                            }
+                            // Load the datatable with query result
+                            dt.Load(reader);
                         }
                     }
                 }
