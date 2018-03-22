@@ -148,6 +148,16 @@ namespace RTI
         private ConcurrentQueue<EnsWithMax> _buffer;
 
         /// <summary>
+        /// Axis label in meters.
+        /// </summary>
+        public const string AXIS_LABEL_METERS = "meters";
+
+        /// <summary>
+        /// Axis label in bins.
+        /// </summary>
+        public const string AXIS_LABEL_BINS = "bins";
+
+        /// <summary>
         /// Minimum, maxmium and average series.
         /// </summary>
         //private List<MinMaxAvgStdSeries> _minMaxAvgStdSeriesList;
@@ -725,6 +735,9 @@ namespace RTI
                             // Lock the plot for an update
                             lock (Plot.SyncRoot)
                             {
+                                // Update the meter axis
+                                UpdateMeterAxis(ewm.Ensemble);
+
                                 // Update the time series with the latest data
                                 for (int x = 0; x < Plot.Series.Count; x++)
                                 {
@@ -733,6 +746,14 @@ namespace RTI
                                     {
                                         // Update the series
                                         ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ewm.Ensemble, ewm.MaxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
+                                    }
+
+                                    // Add Bottom Track line
+                                    if (Plot.Series[x].GetType() == typeof(AreaSeries))
+                                    {
+                                        // Add the Bottom Track line data
+                                        AddBottomTrackData(x, ewm.Ensemble, ewm.MaxEnsembles);
+                                        //((LineSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
                                     }
                                 }
                             }
@@ -845,24 +866,26 @@ namespace RTI
             temp.TextColor = OxyColors.White;
             temp.Background = OxyColors.Black;
 
+            // Color option
             var linearColorAxis1 = new LinearColorAxis();
             linearColorAxis1.HighColor = OxyColors.Black;
             linearColorAxis1.LowColor = OxyColors.Black;
-            linearColorAxis1.Palette = OxyPalettes.Rainbow(64);
+            linearColorAxis1.Palette = OxyPalettes.Jet(64);
             linearColorAxis1.Position = AxisPosition.Right;
             linearColorAxis1.Minimum = 0.0;
             linearColorAxis1.Tag = TAG_COLOR_AXIS;
             temp.Axes.Add(linearColorAxis1);
 
+            // Bottom Axis 
+            // Ensembles 
             var linearAxis2 = new LinearAxis();
             linearAxis2.Position = AxisPosition.Bottom;
             linearAxis2.MajorGridlineColor = OxyColor.FromAColor(40, OxyColors.White);
             linearAxis2.MinorGridlineColor = OxyColor.FromAColor(20, OxyColors.White);
             linearAxis2.Unit = "Ensembles";
-            linearAxis2.Key = AxisPosition.Bottom.ToString();
+            //linearAxis2.Key = AxisPosition.Bottom.ToString();
+            linearAxis2.Key = "Ensembles";
             temp.Axes.Add(linearAxis2);
-
-            temp.LegendPosition = LegendPosition.BottomCenter;
 
             return temp;
         }
@@ -878,8 +901,11 @@ namespace RTI
         /// <param name="temp">Plot Model to set the axis.</param>
         private void SetPlotAxis(ref PlotModel temp)
         {
-            // Left axis
-            temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, "bin"));
+            // Left axis in Bins
+            temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, AXIS_LABEL_BINS));
+
+            // Right axis in Meters
+            temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, AXIS_LABEL_METERS, 2));
 
             switch (_SelectedSeriesType)
             {
@@ -982,7 +1008,7 @@ namespace RTI
         /// <param name="majorStep">Minimum value.</param>
         /// <param name="unit">Label for the axis.</param>
         /// <returns>LinearAxis for the plot.</returns>
-        private LinearAxis CreatePlotAxis(AxisPosition position, string unit)
+        private LinearAxis CreatePlotAxis(AxisPosition position, string unit, int positionTier = 0)
         {
             // Create the axis
             LinearAxis axis = new LinearAxis();
@@ -996,12 +1022,62 @@ namespace RTI
             axis.EndPosition = 0;
             axis.StartPosition = 1;
             axis.Position = position;
-            axis.Key = position.ToString();
+            axis.Key = unit;
+            axis.PositionTier = positionTier;
 
             // Set the axis label
             axis.Unit = unit;
 
             return axis;
+        }
+
+        /// <summary>
+        /// Update the Meter axis with the latest ensemble data.
+        /// Set the minimum to the blank.
+        /// Set the maximum to either the max number of bins or the max depth.
+        /// </summary>
+        /// <param name="ensemble">Ensemble to get the latest settings.</param>
+        private void UpdateMeterAxis(DataSet.Ensemble ensemble)
+        {
+            float min = 0.0f;
+            float max = 1.0f;
+
+            if(ensemble.IsAncillaryAvail)
+            {
+                // Use blank for min
+                min = ensemble.AncillaryData.FirstBinRange;
+            }
+
+            if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
+            {
+                // Update the bottom track line series
+                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+
+                // Update the meter axis with the largest depth
+                if (rangeBin > ensemble.EnsembleData.NumBins)
+                {
+
+                    // Use the bottom track depth for max
+                    max = ensemble.BottomTrackData.GetAverageRange();
+                }
+                else
+                {
+                    // Use the total number of bins for the max
+                    max = ensemble.AncillaryData.GetBinToDepth(ensemble.EnsembleData.NumBins);
+                }
+            }
+
+            // Set the min and max
+            for (int x = 0; x < Plot.Axes.Count; x++)
+            {
+                // Set the Minimum and Maxmimum for the axis
+                if(AXIS_LABEL_METERS.Equals(Plot.Axes[x].Key))
+                {
+                    Plot.Axes[x].Minimum = min;
+                    Plot.Axes[x].Maximum = max;
+                }
+            }
+
         }
 
         /// <summary>
@@ -1036,7 +1112,6 @@ namespace RTI
 
             // Create the axis
             var axis = new LinearColorAxis();
-
             axis.Palette = palette;
             axis.HighColor = OxyColors.Black;
             axis.LowColor = OxyColors.Black;
@@ -1047,7 +1122,6 @@ namespace RTI
             axis.Unit = unit;
             axis.MajorStep = majorStep;
             
-
             return axis;
         }
 
@@ -1106,6 +1180,9 @@ namespace RTI
             // Lock the plot for an update
             lock (Plot.SyncRoot)
             {
+                // Update the meter axis
+                UpdateMeterAxis(ensemble);
+
                 // Update the time series with the latest data
                 for (int x = 0; x < Plot.Series.Count; x++)
                 {
@@ -1114,12 +1191,15 @@ namespace RTI
                     {
                         // Update the series
                         ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ensemble, maxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
+                        //((HeatmapPlotSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
                     }
 
-                    if (Plot.Series[x].GetType() == typeof(LineSeries))
+                    // Add Bottom Track line
+                    if (Plot.Series[x].GetType() == typeof(AreaSeries))
                     {
                         // Add the Bottom Track line data
                         AddBottomTrackData(x, ensemble, maxEnsembles);
+                        //((LineSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
                     }
                 }
             }
@@ -1147,9 +1227,10 @@ namespace RTI
                     {
                         ((HeatmapPlotSeries)series).ClearSeries();
                     }
-                    else if(series.GetType() == typeof(LineSeries))
+                    else if(series.GetType() == typeof(AreaSeries))
                     {
-                        ((LineSeries)series).Points.Clear();
+                        ((AreaSeries)series).Points.Clear();
+                        ((AreaSeries)series).Points2.Clear();
                     }
                 }
             }
@@ -1285,15 +1366,17 @@ namespace RTI
             {
                 // Add the series to the list
                 // Create a series
-                LineSeries series = new LineSeries()
+                AreaSeries series = new AreaSeries()
                 {
                     Color = OxyColors.Red,
-                    MarkerType = MarkerType.Circle,
-                    MarkerSize = 3,
-                    MarkerStroke = OxyColors.White,
-                    MarkerFill = OxyColors.SkyBlue,
-                    MarkerStrokeThickness = 1.5
-                };
+                    Color2 = OxyColors.Transparent,
+                    Fill = OxyColor.FromAColor(40, OxyColors.LightGray),
+                //MarkerType = MarkerType.Circle,
+                //MarkerSize = 3,
+                //MarkerStroke = OxyColors.White,
+                //MarkerFill = OxyColors.SkyBlue,
+                //MarkerStrokeThickness = 1.5
+            };
                 series.Tag = "Bottom Track";
                 //series.XAxisKey = AxisPosition.Left.ToString();
                 //series.YAxisKey = AxisPosition.Bottom.ToString();
@@ -1316,20 +1399,36 @@ namespace RTI
         /// <param name="maxEnsembles">Maximum number of ensembles to display in the plot.</param>
         private void AddBottomTrackData(int lineSeriesIndex, DataSet.Ensemble ensemble, int maxEnsembles)
         {
-            if(ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
+            if(ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
             {
                 // Update the bottom track line series
-                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
 
-                // Create a new data point for the bottom track line
-                // This will be the (ensemble count, range bin)
-                ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(((LineSeries)Plot.Series[lineSeriesIndex]).Points.Count, rangeBin));
-
-                // Add 1 because zero based and include the max number
-                while(((LineSeries)Plot.Series[lineSeriesIndex]).Points.Count > maxEnsembles + 1)
+                // Only plot the range if it is found
+                if (rangeBin > 0)
                 {
-                    // Shift Points
-                    ShiftBottomTrackLineSeries(lineSeriesIndex);
+                    // Create a new data point for the bottom track line
+                    // This will be the (ensemble count, range bin)
+                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Count, rangeBin));
+
+                    // Add the second point for the shaded area
+                    if (rangeBin < ensemble.EnsembleData.NumBins)
+                    {
+                        // Less then the number of bins, so go to the end of the number of bins
+                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Count, ensemble.EnsembleData.NumBins-1));
+                    }
+                    else
+                    {
+                        // This is the deepest point
+                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Count, rangeBin));
+                    }
+
+                    // Add 1 because zero based and include the max number
+                    while (((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Count > maxEnsembles + 1)
+                    {
+                        // Shift Points
+                        ShiftBottomTrackLineSeries(lineSeriesIndex);
+                    }
                 }
             }
         }
@@ -1343,20 +1442,26 @@ namespace RTI
         private void ShiftBottomTrackLineSeries(int lineSeriesIndex)
         {
             // Remove the first point (0)
-            ((LineSeries)Plot.Series[lineSeriesIndex]).Points.RemoveAt(0);
+            ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.RemoveAt(0);
 
             // Copy all the points
-            List<DataPoint> cloneDP = new List<DataPoint>(((LineSeries)Plot.Series[lineSeriesIndex]).Points);
+            List<DataPoint> cloneDP = new List<DataPoint>(((AreaSeries)Plot.Series[lineSeriesIndex]).Points);
+
+            // Copy all the points2
+            List<DataPoint> cloneDP2 = new List<DataPoint>(((AreaSeries)Plot.Series[lineSeriesIndex]).Points2);
 
             // Clear the original list
-            ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Clear();
+            ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Clear();
+            ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Clear();
 
             // Update the index for each point
             for (int x = 0; x < cloneDP.Count; x++)
             {
                 DataPoint dp = cloneDP[x];                                                      // Get the data point
+                DataPoint dp2 = cloneDP2[x];                                                    // Get the data point2
                 dp.X = x;                                                                       // Change the index
-                ((LineSeries)Plot.Series[lineSeriesIndex]).Points.Add(dp);                      // Replace the point
+                ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(dp);                      // Replace the point
+                ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(dp2);                      // Replace the point2
             }
         }
 

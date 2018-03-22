@@ -455,7 +455,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -535,7 +535,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -640,7 +640,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -739,7 +739,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -826,7 +826,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -912,7 +912,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -998,7 +998,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1084,7 +1084,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1187,7 +1187,7 @@ namespace RTI
                 hmsd.EnsDateTime = ensemble.EnsembleData.EnsDateTime;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1272,7 +1272,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1358,7 +1358,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1444,7 +1444,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1547,7 +1547,7 @@ namespace RTI
                 hmsd.EnsDateTime = ensemble.EnsembleData.EnsDateTime;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1632,7 +1632,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1717,7 +1717,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
@@ -1802,7 +1802,7 @@ namespace RTI
                 hmsd.EnsNum = ensemble.EnsembleData.EnsembleNumber;
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
-                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize);
+                    hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
