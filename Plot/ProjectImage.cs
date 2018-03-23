@@ -33,6 +33,7 @@
  * 08/07/2013      RC          3.0.7      In GenerateImage() remove the old image before creating the new file.
  * 08/16/2013      RC          3.0.7      Added Bottom Track Line and screen the data before creating the image.
  * 02/23/2017      RC          4.4.5      Added ProduceCompleteImage() to produce the image in a single pass.
+ * 03/23/2018      RC          4.8.0      Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
  * 
  */
 
@@ -158,6 +159,11 @@ namespace RTI
         private float _prevBtVert;
 
         /// <summary>
+        /// Previous good Bottom Track Range
+        /// </summary>
+        private float _prevBtRange;
+
+        /// <summary>
         /// Queue to hold all incoming data.
         /// This queue holds all the byte arrays
         /// received.
@@ -233,6 +239,7 @@ namespace RTI
             _prevBtEast = 0.0f;
             _prevBtNorth = 0.0f;
             _prevBtVert = 0.0f;
+            _prevBtRange = 0.0f;
 
             _incomingDataQueue = new Queue<DataSet.Ensemble>();
 
@@ -756,10 +763,15 @@ namespace RTI
 
         #region Screen Data
 
+        /// <summary>
+        /// Mark the bottom bad.  The remove the ship speed.
+        /// Then record backup values.
+        /// </summary>
+        /// <param name="ensemble"></param>
         private void ScreenEnsemble(ref DataSet.Ensemble ensemble)
         {
             // Mark Bad Below Bottom
-            ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble);
+            ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble, _prevBtRange);
 
             // Remove Ship Speed
             ScreenData.RemoveShipSpeed.RemoveVelocity(ref ensemble, _prevBtEast, _prevBtNorth, _prevBtVert, true, true);
@@ -806,6 +818,13 @@ namespace RTI
                             }
                         }
                     }
+                }
+
+                // If the range is good, then store it
+                float range = ensemble.BottomTrackData.GetAverageRange();
+                if (range != DataSet.Ensemble.BAD_RANGE)
+                {
+                    _prevBtRange = range;
                 }
             }
         }

@@ -35,6 +35,7 @@
  * 09/05/2017      RC          4.4.7      Fixed RemovedShip to include instrument and ship transform.
  * 09/28/2017      RC          4.4.7      Added original data format to know how to retransform the data.  PD0 is differnt from RTB.
  * 09/29/2017      RC          4.4.7      Added FillInMissingWpData() to fill in data when Water Profile is turned off.
+ * 03/23/2018      RC          4.8.0      Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
  * 
  */
 
@@ -113,6 +114,11 @@ namespace RTI
         /// Previous Ship Speed Normal.  Used to remove ship speed from Velocity data.
         /// </summary>
         private float _prevShipSpeedNormal = DataSet.Ensemble.BAD_VELOCITY;
+
+        /// <summary>
+        /// Previous good Bottom Track range.
+        /// </summary>
+        private float _prevBtRange = DataSet.Ensemble.BAD_RANGE;
 
         /// <summary>
         /// Use the previous good heading, if heading drops out.
@@ -545,6 +551,7 @@ namespace RTI
             _prevBtEast = DataSet.Ensemble.BAD_VELOCITY;
             _prevBtNorth = DataSet.Ensemble.BAD_VELOCITY;
             _prevBtVert = DataSet.Ensemble.BAD_VELOCITY;
+            _prevBtRange = DataSet.Ensemble.BAD_RANGE;
             _prevHeading = 0.0f;
 
             //SelectedHeadingSource = Transform.HeadingSource.ADCP;
@@ -649,7 +656,7 @@ namespace RTI
             // Mark Bad Below Bottom
             if (_Options.IsMarkBadBelowBottom)
             {
-                ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble);
+                ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble, _prevBtRange);
             }
 
             // Remove Ship Speed
@@ -697,6 +704,15 @@ namespace RTI
             _prevShipSpeedTransverse = prevShipSpeedShip[0];
             _prevShipSpeedLongitudinal = prevShipSpeedShip[1];
             _prevShipSpeedNormal = prevShipSpeedShip[2];
+
+            if (ens.IsBottomTrackAvail)
+            {
+                float range = ens.BottomTrackData.GetAverageRange();
+                if (range != DataSet.Ensemble.BAD_RANGE)
+                {
+                    _prevBtRange = range;
+                }
+            }
 
         }
 

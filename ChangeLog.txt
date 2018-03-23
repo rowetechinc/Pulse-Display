@@ -1,5 +1,9 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.8.0
+ - Updated Heatmap plot with bottom track line and shade under bottom track line.
+ - In ProjectImage and ScreenMarkBadBelowBottom, Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
+
 Pulse-Display-4.7.3
  - Updated PredictionModel to use calculate power differently for a burst.
 

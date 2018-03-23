@@ -28,7 +28,8 @@
  * 07/26/2016      RC          4.4.3       Set the min and max options for each selected plot type.
  * 08/02/2016      RC          4.4.4       Added Interperlate option to the plot to blend data.
  * 02/02/2018      RC          4.7.2       Added new default for plot as OxyPalettes.Jet(64).
- * 02/07/2018      RC          4.7.2      Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
+ * 02/07/2018      RC          4.7.2       Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
+ * 03/23/2018      RC          4.8.0       Updated Heatmap plot with bottom track line and shade under bottom track line.    
  * 
  */
 
@@ -738,6 +739,8 @@ namespace RTI
                                 // Update the meter axis
                                 UpdateMeterAxis(ewm.Ensemble);
 
+                                int ensPlotCount = 0;
+
                                 // Update the time series with the latest data
                                 for (int x = 0; x < Plot.Series.Count; x++)
                                 {
@@ -746,13 +749,17 @@ namespace RTI
                                     {
                                         // Update the series
                                         ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ewm.Ensemble, ewm.MaxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
+
+                                        // Get the total number of ensembles plotted
+                                        // Zero based, so subtract 1
+                                        ensPlotCount = ((HeatmapPlotSeries)Plot.Series[x]).Data.GetLength(0) - 1;
                                     }
 
                                     // Add Bottom Track line
                                     if (Plot.Series[x].GetType() == typeof(AreaSeries))
                                     {
                                         // Add the Bottom Track line data
-                                        AddBottomTrackData(x, ewm.Ensemble, ewm.MaxEnsembles);
+                                        AddBottomTrackData(x, ewm.Ensemble, ensPlotCount, ewm.MaxEnsembles);
                                         //((LineSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
                                     }
                                 }
@@ -1183,6 +1190,8 @@ namespace RTI
                 // Update the meter axis
                 UpdateMeterAxis(ensemble);
 
+                int plotEnsCount = 0;
+
                 // Update the time series with the latest data
                 for (int x = 0; x < Plot.Series.Count; x++)
                 {
@@ -1192,13 +1201,17 @@ namespace RTI
                         // Update the series
                         ((HeatmapPlotSeries)Plot.Series[x]).UpdateSeries(ensemble, maxEnsembles, MinBin, MaxBin, _isFilterData, IsBottomTrackLine);
                         //((HeatmapPlotSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
+
+                        // Get the total number of ensembles plotted
+                        // Zero based so subtract 1
+                        plotEnsCount = ((HeatmapPlotSeries)Plot.Series[x]).Data.GetLength(0) - 1;
                     }
 
                     // Add Bottom Track line
                     if (Plot.Series[x].GetType() == typeof(AreaSeries))
                     {
                         // Add the Bottom Track line data
-                        AddBottomTrackData(x, ensemble, maxEnsembles);
+                        AddBottomTrackData(x, ensemble, plotEnsCount, maxEnsembles);
                         //((LineSeries)Plot.Series[x]).YAxisKey = AXIS_LABEL_METERS;
                     }
                 }
@@ -1243,76 +1256,6 @@ namespace RTI
         #endregion
 
         #region List Options
-
-        ///// <summary>
-        ///// Setup the list of options available to the user based off the
-        ///// series type.  This will enable and disable list and populate the
-        ///// list with the correct values based off the series type.
-        ///// </summary>
-        ///// <param name="seriesType">Series type.</param>
-        //private void SetupListOptions(BaseSeriesType seriesType)
-        //{
-        //    // Setup the Data Source list
-        //    DataSourceList = DataSource.GetDataSourceList();
-
-        //    // Setup the Coordinate Transform list
-        //    CoordinateTransformList = Core.Commons.GetTransformList();
-
-        //    //// Set the DataSet List
-        //    //DataSetTypeList = BaseSeriesType.GetDataSetTypeList(seriesType.Code);
-        //    //if (DataSetTypeList.Count > 0)
-        //    //{
-        //    //    SelectedDataSetType = DataSetTypeList[0];
-        //    //}
-
-        //    // Set the Subsystem config list
-        //    SubsystemConfigList = new ObservableCollection<AdcpSubsystemConfig>();
-
-        //    // Set the max bin
-        //    MaxBin = DEFAULT_MAX_BIN;
-        //    SelectedBin = 0;
-        //    MaxBeam = DEFAULT_MAX_BEAM - 1;
-        //    SelectedBeam = 0;
-
-        //    // Set the list of colors
-        //    SeriesColorsList = BeamColor.GetBeamColorList();
-
-        //    // Set the default selected color
-        //    if (SeriesColorsList.Count > 0)
-        //    {
-        //        SelectedSeriesColor = SeriesColorsList[0];
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Update all the list based off the new ensemble data given.
-        ///// </summary>
-        ///// <param name="ensemble">Latest ensemble data.</param>
-        //private void UpdateListOptions(DataSet.Ensemble ensemble)
-        //{
-        //    // Update the Subsystem Configuration list
-        //    // Create a new AdcpSubsystemConfig and check if we need to add it to the list
-        //    // Set the CEPO index to 0
-        //    AdcpSubsystemConfig config = new AdcpSubsystemConfig(ensemble.EnsembleData.SubsystemConfig);
-        //    if (!SubsystemConfigList.Contains(config))
-        //    {
-        //        Application.Current.Dispatcher.BeginInvoke(new System.Action(() => SubsystemConfigList.Add(config)));
-        //    }
-
-        //    // Update the max bin
-        //    if (ensemble.EnsembleData.NumBins > _maxBin)
-        //    {
-        //        // Subtract 1 because it is zero based
-        //        MaxBin = ensemble.EnsembleData.NumBins - 1;
-        //    }
-
-        //    // Update the max beam
-        //    if (ensemble.EnsembleData.NumBeams > _maxBeam)
-        //    {
-        //        // Subtract 1 because it is zero based
-        //        MaxBeam = ensemble.EnsembleData.NumBeams - 1;
-        //    }
-        //}
 
         /// <summary>
         /// Clear the list.  This will reset all the list 
@@ -1396,8 +1339,9 @@ namespace RTI
         /// </summary>
         /// <param name="lineSeriesIndex">Line series index in the plot series list.</param>
         /// <param name="ensemble">Ensemble to add data.</param>
+        /// <param name="ensembleCount">Number of profile ensembles displayed.</param>
         /// <param name="maxEnsembles">Maximum number of ensembles to display in the plot.</param>
-        private void AddBottomTrackData(int lineSeriesIndex, DataSet.Ensemble ensemble, int maxEnsembles)
+        private void AddBottomTrackData(int lineSeriesIndex, DataSet.Ensemble ensemble, int ensembleCount, int maxEnsembles)
         {
             if(ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
             {
@@ -1409,18 +1353,18 @@ namespace RTI
                 {
                     // Create a new data point for the bottom track line
                     // This will be the (ensemble count, range bin)
-                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Count, rangeBin));
+                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(ensembleCount, rangeBin));
 
                     // Add the second point for the shaded area
                     if (rangeBin < ensemble.EnsembleData.NumBins)
                     {
                         // Less then the number of bins, so go to the end of the number of bins
-                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Count, ensemble.EnsembleData.NumBins-1));
+                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, ensemble.EnsembleData.NumBins-1));
                     }
                     else
                     {
                         // This is the deepest point
-                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Count, rangeBin));
+                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, rangeBin));
                     }
 
                     // Add 1 because zero based and include the max number
