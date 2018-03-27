@@ -36,6 +36,7 @@
  * 09/28/2017      RC          4.4.7      Added original data format to know how to retransform the data.  PD0 is differnt from RTB.
  * 09/29/2017      RC          4.4.7      Added FillInMissingWpData() to fill in data when Water Profile is turned off.
  * 03/23/2018      RC          4.8.0      Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
+ * 03/27/2018      RC          4.8.1      Added Tab description.
  * 
  */
 
@@ -150,6 +151,23 @@ namespace RTI
             {
                 _Config = value;
                 this.NotifyOfPropertyChange(() => this.Config);
+            }
+        }
+
+        /// <summary>
+        /// String of the tab description of subsystem configuration.
+        /// </summary>
+        private string _TabDesc;
+        /// <summary>
+        /// String of the tab description of subsystem configuration.
+        /// </summary>
+        public string TabDesc
+        {
+            get { return _TabDesc; }
+            set
+            {
+                _TabDesc = value;
+                this.NotifyOfPropertyChange(() => this.TabDesc);
             }
         }
 
@@ -543,6 +561,7 @@ namespace RTI
         {
             _Config = config;
             _pm = IoC.Get<PulseManager>();
+            TabDesc = config.IndexCodeString();
 
             // Get the Event Aggregator
             _events = IoC.Get<IEventAggregator>();
