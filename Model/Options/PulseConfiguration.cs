@@ -30,7 +30,6 @@
  * 02/12/2014      RC          3.2.3      Added VesselMountOptions.
  * 02/18/2014      RC          3.2.3      Fixed bug in AddConfiguration() to check if the key already exist.
  * 04/02/2014      RC          3.2.4      Changed ExportDataOptions to ExportOptions.
- * 03/16/2015      RC          
  * 
  */
 
@@ -140,6 +139,11 @@ namespace RTI
         /// </summary>
         public VesselMountOptions VesselMountOptions { get; set; }
 
+        /// <summary>
+        /// Data Format options.
+        /// </summary>
+        public DataFormatOptions DataFormatOptions { get; set; }
+
         #endregion
 
         /// <summary>
@@ -163,7 +167,12 @@ namespace RTI
         /// <param name="ExportOptions">Export Data options.</param>
         /// <param name="VesselMountOptions">Vessel Mount Options.</param>
         [JsonConstructor]
-        public PulseConfiguration(Dictionary<string, SubsystemOptions> SubsysOptions, HashSet<SubsystemConfiguration> SubsystemConfigList, SmartPageOptions SmartPageOptions, ExportDataOptions ExportOptions, VesselMountOptions VesselMountOptions)
+        public PulseConfiguration(Dictionary<string, 
+            SubsystemOptions> SubsysOptions, 
+            HashSet<SubsystemConfiguration> SubsystemConfigList, 
+            SmartPageOptions SmartPageOptions, 
+            ExportDataOptions ExportOptions, 
+            VesselMountOptions VesselMountOptionss)
         {
             this.SubsysOptions = SubsysOptions;
             this.SubsystemConfigList = SubsystemConfigList;

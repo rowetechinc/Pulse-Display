@@ -2,6 +2,10 @@
 
 Pulse-Display-4.8.1
  - In ScreenDataVM, added Tab description.
+ - Create DataFormatOptions to store the format options.
+ - In PulseOptions, added DataFormatOptions.
+ - In PulseManager, retreieve and save the DataFormatOptions.
+ - In AdcpConnection, use the DataFormatOptions when adding the data to the ADCP codec.
 
 Pulse-Display-4.8.0
  - Updated Heatmap plot with bottom track line and shade under bottom track line.

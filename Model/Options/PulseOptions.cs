@@ -33,6 +33,7 @@
  * 06/23/2015      RC          4.1.3      Added TankTestOptions.
  * 08/13/2015      RC          4.2.0      Added ViewDataWavesOptions.
  * 10/18/2017      RC          4.4.7      Added DataOutputViewOptions.
+ * 03/28/2018      RC          4.8.1      Added DataFormatOptions.
  * 
  */
 
@@ -222,6 +223,11 @@ namespace RTI
         /// </summary>
         public WpMagDirOutputViewOptions WpMagDirOutputOptions { get; set; }
 
+        /// <summary>
+        /// Data Format Options.
+        /// </summary>
+        public DataFormatOptions DataFormatOptions { get; set; }
+
         #endregion
 
         /// <summary>
@@ -262,6 +268,9 @@ namespace RTI
         /// <param name="viewDataWavesOptions">Waves options.</param>
         /// <param name="adcpConfig">ADCP Config.</param>
         /// <param name="recoverDataOptions">Recover Data Options.</param>
+        /// <param name="dataOutputOptions">Data Ouput Options.</param>
+        /// <param name="wpMagDirOutputOptions">Water Profile Magnitude and Direction Output Options.</param>
+        /// <param name="dataFormatOptions">Data Format Options.</param>
         /// <param name="lastViewedPage">Last paged view.</param>
         public PulseOptions(string prjFolderPath, int fontSize, int maxFileSize, AdcpConnection.AdcpCommTypes adcpCommType, SerialOptions adcpOptions,
                                 bool isGps1Enabled, bool isGps2Enabled, bool isNmea1Enabled, bool isNmea2Enabled, 
@@ -270,7 +279,7 @@ namespace RTI
                                 PredictionModelInput predictorUserInput, 
                                 int selectedProjectID, ValidationTestViewOptions validationViewOptions, ViewDataGraphicalOptions graphicalViewOptions,
                                 BackscatterOptions backscatterOptions, AverageOptions averageOptions, TankTestOptions tankTestOptions, ViewDataWavesOptions viewDataWavesOptions,
-                                AdcpConfiguration adcpConfig, RecoverDataOptions recoverDataOptions, DataOutputViewOptions dataOutputOptions, WpMagDirOutputViewOptions wpMagDirOutputOptions,
+                                AdcpConfiguration adcpConfig, RecoverDataOptions recoverDataOptions, DataOutputViewOptions dataOutputOptions, WpMagDirOutputViewOptions wpMagDirOutputOptions, DataFormatOptions dataFormatOptions,
                                 ViewNavEvent.ViewId lastViewedPage)
         {
             PrjFolderPath = prjFolderPath;
@@ -299,6 +308,7 @@ namespace RTI
             RecoverDataOptions = recoverDataOptions;
             DataOutputOptions = dataOutputOptions;
             WpMagDirOutputOptions = wpMagDirOutputOptions;
+            DataFormatOptions = dataFormatOptions;
             LastViewedPage = lastViewedPage;
 
         }
@@ -339,6 +349,7 @@ namespace RTI
             RecoverDataOptions = new RecoverDataOptions();
             DataOutputOptions = new DataOutputViewOptions();
             WpMagDirOutputOptions = new WpMagDirOutputViewOptions();
+            DataFormatOptions = new DataFormatOptions();
             LastViewedPage = ViewNavEvent.ViewId.HomeView;
         }
 

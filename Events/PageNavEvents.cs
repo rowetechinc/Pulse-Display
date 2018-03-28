@@ -49,6 +49,7 @@
  * 01/15/2015      RC          4.4.2      Added BurnInTestView.
  * 08/28/2017      RC          4.5.2      Added DataOutputView.
  * 01/25/2018      RC          4.7.2      Added ViewDataGraphicalView and ViewDataTextView and ViewData3dView.
+ * 03/28/2018      RC          4.8.1      Added DataFormatView.
  * 
  */
 
@@ -367,7 +368,12 @@ namespace RTI
             /// <summary>
             /// DVL output view.
             /// </summary>
-            ViewDataDvlView
+            ViewDataDvlView,
+
+            /// <summary>
+            /// Data Format view.
+            /// </summary>
+            DataFormatView
         }
 
         #region Properties

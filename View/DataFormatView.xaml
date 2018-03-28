@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="RTI.DataFormatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RTI"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="600">
+    <Grid HorizontalAlignment="Center" Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,20">
+            <TextBlock Text="Data Format Options" Foreground="{StaticResource PulseFontHighlightColor}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="36" />
+            <TextBlock Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" Width="400" Margin="5,10" Text="Select the formats the realtime data you are receiving from the ADCP.  If you do not know which format, select all the formats.  By default, RTB is output.  By unchecking some of the formats, you are saving time and memory on the computer to process the data." />
+        </StackPanel>
+
+        <!--Binary Format-->
+        <Border Grid.Row="1" Background="{StaticResource PulseBackBorder3Color}" CornerRadius="5" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Checkbox" />
+                    <ColumnDefinition Width="300" SharedSizeGroup="Desc" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="RoweTech Profile Binary (RTB)" Foreground="{StaticResource PulseFontBrightColor}" VerticalAlignment="Center" Margin="5" FontSize="18" />
+                <CheckBox Grid.Row="1" Grid.Column="1" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=IsBinaryFormat }" HorizontalAlignment="Left" ToolTip="Select RTB Binary Format" Margin="5"  />
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Path=BinaryFormatDesc}" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" Margin="5" TextWrapping="WrapWithOverflow" />
+            </Grid>
+        </Border>
+
+        <!--DVL Format-->
+        <Border Grid.Row="2" Background="{StaticResource PulseBackBorder3Color}" CornerRadius="5" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Checkbox" />
+                    <ColumnDefinition Width="300" SharedSizeGroup="Desc" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="RoweTech DVL ASCII (RTD)" Foreground="{StaticResource PulseFontBrightColor}" VerticalAlignment="Center" Margin="5" FontSize="18" />
+                <CheckBox Grid.Row="2" Grid.Column="1" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=IsDvlFormat }" HorizontalAlignment="Left" ToolTip="Select RTD DVL Format" Margin="5"  />
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Path=DvlFormatDesc}" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" Margin="5" TextWrapping="WrapWithOverflow" />
+            </Grid>
+        </Border>
+
+        <!--PD0 Format-->
+        <Border Grid.Row="3" Background="{StaticResource PulseBackBorder3Color}" CornerRadius="5" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Checkbox" />
+                    <ColumnDefinition Width="300" SharedSizeGroup="Desc" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="PD0 Profile Binary (PD0)" Foreground="{StaticResource PulseFontBrightColor}" VerticalAlignment="Center" Margin="5" FontSize="18" />
+                <CheckBox Grid.Row="3" Grid.Column="1" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=IsPd0Format }" HorizontalAlignment="Left" ToolTip="Select PD0 Binary Format" Margin="5"  />
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Path=Pd0FormatDesc}" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" Margin="5" TextWrapping="WrapWithOverflow" />
+            </Grid>
+        </Border>
+
+
+        <!--PD6/PD13 Format-->
+        <Border Grid.Row="4" Background="{StaticResource PulseBackBorder3Color}" CornerRadius="5" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Checkbox" />
+                    <ColumnDefinition Width="300" SharedSizeGroup="Desc" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="PD6/PD13 DVL ASCII (PD6/PD13)" Foreground="{StaticResource PulseFontBrightColor}" VerticalAlignment="Center" Margin="5" FontSize="18" />
+                <CheckBox Grid.Row="4" Grid.Column="1" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=IsPd6_13Format }" HorizontalAlignment="Left" ToolTip="Select PD6 and PD13 ASCII Format" Margin="5"  />
+                <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Path=Pd6_13FormatDesc}" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" Margin="5" TextWrapping="WrapWithOverflow" />
+            </Grid>
+        </Border>
+
+        <!--PD4/PD5 Format-->
+        <Border Grid.Row="5" Background="{StaticResource PulseBackBorder3Color}" CornerRadius="5" Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Checkbox" />
+                    <ColumnDefinition Width="300" SharedSizeGroup="Desc" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="PD4/PD5 DVL Binary (PD4/PD5)" Foreground="{StaticResource PulseFontBrightColor}" VerticalAlignment="Center" Margin="5" FontSize="18" />
+                <CheckBox Grid.Row="5" Grid.Column="1" Style="{StaticResource OnOffSwitchStyle}" IsChecked="{Binding Path=IsPd4_5Format }" HorizontalAlignment="Left" ToolTip="Select PD4 and PD5 ASCII Format" Margin="5"  />
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding Path=Pd4_5FormatDesc}" Foreground="{StaticResource PulseFontColor}" VerticalAlignment="Bottom" Margin="5" TextWrapping="WrapWithOverflow" />
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>

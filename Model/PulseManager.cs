@@ -41,6 +41,7 @@
  * 08/13/2015      RC          4.2.0      Added Waves Options.
  * 12/02/2015      RC          4.4.0      Added, DataBit, Parity and Stop Bit to ADCP serial port.
  * 10/18/2017      RC          4.4.7      Added DataOutputViewOptions.
+ * 03/28/2018      RC          4.8.1      Retreieve and save the DataFormatOptions.
  * 
  * 
  */
@@ -1717,6 +1718,30 @@ namespace RTI
         public WpMagDirOutputViewOptions GetWpMagDirOutputViewOptions()
         {
             return _PulseOptions.WpMagDirOutputOptions;
+        }
+
+        #endregion
+
+        #region Data Format Options
+
+        /// <summary>
+        /// Update the Pulse database with the latest Data Format Option.
+        /// </summary>
+        /// <param name="options">Data Format Option.</param>
+        public void UpdateDataFormatOptions(DataFormatOptions options)
+        {
+            // Update the selected project ID
+            _PulseOptions.DataFormatOptions = options;
+            UpdatePulseOptions(_PulseOptions);
+        }
+
+        /// <summary>
+        /// Get the last Data Format Option.
+        /// </summary>
+        /// <returns>Last Data Format Option.</returns>
+        public DataFormatOptions GetDataFormatOptions()
+        {
+            return _PulseOptions.DataFormatOptions;
         }
 
         #endregion
