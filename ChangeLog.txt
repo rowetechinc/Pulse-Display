@@ -2,7 +2,7 @@
 
 Pulse-Display-4.9.0
  - Added DisplayViewModel to handle all display view models.
- - Updated how the Ensembles are past to the display.
+ - Updated how the Ensembles are passed to the display.
 
 Pulse-Display-4.8.1
  - In ScreenDataVM, added Tab description.
