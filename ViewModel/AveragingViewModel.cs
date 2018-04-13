@@ -274,13 +274,13 @@ namespace RTI
                 switch (value)
                 {
                     case RUNNING_AVG:
-                        IsStaAvgRunning = true;
+                        IsLtaAvgRunning = true;
                         break;
                     case TIME_AVG:
-                        IsStaByTimer = true;
+                        IsLtaByTimer = true;
                         break;
                     case SAMPLE_AVG:
-                        IsStaByNumSamples = true;
+                        IsLtaByNumSamples = true;
                         break;
                 }
             }
@@ -302,7 +302,7 @@ namespace RTI
 
                 this.NotifyOfPropertyChange(() => this.IsLtaByNumSamples);
                 this.NotifyOfPropertyChange(() => this.IsLtaByTimer);
-                this.NotifyOfPropertyChange(() => this.LtaIsAvgRunning);
+                this.NotifyOfPropertyChange(() => this.IsLtaAvgRunning);
 
                 // Save the options to DB
                 SaveOptions();
@@ -325,7 +325,7 @@ namespace RTI
                 
                 this.NotifyOfPropertyChange(() => this.IsLtaByNumSamples);
                 this.NotifyOfPropertyChange(() => this.IsLtaByTimer);
-                this.NotifyOfPropertyChange(() => this.LtaIsAvgRunning);
+                this.NotifyOfPropertyChange(() => this.IsLtaAvgRunning);
 
                 // Save the options to DB
                 SaveOptions();
@@ -338,7 +338,7 @@ namespace RTI
         /// is removing the last ensemble from the
         /// list.  
         /// </summary>
-        public bool LtaIsAvgRunning
+        public bool IsLtaAvgRunning
         {
             get
             {
@@ -354,7 +354,7 @@ namespace RTI
 
                 this.NotifyOfPropertyChange(() => this.IsLtaByNumSamples);
                 this.NotifyOfPropertyChange(() => this.IsLtaByTimer);
-                this.NotifyOfPropertyChange(() => this.LtaIsAvgRunning);
+                this.NotifyOfPropertyChange(() => this.IsLtaAvgRunning);
 
                 // Save the options to DB
                 SaveOptions();
@@ -1932,7 +1932,13 @@ namespace RTI
                 // Do not publish the data if you are importing data
                 if (!_adcpConn.IsImporting)
                 {
-                    _events.PublishOnUIThread(new EnsembleEvent(ensemble, EnsembleSource.LTA, EnsembleType.LTA));
+                    EnsembleEvent ensEvent = new EnsembleEvent(ensemble, EnsembleSource.LTA, EnsembleType.LTA);
+
+                    // Publish the ensemble
+                    _events.PublishOnUIThread(ensEvent);
+
+                    // Display the ensemble
+                    _pm.DisplayEnsemble(ensEvent);
                 }
 
                 // Record the data
@@ -1956,7 +1962,13 @@ namespace RTI
                 // Do not publish the data if you are importing data
                 if (!_adcpConn.IsImporting)
                 {
-                    _events.PublishOnUIThread(new EnsembleEvent(ensemble, EnsembleSource.STA, EnsembleType.STA));
+                    EnsembleEvent ensEvent = new EnsembleEvent(ensemble, EnsembleSource.STA, EnsembleType.STA);
+
+                    // Publish the ensemble
+                    _events.PublishOnUIThread(ensEvent);
+
+                    // Display the ensemble
+                    _pm.DisplayEnsemble(ensEvent);
                 }
 
                 // Record the data

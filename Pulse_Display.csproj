@@ -277,6 +277,7 @@
     <Compile Include="ViewModel\CompassCalViewModel.cs" />
     <Compile Include="ViewModel\CompassUtilityViewModel.cs" />
     <Compile Include="ViewModel\DiagnosticsViewModel.cs" />
+    <Compile Include="ViewModel\DisplayViewModel.cs" />
     <Compile Include="ViewModel\HeatmapPlotViewModel.cs" />
     <Compile Include="ViewModel\PlaybackViewModel.cs" />
     <Compile Include="ViewModel\ProfilePlotViewModel.cs" />

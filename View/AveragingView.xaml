@@ -341,7 +341,7 @@
                 </StackPanel>
 
                 <!--LTA Options-->
-                <Border Grid.Row="1" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" IsEnabled="{Binding IsStaEnabled}">
+                <Border Grid.Row="1" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5" IsEnabled="{Binding IsLtaEnabled}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

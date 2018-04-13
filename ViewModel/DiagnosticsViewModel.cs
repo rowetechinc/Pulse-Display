@@ -39,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace RTI
 {
-    public class DiagnosticsViewModel : PulseViewModel, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<SelectedEnsembleEvent>
+    public class DiagnosticsViewModel : DisplayViewModel, IHandle<ProjectEvent>, IHandle<SelectedEnsembleEvent>
     {
 
         #region Variables
@@ -48,6 +48,11 @@ namespace RTI
         ///  Setup logger
         /// </summary>
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// Pulse Manager.
+        /// </summary>
+        private PulseManager _pm;
 
         /// <summary>
         /// Event aggregator.
@@ -853,6 +858,9 @@ namespace RTI
             // Set Subsystem 
             _Config = config;
 
+            _pm = IoC.Get<PulseManager>();
+            _pm.RegisterDisplayVM(this);
+
             // Get the Event Aggregator
             _events = IoC.Get<IEventAggregator>();
 
@@ -1288,7 +1296,7 @@ namespace RTI
         /// It will set the max ensemble and then check the data and display the data.
         /// </summary>
         /// <param name="ensEvent">Ensemble event.</param>
-        public void Handle(EnsembleEvent ensEvent)
+        public override void Handle(EnsembleEvent ensEvent)
         {
             // Check if source matches this display
             if (_Config.Source != ensEvent.Source || ensEvent.Ensemble == null)
@@ -1298,6 +1306,15 @@ namespace RTI
 
             // Display the data
             Task.Run(() => DisplayData(ensEvent.Ensemble));
+        }
+
+        /// <summary>
+        /// Bulk Ensemble event.
+        /// </summary>
+        /// <param name="ensEvent"></param>
+        public override void Handle(BulkEnsembleEvent ensEvent)
+        {
+            // DO NOTHING
         }
 
         /// <summary>

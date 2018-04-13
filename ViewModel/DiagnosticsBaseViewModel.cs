@@ -45,7 +45,7 @@ namespace RTI
     /// <summary>
     /// Allow the user to test out settings in the prediction model.
     /// </summary>
-    public class DiagnosticsBaseViewModel : PulseViewModel, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<CloseVmEvent>
+    public class DiagnosticsBaseViewModel : DisplayViewModel, IHandle<ProjectEvent>, IHandle<CloseVmEvent>
     {
         #region Variables
 
@@ -219,6 +219,7 @@ namespace RTI
         {
             // Initialize the values
             _pm = IoC.Get<PulseManager>();
+            _pm.RegisterDisplayVM(this);
             _adcpConn = IoC.Get<AdcpConnection>();
             _events = IoC.Get<IEventAggregator>();
             _events.Subscribe(this);
@@ -378,7 +379,7 @@ namespace RTI
         /// display the latest ensemble.
         /// </summary>
         /// <param name="ensEvent">Ensemble event.</param>
-        public void Handle(EnsembleEvent ensEvent)
+        public override void Handle(EnsembleEvent ensEvent)
         {
             if (ensEvent.Ensemble != null && ensEvent.Ensemble.IsEnsembleAvail)
             {
@@ -391,6 +392,15 @@ namespace RTI
                     Application.Current.Dispatcher.BeginInvoke(new System.Action(() => AddConfig(ssDataConfig)));
                 }
             }
+        }
+
+        /// <summary>
+        /// Bulk Ensemble event.
+        /// </summary>
+        /// <param name="ensEvent"></param>
+        public override void Handle(BulkEnsembleEvent ensEvent)
+        {
+            // DO NOTHING
         }
 
         /// <summary>

@@ -229,6 +229,17 @@ namespace RTI
 
         #endregion
 
+        #region Display ViewModels 
+
+        /// <summary>
+        /// List of all Display ViewModels.
+        /// Ensembles will be passed to all the display VMs.  
+        /// So register to receive ensemble data.
+        /// </summary>
+        List<DisplayViewModel> DisplayVmList { get; set; }
+
+        #endregion
+
         #endregion
 
         #region Commands
@@ -243,6 +254,9 @@ namespace RTI
         public PulseManager()
         {
             _events = IoC.Get<IEventAggregator>();
+
+            // Init list
+            DisplayVmList = new List<DisplayViewModel>();
 
             // Create the Pulse database if it does not exist
             // and set the database connection
@@ -1785,6 +1799,43 @@ namespace RTI
             Project prj = GetProject(projectName);
             SelectedProject = prj;
             prj.Dispose();
+        }
+
+        #endregion
+
+        #region VM Display List
+
+        /// <summary>
+        /// Register a display.
+        /// </summary>
+        /// <param name="vm"></param>
+        public void RegisterDisplayVM(DisplayViewModel vm)
+        {
+            DisplayVmList.Add(vm);
+        }
+
+        /// <summary>
+        /// Display the ensemble to all the View Models.
+        /// </summary>
+        /// <param name="ensEvent"></param>
+        public void DisplayEnsemble(EnsembleEvent ensEvent)
+        {
+            for(int x =0; x < DisplayVmList.Count; x++)
+            {
+                DisplayVmList[x].Handle(ensEvent);
+            }
+        }
+
+        /// <summary>
+        /// Display all the bulk ensemble batches to all the view models.
+        /// </summary>
+        /// <param name="ensEvent"></param>
+        public void DisplayEnsembleBulk(BulkEnsembleEvent ensEvent)
+        {
+            for (int x = 0; x < DisplayVmList.Count; x++)
+            {
+                DisplayVmList[x].Handle(ensEvent);
+            }
         }
 
         #endregion

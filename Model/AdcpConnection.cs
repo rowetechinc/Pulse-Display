@@ -3891,7 +3891,13 @@ namespace RTI
             {
                 //_events.PublishOnUIThread(new EnsembleEvent(ens, source, type));
                 //_events.PublishOnUIThreadAsync(new EnsembleEvent(ens, source, type));
-                _events.PublishOnBackgroundThread(new EnsembleEvent(ens, source, type));
+                EnsembleEvent ensEvent = new EnsembleEvent(ens, source, type);
+
+                // Publish the ensemble
+                _events.PublishOnBackgroundThread(ensEvent);
+
+                // Display the ensemble
+                _pm.DisplayEnsemble(ensEvent);
             }
 
         }

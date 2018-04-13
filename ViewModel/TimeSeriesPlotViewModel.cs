@@ -69,6 +69,7 @@ namespace RTI
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
     using System.IO;
+    using System.Diagnostics;
 
     /// <summary>
     /// Create TimeSeries Plot control to display time series plots.

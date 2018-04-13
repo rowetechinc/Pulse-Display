@@ -60,7 +60,7 @@ namespace RTI
     /// Base viewmodel for the Validation test.  This will create a VM for each
     /// subsystem configuration.
     /// </summary>
-    public class ValidationTestBaseViewModel : PulseViewModel, IHandle<EnsembleEvent>, IHandle<ProjectEvent>, IHandle<CloseVmEvent>, IHandle<BulkEnsembleEvent>
+    public class ValidationTestBaseViewModel : DisplayViewModel, IHandle<ProjectEvent>, IHandle<CloseVmEvent>
     {
         #region Variables
 
@@ -359,6 +359,7 @@ namespace RTI
         {
             // Project Manager
             _pm = IoC.Get<PulseManager>();
+            _pm.RegisterDisplayVM(this);
             _events = IoC.Get<IEventAggregator>();
             _events.Subscribe(this);
             _adcpConn = IoC.Get<AdcpConnection>();
@@ -678,7 +679,7 @@ namespace RTI
         /// display the latest ensemble.
         /// </summary>
         /// <param name="ensEvent">Ensemble event.</param>
-        public void Handle(EnsembleEvent ensEvent)
+        public override void Handle(EnsembleEvent ensEvent)
         {
             if (ensEvent.Ensemble != null && ensEvent.Ensemble.IsEnsembleAvail)
             {
@@ -759,7 +760,7 @@ namespace RTI
         /// display the latest ensemble.
         /// </summary>
         /// <param name="ensEvent">Ensemble event.</param>
-        public void Handle(BulkEnsembleEvent ensEvent)
+        public override void Handle(BulkEnsembleEvent ensEvent)
         {
             // Execute async
             Task.Run(() => BulkEnsembleDisplayExecute(ensEvent));

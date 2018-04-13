@@ -1612,10 +1612,11 @@ namespace RTI
                     _adcpConnection.DisconnectAdcpSerial();
                     _adcpConnection.DisconnectAdcpEthernet();
                     //_adcpConnection.DisconnectTcp();
-                    _adcpConnection.ConnectAdcpUdp();
+                    _adcpConnection.DisconnectAdcpUdp();
 
                     // Connect to TCP server
                     //_adcpConnection.ConnectTcp();
+                    _adcpConnection.ConnectAdcpUdp();
                 }
                 else if(option.AdcpCommType == AdcpConnection.AdcpCommTypes.UDP)
                 {

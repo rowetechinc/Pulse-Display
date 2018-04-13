@@ -95,7 +95,7 @@ namespace RTI
     /// <summary>
     /// Plots and data needed to do a lake test.
     /// </summary>
-    public class ValidationTestViewModel : PulseViewModel, IDisposable, IHandle<EnsembleEvent>, IHandle<ProjectEvent>
+    public class ValidationTestViewModel : DisplayViewModel, IDisposable, IHandle<ProjectEvent>
     {
 
         #region Variables
@@ -1225,6 +1225,7 @@ namespace RTI
             // Initialize values
             Config = config;
             _pm = IoC.Get<PulseManager>();
+            _pm.RegisterDisplayVM(this);
             _eventAggregator = IoC.Get<IEventAggregator>();
             _isProcessingBuffer = false;
             _buffer = new ConcurrentQueue<DataSet.Ensemble>();
@@ -3073,7 +3074,7 @@ namespace RTI
         /// data will be inconsistent between GPS and Bottom Track.
         /// </summary>
         /// <param name="ensEvent">Ensemble event which contains the ensemble.</param>
-        public void Handle(EnsembleEvent ensEvent)
+        public override void Handle(EnsembleEvent ensEvent)
         {
             if(ensEvent.Ensemble == null)
             {
@@ -3116,11 +3117,11 @@ namespace RTI
         /// Display a bulk set of ensembles.
         /// </summary>
         /// <param name="ensEvent">Bulk Ensemble event.</param>
-        public void Handle(BulkEnsembleEvent ensEvent)
+        public override void Handle(BulkEnsembleEvent ensEvent)
         {
             // Display the data async
-            //Task.Run(() => DisplayBulkDataExecute(ensEvent));
-            DisplayBulkDataExecute(ensEvent);
+            Task.Run(() => DisplayBulkDataExecute(ensEvent));
+            //DisplayBulkDataExecute(ensEvent);
         }
 
         /// <summary>

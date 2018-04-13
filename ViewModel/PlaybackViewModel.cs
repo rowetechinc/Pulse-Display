@@ -695,8 +695,14 @@ namespace RTI
                 // Average the data
                 _averagingVM.AverageEnsemble(newEnsemble);
 
+                // Create and Ensembl event
+                EnsembleEvent ensEvent = new EnsembleEvent(newEnsemble, EnsembleSource.Playback);
+
                 // Publish the ensemble after screening and averging the data
-                _events.PublishOnBackgroundThread(new EnsembleEvent(newEnsemble, EnsembleSource.Playback));
+                _events.PublishOnBackgroundThread(ensEvent);
+
+                // Display the ensemble
+                _pm.DisplayEnsemble(ensEvent);
             }
         }
 
@@ -720,34 +726,72 @@ namespace RTI
                 Cache<long,DataSet.Ensemble> data = _pm.SelectedPlayback.GetAllEnsembles();
                 AdcpCodec.CodecEnum origDataFormat = _pm.SelectedPlayback.GetOrigDataFormat();
 
+                int numEns = _pm.SelectedProject.GetNumberOfEnsembles();
+
+                // We will process in batches of 100
+                int batches = numEns / 100;
+                int remainder = numEns % 100;
+                long index = 1;
+                uint BATCH_SIZE = 100;
+
+                // Process all the ensembles
+                for (int x = 0; x < batches; x++)
+                {
+                    // Process an ensemble batch
+                    ProcessEnsembleBatch(index, BATCH_SIZE, origDataFormat);
+
+                    index += BATCH_SIZE;
+                    Debug.WriteLine("PlaybackVeiwModel Batch Number: " + index);
+                }
+
+                // Process the remainder of the ensembles not a multiple of 100
+                ProcessEnsembleBatch(index, (uint)remainder, origDataFormat);
+
                 // Set new Total ensembles
                 _TotalEnsembles = (long)data.Count();
                 this.NotifyOfPropertyChange(() => this.TotalEnsembles);
 
-                // Store the new screened data
-                Cache<long, DataSet.Ensemble> screenData = new Cache<long, DataSet.Ensemble>((uint)data.Count());
 
-                // Screen all the data
-                for (int x = 0; x < data.Count(); x++)
-                {
-                    // Make a copy of the ensemble to pass to all the views
-                    DataSet.Ensemble newEnsemble = data.IndexValue(x).Clone();
-
-                    // Vessel Mount Options
-                    VesselMountScreen(ref newEnsemble);
-
-                    // Screen the data
-                    _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
-
-                    // Add the screened ensemble to the list
-                    screenData.Add(data.IndexKey(x), newEnsemble);
-                }
-
-                // Publish all the ensembles
-                _events.PublishOnBackgroundThread(new BulkEnsembleEvent(screenData, EnsembleSource.Playback));
 
                 IsLoading = false;
             }
+        }
+
+        /// <summary>
+        /// Process all the ensembles in batches.  This will ensure that not all the data is read
+        /// in at one time.
+        /// </summary>
+        /// <param name="index">Index in the total ensemble list.</param>
+        /// <param name="batch_size">Batch size.</param>
+        /// <param name="origDataFormat">Format of the data.</param>
+        private void ProcessEnsembleBatch(long index, uint batch_size, AdcpCodec.CodecEnum origDataFormat)
+        {
+            // Get all the data from the files
+            Cache<long, DataSet.Ensemble> data = _pm.SelectedProject.GetEnsembles(index, batch_size);
+
+
+            // Store the new screened data
+            Cache<long, DataSet.Ensemble> screenData = new Cache<long, DataSet.Ensemble>(batch_size);
+
+            // Screen all the data
+            for (int x = 0; x < data.Count(); x++)
+            {
+                // Make a copy of the ensemble to pass to all the views
+                DataSet.Ensemble newEnsemble = data.IndexValue(x).Clone();
+
+                // Vessel Mount Options
+                VesselMountScreen(ref newEnsemble);
+
+                // Screen the data
+                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+
+                // Add the screened ensemble to the list
+                screenData.Add(data.IndexKey(x), newEnsemble);
+            }
+
+            // Publish all the ensembles
+            //_events.PublishOnBackgroundThread(new BulkEnsembleEvent(screenData, EnsembleSource.Playback));
+            _pm.DisplayEnsembleBulk(new BulkEnsembleEvent(screenData, EnsembleSource.Playback));
         }
 
         #endregion
