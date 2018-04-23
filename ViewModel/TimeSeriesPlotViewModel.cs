@@ -826,7 +826,7 @@ namespace RTI
                     {
 
                         // Update the list with the latest ensemble
-                        UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
+                        //UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
 
                         // Update the plots in the dispatcher thread
                         try

@@ -71,6 +71,7 @@
  * 01/03/2018      RC          4.6.0      Do not send a BREAK at startup of serial port.
  * 02/07/2018      RC          4.7.2      Return the file name when recording stops in StopValidationTest().
  * 03/28/2018      RC          4.8.1      Use the DataFormatOptions when adding the data to the ADCP codec.
+ * 04/23/2018      RC          4.9.0      Limit the file size recorded to 16mb.
  * 
  */
 
@@ -358,6 +359,21 @@ namespace RTI
         /// </summary>
         private DataFormatViewModel _dataFormatOptions ;
 
+        /// <summary>
+        /// Current raw file size.
+        /// </summary>
+        private int _rawFileSize;
+
+        /// <summary>
+        ///  Current Validation file size.
+        /// </summary>
+        private int _validationFileSize;
+
+        /// <summary>
+        /// Max file to record.
+        /// </summary>
+        public const int MAX_FILE_SIZE = 16777216;      // 16mbs 
+
         #endregion
 
         #region Properties
@@ -552,6 +568,7 @@ namespace RTI
         /// Number of bytes written to the Validation Test file.
         /// </summary>
         public long ValidationTestBytesWritten { get; set; }
+
 
         #endregion
 
@@ -753,6 +770,10 @@ namespace RTI
         public AdcpConnection()
         {
             Debug.Print("AdcpConnection Open");
+
+            // Check if folder exist
+            CheckRecordFolderExist();
+
             // Get ProjectManager
             _pm = IoC.Get<PulseManager>();
 
@@ -776,6 +797,8 @@ namespace RTI
             // Get EventAggregator
             _events = IoC.Get<IEventAggregator>();
 
+            _rawFileSize = 0;
+            _validationFileSize = 0;
             _ensembleBuffer = new ConcurrentQueue<EnsembleData>();
             _gps1Buffer = new ConcurrentQueue<byte[]>();
             _gps2Buffer = new ConcurrentQueue<byte[]>();
@@ -2731,12 +2754,28 @@ namespace RTI
         #region Validation Test Recording
 
         /// <summary>
+        /// Check if the default record folder path exist.  If it does not exist,
+        /// then create the folder.
+        /// </summary>
+        private void CheckRecordFolderExist()
+        {
+            if(!Directory.Exists(Pulse.Commons.DEFAULT_RECORD_DIR))
+            {
+                // Create the folder
+                Directory.CreateDirectory(Pulse.Commons.DEFAULT_RECORD_DIR);
+            }
+        }
+
+        /// <summary>
         /// Set the directory for the test results and
         /// turn on the flag.
         /// </summary>
         /// <param name="dir">Directory to write the lake test data to.</param>
         public void StartValidationTest(string dir)
         {
+            // Initialize the file size
+            _validationFileSize = 0;
+
             // Set Dir
             _validationTestDir = dir;
 
@@ -2794,6 +2833,22 @@ namespace RTI
                     CreateValidationTestWriter(ensemble);
                 }
 
+                // See if a new file needs to be created based off the max file size
+                if (_validationFileSize + data.Length > MAX_FILE_SIZE)
+                {
+                    // Record the current file size
+                    long currentSize = ValidationTestBytesWritten;
+
+                    // Stop the current recording
+                    StopValidationTest();
+
+                    // Start a new file
+                    StartValidationTest(Pulse.Commons.DEFAULT_RECORD_DIR);
+
+                    // Create writer with the current file size
+                    CreateValidationTestWriter(ensemble, currentSize);
+                }
+
                 // Verify writer is created
                 if (_validationTestBinWriter != null)
                 {
@@ -2809,6 +2864,8 @@ namespace RTI
 
                             // Accumulate the file size
                             ValidationTestBytesWritten += data.Length;
+
+                            _validationFileSize += data.Length;
                         }
                     }
                     catch (Exception e)
@@ -2826,7 +2883,8 @@ namespace RTI
         /// the data.
         /// </summary>
         /// <param name="ensemble">Ensemble to get the serial number.</param>
-        private void CreateValidationTestWriter(DataSet.Ensemble ensemble)
+        /// <param name="initFileSize">Initialize file size to display.</param>
+        private void CreateValidationTestWriter(DataSet.Ensemble ensemble, long initFileSize = 0)
         {
             // Get the serial number
             SerialNumber serial = new SerialNumber();
@@ -2857,7 +2915,7 @@ namespace RTI
                 ValidationTestFileName = filename;
 
                 // Reset the number of bytes written
-                ValidationTestBytesWritten = 0;
+                ValidationTestBytesWritten = initFileSize;
             }
             catch (Exception e)
             {
@@ -2877,6 +2935,8 @@ namespace RTI
         /// <param name="file">Filename if you want to manually set it.</param>
         public void StartRawAdcpRecord(string dir, string file = null)
         {
+            _rawFileSize = 0;
+
             // Set Dir
             _rawAdcpRecordDir = dir;
 
@@ -2939,6 +2999,22 @@ namespace RTI
                     CreateRawAdcpWriter();
                 }
 
+                // See if a new file needs to be created based off the max file size
+                if (_rawFileSize + data.Length > MAX_FILE_SIZE)
+                {
+                    // Store the current file size
+                    long currentSize = RawAdcpBytesWritten;
+
+                    // Stop the current recording
+                    StopRawAdcpRecord();
+
+                    // Start a new file
+                    StartRawAdcpRecord(Pulse.Commons.DEFAULT_RECORD_DIR);
+
+                    // Create a new writer with the current file size
+                    CreateRawAdcpWriter(currentSize);
+                }
+
                 // Verify writer is created
                 if (_rawAdcpRecordBinWriter != null)
                 {
@@ -2954,6 +3030,9 @@ namespace RTI
 
                             // Accumulate the number of bytes written
                             RawAdcpBytesWritten += data.Length;
+
+                            // Monitor the file size to create a new file when it exeeds max file size
+                            _rawFileSize += data.Length;
                         }
                     }
                     catch (Exception e)
@@ -2970,12 +3049,13 @@ namespace RTI
         /// to the file.  Use the ensemble to get a serial number for
         /// the data.
         /// </summary>
-        private void CreateRawAdcpWriter()
+        /// <param name="initFileSize">Initial file size.</param>
+        private void CreateRawAdcpWriter(long initFileSize = 0)
         {
             // Create a file name
             DateTime currDateTime = DateTime.Now;
 
-            string filename = string.Format("RawADCP_{0:yyyyMMddHHmmss}.bin", currDateTime);
+            string filename = string.Format("RawADCP_{0:yyyyMMddHHmmss}.ens", currDateTime);
             if (_rawAdcpRecordFile != null)
             {
                 // Overwrite the file name
@@ -2993,7 +3073,7 @@ namespace RTI
                 RawAdcpRecordFileName = filePath;
 
                 // Reset the number of bytes written
-                RawAdcpBytesWritten = 0;
+                RawAdcpBytesWritten = initFileSize;
             }
             catch (Exception e)
             {

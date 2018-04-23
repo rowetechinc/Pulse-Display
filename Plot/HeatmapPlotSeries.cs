@@ -446,7 +446,10 @@ namespace RTI
                 var data = new double[dataCount];
                 for (int x = minBin; x < dataCount; x++)
                 {
-                    data[x] = ensemble.EarthVelocityData.VelocityVectors[x].Magnitude;
+                    if (x < ensemble.EarthVelocityData.VelocityVectors.Length)
+                    {
+                        data[x] = ensemble.EarthVelocityData.VelocityVectors[x].Magnitude;
+                    }
                 }
 
                 // Add the data
@@ -468,11 +471,11 @@ namespace RTI
                 // Combine all the data
                 int ensCount = 0;
                 Data = new double[_dataList.Count, dataCount];
-                foreach(var ens in _dataList)
+                for(int x = 0; x < _dataList.Count; x++)
                 {
-                    for(int y = 0; y < ens.Data.Count(); y++)
+                    for(int y = 0; y < _dataList[x].Data.Count(); y++)
                     {
-                        Data[ensCount,y] = ens.Data[y];
+                        Data[ensCount,y] = _dataList[x].Data[y];
                     }
 
                     //// If we are drawing the bottom track line

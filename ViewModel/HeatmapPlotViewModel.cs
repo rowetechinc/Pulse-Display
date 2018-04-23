@@ -728,7 +728,7 @@ namespace RTI
                             && (ssConfig == ewm.Ensemble.EnsembleData.SubsystemConfig))         // Check if Subsystem Config matches
                     {
                         // Update the list with the latest ensemble
-                        UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
+                        //UpdateEnsembleList(ewm.Ensemble, ewm.MaxEnsembles);
 
                         // Update the plots in the dispatcher thread
                         try
@@ -768,7 +768,7 @@ namespace RTI
                         catch (Exception ex)
                         {
                             // When shutting down, can get a null reference
-                            log.Debug("Error updating Time Series Plot", ex);
+                            log.Debug("Error updating Heatmap Plot", ex);
                         }
                     }
                 }
