@@ -55,6 +55,8 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using Caliburn.Micro;
+using Newtonsoft.Json.Linq;
+using System.Data.SqlClient;
 
 namespace RTI
 {
@@ -125,6 +127,9 @@ namespace RTI
 
                     if (_SelectedProject != null)
                     {
+                        // Check Project version for updates
+                        CheckProjectVersion(value);
+
                         // Subscribe to receive event when an ensemble has been written to the project
                         _SelectedProject.ProjectEnsembleWriteEvent += new Project.ProjectEnsembleWriteEventHandler(SelectedProject_ProjectEnsembleWriteEvent);
                         _SelectedProject.BinaryEnsembleWriteEvent += new Project.BinaryEnsembleWriteEventHandler(_SelectedProject_BinaryEnsembleWriteEvent);
@@ -395,6 +400,65 @@ namespace RTI
 
             // Run the command on the main database
             Pulse.DbCommon.RunQueryOnPulseDb(_dbMainConnection, command);
+        }
+
+
+        /// <summary>
+        /// Check if the project already exist.  It will load all the ensembles to get a total number of ensembles.
+        /// It will then use the first file as the filename by default.  It will check if a similar file name
+        /// and number of ensembles.  If any match, then load that project.  If no projects match the file name and number
+        /// of ensembles, then create a new project and load it.
+        /// </summary>
+        /// <param name="filepath">File path for the project file name.</param>
+        /// <param name="ensembles">Ensembles to load into a project.</param>
+        /// <returns>Previous project or a new project.</returns>
+        public Project CreateProject(string filepath, Cache<long, DataSet.Ensemble> ensembles)
+        {
+            // Get the file name from the file path
+            string filename = Path.GetFileNameWithoutExtension(filepath);
+
+            // Create an empty project.
+            Project project = null;
+
+            if (!string.IsNullOrEmpty(filename))
+            {
+                // If the exact file exist, then we check if the file is being reloaded
+                if (File.Exists(filepath))
+                {
+                    // Get a list of all the directories with the same file name
+                    string[] dirs = Directory.GetDirectories(Pulse.Commons.GetProjectDefaultFolderPath(), filename + "*");
+                    foreach (var dir in dirs)
+                    {
+                        // Create a Project object to check the number of ensembles
+                        Project prj = new Project(Path.GetFileName(dir), Path.GetDirectoryName(dir), null);
+
+                        // Check if the same number of ensembles 
+                        if (prj.GetNumberOfEnsembles() == ensembles.Count())
+                        {
+                            // This project already exist
+                            return prj;
+                        }
+                    }
+
+                    // Create a unique filename
+                    filename = filename + "_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
+
+                // Create the new project based off
+                // the project name and project directory
+                project = new Project(filename, RTI.Pulse.Commons.GetProjectDefaultFolderPath(), null);
+
+                // Write the ensembles to the project
+                AdcpDatabaseWriter writer = new AdcpDatabaseWriter(false);
+                writer.WriteFileToDatabase(project, ensembles);
+
+                // Add project to DB
+                AddNewProject(project);
+
+                project.Dispose();
+            }
+
+            return project;
         }
 
         /// <summary>
@@ -1799,6 +1863,203 @@ namespace RTI
             Project prj = GetProject(projectName);
             SelectedProject = prj;
             prj.Dispose();
+        }
+
+        /// <summary>
+        /// Check the project version.  This will update all the projects to the latest version.
+        /// </summary>
+        /// <param name="project">Project to check.</param>
+        public void CheckProjectVersion(Project project)
+        {
+            string projectVersion = AdcpDatabaseCodec.GetProjectVersion(project);
+
+            switch(projectVersion)
+            {
+                case "A":
+                case "B":
+                case "C":
+                case "D":
+                case "D2":
+                case "D3":
+                case "D4":
+                case "D5":
+                case "D6":
+                case "D7":
+                case "D8":
+                case "D9":
+                    // Update Project
+                    UpdateToProjectRevE(project);
+                    break;
+                case "E":
+                    // DO nothing
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Update Project
+
+        /// <summary>
+        /// Update the project database to revision E.
+        /// </summary>
+        /// <param name="project"></param>
+        private void UpdateToProjectRevE(Project project)
+        {
+            // Add missing columns
+            //string query = "ALTER TABLE tblEnsemble ADD Subsystem TEXT, CepoIndex INTEGER, FileName TEXT;";
+            DbCommon.RunStatmentOnProjectDb(project, "ALTER TABLE tblEnsemble ADD Subsystem TEXT;");
+            DbCommon.RunStatmentOnProjectDb(project, "ALTER TABLE tblEnsemble ADD CepoIndex INTEGER;");
+            DbCommon.RunStatmentOnProjectDb(project, "ALTER TABLE tblEnsemble ADD FileName TEXT;");
+
+            // Update the database
+            UpdateDataRevE(project);
+
+
+        }
+
+        /// <summary>
+        /// Update the database to Revision E specs.
+        /// This will add Subsystem, CepoIndex and File name.
+        /// </summary>
+        /// <param name="project"></param>
+        public void UpdateDataRevE(Project project)
+        {
+            // Select all the data
+            string query = "SELECT ID,EnsembleDS FROM tblEnsemble;";
+
+            try
+            {
+                // Open a connection to the database
+                using (SQLiteConnection cnn = DbCommon.OpenProjectDB(project))
+                {
+
+                    // Ensure a connection was made
+                    if (cnn == null)
+                    {
+                        return;
+                    }
+
+                    using (DbCommand cmd = cnn.CreateCommand())
+                    {
+                        cmd.CommandText = query;
+
+                        // Get Result
+                        DbDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            // Get the ensemble from ensemble
+                            string jsonData = reader["EnsembleDS"].ToString();
+
+                            // Convert to a JSON object
+                            JObject ensData = JObject.Parse(jsonData);
+
+                            // Get the subsystem and cepo index and filename to each row
+                            int cepoIndex = ensData["CepoIndex"].ToObject<int>();
+                            string subsystem = Convert.ToString((char)ensData["SubsystemCode"].ToObject<byte>());
+                            int id = 0;
+                            int.TryParse(reader["ID"].ToString(), out id);
+
+                            // Update row
+                            UpdateRowRevE(cnn, subsystem, cepoIndex, project.ProjectName, id);
+                        }
+                    }
+
+                    // Update the revision
+                    UpdateRevision(cnn, "E");
+                }
+            }
+            catch (SQLiteException e)
+            {
+                log.Error(string.Format("Unknown Error running query on database: {0} \n{1}", project.ProjectName, query), e);
+                return;
+            }
+            catch (Exception e)
+            {
+                log.Error(string.Format("Unknown Error running query on database: {0} \n{1}", project.ProjectName, query), e);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Update the row to revision E.
+        /// This will add the subsytem, CEPO index and file name to each row.
+        /// </summary>
+        /// <param name="cnn">Database connection.</param>
+        /// <param name="subsystem">Subsystem.</param>
+        /// <param name="cepoIndex">CEPO index.</param>
+        /// <param name="filename">File name.</param>
+        /// <param name="rowID">Row ID</param>
+        private void UpdateRowRevE(SQLiteConnection cnn, string subsystem, int cepoIndex, string filename, int rowID)
+        {
+            try
+            {
+                // Ensure a connection was made
+                if (cnn == null)
+                {
+                    return;
+                }
+
+                using (DbCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "UPDATE tblEnsemble SET Subsystem=@subsystem, CepoIndex=@cepoIndex, FileName=@fileName WHERE Id=@Id";
+
+                    cmd.Parameters.Add(new SQLiteParameter("@id", rowID));
+                    cmd.Parameters.Add(new SQLiteParameter("@subsystem", subsystem));
+                    cmd.Parameters.Add(new SQLiteParameter("@cepoIndex", cepoIndex));
+                    cmd.Parameters.Add(new SQLiteParameter("@fileName", filename));
+
+                    int rows = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException e)
+            {
+                log.Error(string.Format("Unknown Error running query on database: {0} \n{1}", filename, rowID), e);
+                return;
+            }
+            catch (Exception e)
+            {
+                log.Error(string.Format("Unknown Error running query on database: {0} \n{1}", filename, rowID), e);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Update the revision for the project.
+        /// </summary>
+        /// <param name="cnn">Database connection.</param>
+        /// <param name="rev">Revision.</param>
+        private void UpdateRevision(SQLiteConnection cnn, string rev)
+        {
+            try
+            {
+                // Ensure a connection was made
+                if (cnn == null)
+                {
+                    return;
+                }
+
+                using (DbCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "UPDATE tblOptions SET Revision=@revision WHERE Id=1";
+
+                    cmd.Parameters.Add(new SQLiteParameter("@revision", rev));
+
+                    int rows = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SQLiteException e)
+            {
+                log.Error(string.Format("Unknown Error running query to update revision on database: {0} \n", rev), e);
+                return;
+            }
+            catch (Exception e)
+            {
+                log.Error(string.Format("Unknown Error running query to update revision on database: {0} \n", rev), e);
+                return;
+            }
         }
 
         #endregion
