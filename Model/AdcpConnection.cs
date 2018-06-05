@@ -4863,6 +4863,9 @@ namespace RTI
                     // Process any data in the queue
                     while (_processDataQueue.Count > 0)
                     {
+                        //Thread.Sleep(100000);
+                        //Debug.WriteLine("Process Data Queue: {0}", _processDataQueue.Count);
+
                         ProcessData data;
                         if(_processDataQueue.TryDequeue(out data) )
                         {
@@ -4884,7 +4887,7 @@ namespace RTI
                                     ProcessNmea1Data(data.data);
                                     break;
                                 case ProcessDataTypes.NMEA2:
-                                    ProcessNmea1Data(data.data);
+                                    ProcessNmea2Data(data.data);
                                     break;
                                 case ProcessDataTypes.CODEC:
                                     ProcessCodecData(data.data, data.ensemble, data.dataFormat);
@@ -4905,7 +4908,7 @@ namespace RTI
                 }
                 catch (Exception e)
                 {
-                    log.Error("Error processing binary codec data.", e);
+                    log.Error("Error processing data.", e);
                     return;
                 }
             }

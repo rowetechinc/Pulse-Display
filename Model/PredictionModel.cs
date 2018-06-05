@@ -155,7 +155,7 @@ namespace RTI
             SystemBootPower = 1.80;
             SystemWakeupTime = 0.40;
             SystemInitPower = 2.80;
-            SystemInitTime = 0.25;
+            SystemInitTime = 2.6;
             BroadbandPower = true;
             SystemSavePower = 1.80;
             SystemSaveTime = 0.15;
@@ -535,11 +535,6 @@ namespace RTI
 
         #endregion
 
-        /// <summary>
-        /// Default frequency for the 20000 table.
-        /// </summary>
-        private double DEFAULT_FREQ_20000 = 20000;
-
         #endregion
 
         #endregion
@@ -665,9 +660,9 @@ namespace RTI
             #region Wakeups  (Question about CEI)
 
             double wakeups = 1;
-            if (_CEI_ > 1.0)
+            if (_CEI_ > 3.0)
             {
-                if (_CWPTBP_ > 1.0)
+                if (_CWPTBP_ > 3.0)
                 {
                     wakeups = numEnsembles * _CWPP_;
                 }
@@ -1066,34 +1061,49 @@ namespace RTI
 
             if (sampleRate == 0)                        //Default if issue with divide by zero
             {
-                receiveTime = 0;
+                receiveTime = _CEI_;
             }
             else if (_CWPP_ == 1)                       //1 Ping only, so no time between ping needed
             {
-                receiveTime = 0;
-            }
-            else if (timeBetweenPings > 1.0)            //Time between Pings is greater than 1, sleeping between pings
-            {
-                receiveTime = _CWPBN_ * binSamples / sampleRate;
+                if(_CEI_ > 3.0)
+                {
+                    receiveTime = _CWPBN_ * binSamples / sampleRate;
+                }
+                else
+                {
+                    receiveTime = _CEI_;
+                }
             }
             else                                        //Use the greatest sleep time found
             {
-                receiveTime = timeBetweenPings;
+                if (timeBetweenPings > 1.0)            //Time between Pings is greater than 1, sleeping between pings
+                {
+                    receiveTime = _CWPBN_ * binSamples / sampleRate;
+                }
+                else
+                {
+                    receiveTime = timeBetweenPings;
+                }
             }
 
             if (_IsBurst_)                              //if in burst mode, use different default timing
             {
                 if (_CWPP_ == 1)                        //If single ping, use CEI for time
+                {
                     receiveTime = _CEI_;
-
+                }
                 else if (sampleRate == 0)               //Default if issue with divide by zero
+                {
                     receiveTime = _CEI_;
-
+                }
                 else if (timeBetweenPings > 1.0)        //Time between pings is greater than 1, sleeping between pings
+                {
                     receiveTime = _CWPBN_ * binSamples / sampleRate;
-
+                }
                 else                                    //use the greatest sleep time we found
+                {
                     receiveTime = timeBetweenPings;
+                }
             }
             #endregion
 

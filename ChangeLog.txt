@@ -1,5 +1,9 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.10.0
+ * Updated Prediction Model System Init Time.
+ * Fixed bug processing Nmea2Data in AdcpConnection.
+
 Pulse-Display-4.9.0
  - Added DisplayViewModel to handle all display view models.
  - Updated how the Ensembles are passed to the display.
