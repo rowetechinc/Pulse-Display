@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.10.1
+ * In PredictionModel, updated the Prediction Model to Rev Y with the Narrowband Profile range.
+
 Pulse-Display-4.10.0
  * Updated Prediction Model System Init Time.
  * Fixed bug processing Nmea2Data in AdcpConnection.

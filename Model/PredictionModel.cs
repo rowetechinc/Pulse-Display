@@ -29,6 +29,7 @@
  * 01/12/2018      RC          4.7.0      Added absorption values.
  * 01/16/2018      RC          4.7.1      Updated table for Range and Absorption scale factor.
  * 02/15/2018      RC          4.7.3      Calculate power differently for a burst.
+ * 06/27/2018      RC          4.10.1     Updated the Prediction Model to Rev Y with the Narrowband Profile range.
  * 
  */
 
@@ -1563,7 +1564,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_1200000 = rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 20.0 * DEFAULT_BIN_1200000);
+                        wpRange_1200000 = rScale_1200000 * (absorption_range_1200000 + DEFAULT_BIN_1200000 * dB_1200000 + 13.0 * DEFAULT_BIN_1200000);
                     }
                     else
                     {
@@ -1653,7 +1654,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_600000 = rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000 + 20.0 * DEFAULT_BIN_600000);
+                        wpRange_600000 = rScale_600000 * (absorption_range_600000 + DEFAULT_BIN_600000 * dB_600000 + 13.0 * DEFAULT_BIN_600000);
                     }
                     else
                     {
@@ -1743,7 +1744,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_300000 = rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000 + 20.0 * DEFAULT_BIN_300000);
+                        wpRange_300000 = rScale_300000 * (absorption_range_300000 + DEFAULT_BIN_300000 * dB_300000 + 13.0 * DEFAULT_BIN_300000);
                     }
                     else
                     {
@@ -1832,7 +1833,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_150000 = rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000 + 20.0 * DEFAULT_BIN_150000);
+                        wpRange_150000 = rScale_150000 * (absorption_range_150000 + DEFAULT_BIN_150000 * dB_150000 + 13.0 * DEFAULT_BIN_150000);
                     }
                     else
                     {
@@ -1922,7 +1923,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_75000 = rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000 + 20.0 * DEFAULT_BIN_75000);
+                        wpRange_75000 = rScale_75000 * (absorption_range_75000 + DEFAULT_BIN_75000 * dB_75000 + 13.0 * DEFAULT_BIN_75000);
                     }
                     else
                     {
@@ -2012,7 +2013,7 @@ namespace RTI
                     // Checck if NB
                     if (_CWPBB_TransmitPulseType_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
                     {
-                        wpRange_38000 = rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000 + 20.0 * DEFAULT_BIN_38000);
+                        wpRange_38000 = rScale_38000 * (absorption_range_38000 + DEFAULT_BIN_38000 * dB_38000 + 13.0 * DEFAULT_BIN_38000);
                     }
                     else
                     {

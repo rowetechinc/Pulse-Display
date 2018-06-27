@@ -257,7 +257,7 @@ namespace RTI
         /// </summary>
         public override void Dispose()
         {
-
+            _continue = false;
         }
 
         /// <summary>
