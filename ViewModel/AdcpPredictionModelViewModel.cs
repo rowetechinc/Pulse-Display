@@ -1902,10 +1902,9 @@ namespace RTI
                 }
             }
             catch (Exception e)//$exception	{"Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it. This exception is only raised if a debugger is attached to the process."}	System.Threading.ThreadStateException
-
             {
                 Error();
-               // log.Error(string.Format("Error reading command set from {0}", fileName), e);
+                log.Error(string.Format("Error reading command set from {0}", fileName), e);
             }
         }
 

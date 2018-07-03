@@ -30,6 +30,7 @@
  * 01/16/2018      RC          4.7.1      Updated table for Range and Absorption scale factor.
  * 02/15/2018      RC          4.7.3      Calculate power differently for a burst.
  * 06/27/2018      RC          4.10.1     Updated the Prediction Model to Rev Y with the Narrowband Profile range.
+ * 07/02/2018      RC          4.10.2     Fixed bug with Narrowband Max Velocity.       
  * 
  */
 
@@ -2293,19 +2294,23 @@ namespace RTI
         /// <returns>Predicted maximum velocity in m/s.</returns>
         public double GetMaxVelocity(PredictionModelInput input)
         {
-            return GetMaxVelocity(input.CWPBB_LagLength, input.BeamAngle, input.SystemFrequency, input.SpeedOfSound, input.CyclesPerElement);
+            return GetMaxVelocity(input.CWPBB_TransmitPulseType, input.CWPBB_LagLength, input.CWPBS, input.BeamAngle, input.SystemFrequency, input.SpeedOfSound, input.CyclesPerElement);
         }
 
         /// <summary>
         /// Predicted maximum velocity.
         /// </summary>
+        /// <param name="_CWPBB_">Broadband or Narrowband</param>
         /// <param name="_CWPBB_LagLength_">Water Profile lag length in meters/sec.</param>
+        /// <param name="_CWPBS_">Bin size.</param>
         /// <param name="_BeamAngle_">Beam angle in degrees.</param>
         /// <param name="_SystemFrequency_">System frequency in Hz.</param>
         /// <param name="_SpeedOfSound_">Speed of Sound in meters/sec.</param>
         /// <param name="_CyclesPerElement_">Cycles per element.</param>
         /// <returns>Predicted maximum velocity in meters/sec.</returns>
-        public double GetMaxVelocity(double _CWPBB_LagLength_,
+        public double GetMaxVelocity(RTI.Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType _CWPBB_,
+                                    double _CWPBB_LagLength_,
+                                    double _CWPBS_,
                                     double _BeamAngle_,
                                     double _SystemFrequency_,
                                     double _SpeedOfSound_,
@@ -2414,12 +2419,41 @@ namespace RTI
             }
             #endregion
 
+            #region Narrowband
+
+            #region Beam Angle Radian
+
+            double beamAngleRad = _BeamAngle_ / 180.0 * Math.PI;
+
+            #endregion
+
+            #region Ta
+
+            double Ta = 2.0 * _CWPBS_ / _SpeedOfSound_ / Math.Cos(beamAngleRad);
+
+            #endregion
+
+            #region L
+
+            double L = 0.5 * _SpeedOfSound_ * Ta;
+
+            #endregion
+
+            #endregion
+
             // Check for vertical beam.  No Beam angle
             if (_BeamAngle_ == 0)
             {
                 return uaRadial;
             }
 
+            // Narrowband
+            if(_CWPBB_ == Commands.AdcpSubsystemCommands.eCWPBB_TransmitPulseType.NARROWBAND)
+            {
+                return L / Math.Sin(_BeamAngle_ / 180 * Math.PI);
+            }
+
+            // Broadband
             return uaRadial / Math.Sin(_BeamAngle_ / 180.0 * Math.PI);
         }
 
@@ -3063,7 +3097,7 @@ namespace RTI
             int E0000014 = 0;
             if (IsE0000014)
             {
-                E0000014 = 4 * (23 + 7);
+                E0000014 = 4 * (25 + 7);
             }
 
             #endregion
@@ -3124,7 +3158,7 @@ namespace RTI
             #region f1
 
             // kHz
-            double f1 = 2.8 * Math.Pow(_salinity_ / 35.0, 0.5) * Math.Pow(10.0, 4.0 - 1245 / (273.0 + _temperature_));
+            double f1 = 2.8 * Math.Pow(_salinity_ / 35.0, 0.5) * Math.Pow(10.0, 4.0 - 1245.0 / (273.0 + _temperature_));
 
             #endregion
 
@@ -3137,7 +3171,7 @@ namespace RTI
 
             #region P2
 
-            double P2 = 1.0 - 1.37 * Math.Pow(10.0, -4.0) * _xdcrDepth_ + 6.2 * Math.Pow(10, -9.0) * Math.Pow(_xdcrDepth_, 2);
+            double P2 = 1.0 - 1.37 * Math.Pow(10.0, -4.0) * _xdcrDepth_ + 6.2 * Math.Pow(10.0, -9.0) * Math.Pow(_xdcrDepth_, 2);
 
             #endregion
 
