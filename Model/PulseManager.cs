@@ -2152,10 +2152,10 @@ namespace RTI
         /// Publish an event.
         /// </summary>
         /// <param name="count">Number of ensembles in the project.</param>
-        void SelectedProject_ProjectEnsembleWriteEvent(long count)
+        void SelectedProject_ProjectEnsembleWriteEvent(object sender, Project.WriteEventArgs e)
         {
             // Publish the new project
-            _events.PublishOnUIThread(new EnsembleWriteEvent(EnsembleWriteEvent.WriteLocation.Project, count));
+            _events.PublishOnUIThread(new EnsembleWriteEvent(EnsembleWriteEvent.WriteLocation.Project, e.Count));
         }
 
         /// <summary>
