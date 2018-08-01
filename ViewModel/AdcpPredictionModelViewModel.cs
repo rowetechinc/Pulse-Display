@@ -272,7 +272,7 @@ namespace RTI
         /// <summary>
         /// Deployment Duration.
         /// </summary>
-        public uint DeploymentDuration
+        public double DeploymentDuration
         {
             get { return _UserInput.DeploymentDuration; }
             set

@@ -308,7 +308,7 @@ namespace RTI
         /// <summary>
         /// Number of days the deployment will go for.
         /// </summary>
-        public UInt32 DeploymentDuration { get; set; }
+        public double DeploymentDuration { get; set; }
 
         /// <summary>
         /// Ensemble interval in seconds.
