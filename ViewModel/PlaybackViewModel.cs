@@ -42,6 +42,7 @@
  * 11/16/2015      RC          4.3.0      Fixed bug in ChangePlaybackSpeed() setting the speed to high or low.
  * 12/03/2015      RC          4.4.0      Added recording to file to the record button.
  * 02/28/2017      RC          4.4.5      Fixed playback speed and divide by zero.
+ * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 
  */
 
@@ -686,23 +687,27 @@ namespace RTI
                 // Make a copy of the ensemble to pass to all the views
                 DataSet.Ensemble newEnsemble = data.Clone();
 
-                // Vessel Mount Options
-                VesselMountScreen(ref newEnsemble);
+                // Lock the ensemble
+                lock (newEnsemble.SyncRoot)
+                {
+                    // Vessel Mount Options
+                    VesselMountScreen(ref newEnsemble);
 
-                // Screen the data
-                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+                    // Screen the data
+                    _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
 
-                // Average the data
-                _averagingVM.AverageEnsemble(newEnsemble);
+                    // Average the data
+                    _averagingVM.AverageEnsemble(newEnsemble);
 
-                // Create and Ensembl event
-                EnsembleEvent ensEvent = new EnsembleEvent(newEnsemble, EnsembleSource.Playback);
+                    // Create and Ensembl event
+                    EnsembleEvent ensEvent = new EnsembleEvent(newEnsemble, EnsembleSource.Playback);
 
-                // Publish the ensemble after screening and averging the data
-                _events.PublishOnBackgroundThread(ensEvent);
+                    // Publish the ensemble after screening and averging the data
+                    _events.PublishOnBackgroundThread(ensEvent);
 
-                // Display the ensemble
-                _pm.DisplayEnsemble(ensEvent);
+                    // Display the ensemble
+                    _pm.DisplayEnsemble(ensEvent);
+                }
             }
         }
 

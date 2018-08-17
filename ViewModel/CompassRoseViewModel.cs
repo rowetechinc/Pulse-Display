@@ -288,7 +288,10 @@ namespace RTI
             if ((++_displayCounter % 5) == 0)
             {
                 // Wake up the thread to process data
-                _eventWaitData.Set();
+                if (!_eventWaitData.SafeWaitHandle.IsClosed)
+                {
+                    _eventWaitData.Set();
+                }
 
                 _displayCounter = 0;
             }

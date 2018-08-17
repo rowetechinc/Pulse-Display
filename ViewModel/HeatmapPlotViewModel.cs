@@ -29,7 +29,8 @@
  * 08/02/2016      RC          4.4.4       Added Interperlate option to the plot to blend data.
  * 02/02/2018      RC          4.7.2       Added new default for plot as OxyPalettes.Jet(64).
  * 02/07/2018      RC          4.7.2       Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
- * 03/23/2018      RC          4.8.0       Updated Heatmap plot with bottom track line and shade under bottom track line.    
+ * 03/23/2018      RC          4.8.0       Updated Heatmap plot with bottom track line and shade under bottom track line. 
+ * 08/10/2018      RC          4.10.2      Fixed InterPlote flag to only change HeatmapPlotSeries.
  * 
  */
 
@@ -1422,9 +1423,12 @@ namespace RTI
             // Lock the plot for an update
             lock (Plot.SyncRoot)
             {
-                foreach(HeatmapPlotSeries series in Plot.Series)
+                foreach(var series in Plot.Series)
                 {
-                    series.Interpolate = flag;
+                    if (series.GetType() == typeof(HeatmapPlotSeries))
+                    {
+                        ((HeatmapPlotSeries)series).Interpolate = flag;
+                    }
                 }
             }
 

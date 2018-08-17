@@ -3,6 +3,10 @@
 Pulse-Display-4.10.2
  * In PredictionModel, fixed bug with Narrowband Max Velocity.
  * In PredictionModel, updated the number of elements in E0000014.
+ * In HeatmapPlotViewModel, fixed InterPlote flag to only change HeatmapPlotSeries.
+ * Check _eventWaitData is closed for calling set. 
+ * In PlaybackViewModel, lock the ensemble with SyncRoot when screening and averaging the data.
+ * In AdcpConnection, lock the ensemble with SyncRoot when screening and averaging the data.
 
 Pulse-Display-4.10.1
  * In PredictionModel, updated the Prediction Model to Rev Y with the Narrowband Profile range.

@@ -72,6 +72,7 @@
  * 02/07/2018      RC          4.7.2      Return the file name when recording stops in StopValidationTest().
  * 03/28/2018      RC          4.8.1      Use the DataFormatOptions when adding the data to the ADCP codec.
  * 04/23/2018      RC          4.9.0      Limit the file size recorded to 16mb.
+ * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 
  */
 
@@ -932,7 +933,10 @@ namespace RTI
 
             // Kill the processing thread
             _continue = false;
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
             _processDataThread.Abort();
 
             // Shutdown codec
@@ -4236,128 +4240,128 @@ namespace RTI
 
         #region Receive Ensemble From Codec
 
-        /// <summary>
-        /// Handle the ensembles that come from the codec.  THis will record the
-        /// data if it needs to be.  It will then publish the data to all subscribers.
-        /// If the serial number has not been set, this will also set the serial number for
-        /// the ADCP.
-        /// </summary>
-        /// <param name="binaryEnsemble">Binary data for the ensemble.</param>
-        /// <param name="ensemble">Ensemble as an object.</param>
-        /// <param name="source">Source of the ensemble.</param>
-        /// <param name="type">Ensemble type.</param>
-        /// <param name="origDataFormat">Original Data Format.</param>
-        private void ReceiveEnsembleFromCodec_old(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
-        {
-            // Add the buffered GPS and NMEA data to the data
+        ///// <summary>
+        ///// Handle the ensembles that come from the codec.  THis will record the
+        ///// data if it needs to be.  It will then publish the data to all subscribers.
+        ///// If the serial number has not been set, this will also set the serial number for
+        ///// the ADCP.
+        ///// </summary>
+        ///// <param name="binaryEnsemble">Binary data for the ensemble.</param>
+        ///// <param name="ensemble">Ensemble as an object.</param>
+        ///// <param name="source">Source of the ensemble.</param>
+        ///// <param name="type">Ensemble type.</param>
+        ///// <param name="origDataFormat">Original Data Format.</param>
+        //private void ReceiveEnsembleFromCodec_old(byte[] binaryEnsemble, DataSet.Ensemble ensemble, EnsembleSource source, EnsembleType type, AdcpCodec.CodecEnum origDataFormat)
+        //{
+        //    // Add the buffered GPS and NMEA data to the data
 
-            // Add the data to the buffer
-            _ensembleBuffer.Enqueue(new EnsembleData(binaryEnsemble, ensemble, source, type, origDataFormat));
+        //    // Add the data to the buffer
+        //    _ensembleBuffer.Enqueue(new EnsembleData(binaryEnsemble, ensemble, source, type, origDataFormat));
 
-            // Process the data
-            //ReceiveEnsembleFromCodecCommand.Execute(null);
-            //await Task.Run(() => ReceiveEnsembleFromCodecExecute());
-            Task.Run(() => ReceiveEnsembleFromCodecExecute());
-        }
+        //    // Process the data
+        //    //ReceiveEnsembleFromCodecCommand.Execute(null);
+        //    //await Task.Run(() => ReceiveEnsembleFromCodecExecute());
+        //    Task.Run(() => ReceiveEnsembleFromCodecExecute());
+        //}
 
-        /// <summary>
-        /// Process the buffered ensemble data from the codecs.
-        /// </summary>
-        private void ReceiveEnsembleFromCodecExecute()
-        {
-            // Process all the data in the buffer
-            while (!_ensembleBuffer.IsEmpty)
-            {
-                // Get the data from the buffer
-                EnsembleData data = null;
-                if (_ensembleBuffer.TryDequeue(out data))
-                {
-                    // Add the GPS and NMEA data to the ensemble
-                    // and clear the buffers
-                    string adcpGpsBuffer = "";
-                    string gps1Buffer = Gps1BufferData();
-                    string gps2Buffer = Gps2BufferData();
-                    string nmea1Buffer = Nmea1BufferData();
-                    string nmea2Buffer = Nmea2BufferData();
+        ///// <summary>
+        ///// Process the buffered ensemble data from the codecs.
+        ///// </summary>
+        //private void ReceiveEnsembleFromCodecExecute()
+        //{
+        //    // Process all the data in the buffer
+        //    while (!_ensembleBuffer.IsEmpty)
+        //    {
+        //        // Get the data from the buffer
+        //        EnsembleData data = null;
+        //        if (_ensembleBuffer.TryDequeue(out data))
+        //        {
+        //            // Add the GPS and NMEA data to the ensemble
+        //            // and clear the buffers
+        //            string adcpGpsBuffer = "";
+        //            string gps1Buffer = Gps1BufferData();
+        //            string gps2Buffer = Gps2BufferData();
+        //            string nmea1Buffer = Nmea1BufferData();
+        //            string nmea2Buffer = Nmea2BufferData();
 
-                    // Store the GPS data that is already in the ensemble
-                    if (data.Ensemble.IsNmeaAvail && data.Ensemble.NmeaData != null)
-                    {
-                        adcpGpsBuffer = data.Ensemble.NmeaData.ToString();
-                    }
+        //            // Store the GPS data that is already in the ensemble
+        //            if (data.Ensemble.IsNmeaAvail && data.Ensemble.NmeaData != null)
+        //            {
+        //                adcpGpsBuffer = data.Ensemble.NmeaData.ToString();
+        //            }
 
-                    if (!data.Ensemble.IsNmeaAvail || data.Ensemble.NmeaData == null)
-                    {
-                        data.Ensemble.AddNmeaData(gps1Buffer);
-                    }
-                    else
-                    {
-                        data.Ensemble.NmeaData.MergeNmeaData(gps1Buffer);
-                    }
-                    data.Ensemble.NmeaData.MergeNmeaData(gps2Buffer);
-                    data.Ensemble.NmeaData.MergeNmeaData(nmea1Buffer);
-                    data.Ensemble.NmeaData.MergeNmeaData(nmea2Buffer);
+        //            if (!data.Ensemble.IsNmeaAvail || data.Ensemble.NmeaData == null)
+        //            {
+        //                data.Ensemble.AddNmeaData(gps1Buffer);
+        //            }
+        //            else
+        //            {
+        //                data.Ensemble.NmeaData.MergeNmeaData(gps1Buffer);
+        //            }
+        //            data.Ensemble.NmeaData.MergeNmeaData(gps2Buffer);
+        //            data.Ensemble.NmeaData.MergeNmeaData(nmea1Buffer);
+        //            data.Ensemble.NmeaData.MergeNmeaData(nmea2Buffer);
 
-                    // Add the buffers
-                    data.Ensemble.AddAdcpGpsData(adcpGpsBuffer);
-                    data.Ensemble.AddGps1Data(gps1Buffer);
-                    data.Ensemble.AddGps2Data(gps2Buffer);
-                    data.Ensemble.AddNmea1Data(nmea1Buffer);
-                    data.Ensemble.AddNmea2Data(nmea2Buffer);
+        //            // Add the buffers
+        //            data.Ensemble.AddAdcpGpsData(adcpGpsBuffer);
+        //            data.Ensemble.AddGps1Data(gps1Buffer);
+        //            data.Ensemble.AddGps2Data(gps2Buffer);
+        //            data.Ensemble.AddNmea1Data(nmea1Buffer);
+        //            data.Ensemble.AddNmea2Data(nmea2Buffer);
 
-                    // Check if a project is selected and is recording
-                    if (_pm.IsProjectSelected && IsRecording)
-                    {
-                        // Check if the serial number is set for the project
-                        if (_pm.SelectedProject.SerialNumber.IsEmpty())
-                        {
-                            if (data.Ensemble.IsEnsembleAvail)
-                            {
-                                _pm.SelectedProject.SerialNumber = data.Ensemble.EnsembleData.SysSerialNumber;
-                            }
-                        }
+        //            // Check if a project is selected and is recording
+        //            if (_pm.IsProjectSelected && IsRecording)
+        //            {
+        //                // Check if the serial number is set for the project
+        //                if (_pm.SelectedProject.SerialNumber.IsEmpty())
+        //                {
+        //                    if (data.Ensemble.IsEnsembleAvail)
+        //                    {
+        //                        _pm.SelectedProject.SerialNumber = data.Ensemble.EnsembleData.SysSerialNumber;
+        //                    }
+        //                }
 
-                        // Record the data
-                        _pm.SelectedProject.RecordBinaryEnsemble(data.BinaryEnsemble);
-                        _pm.SelectedProject.RecordDbEnsemble(data.Ensemble, data.OrigDataFormat);
-                    }
+        //                // Record the data
+        //                _pm.SelectedProject.RecordBinaryEnsemble(data.BinaryEnsemble);
+        //                _pm.SelectedProject.RecordDbEnsemble(data.Ensemble, data.OrigDataFormat);
+        //            }
 
-                    // Check if validation testing
-                    if (IsValidationTestRecording)
-                    {
-                        WriteValidationTestData(data.BinaryEnsemble, data.Ensemble);
-                    }
+        //            // Check if validation testing
+        //            if (IsValidationTestRecording)
+        //            {
+        //                WriteValidationTestData(data.BinaryEnsemble, data.Ensemble);
+        //            }
 
-                    // Set the ensemble
-                    DataSet.Ensemble ensemble = data.Ensemble;
+        //            // Set the ensemble
+        //            DataSet.Ensemble ensemble = data.Ensemble;
 
-                    // Create the velocity vectors for the ensemble
-                    DataSet.VelocityVectorHelper.CreateVelocityVector(ref ensemble);
+        //            // Create the velocity vectors for the ensemble
+        //            DataSet.VelocityVectorHelper.CreateVelocityVector(ref ensemble);
 
-                    // Vessel Mount Options
-                    VesselMountScreen(ref ensemble);
+        //            // Vessel Mount Options
+        //            VesselMountScreen(ref ensemble);
 
-                    // Screen the data
-                    if (_screenDataVM != null)
-                    {
-                        _screenDataVM.ScreenData(ref ensemble, data.OrigDataFormat);
-                    }
+        //            // Screen the data
+        //            if (_screenDataVM != null)
+        //            {
+        //                _screenDataVM.ScreenData(ref ensemble, data.OrigDataFormat);
+        //            }
 
-                    // Average the data
-                    if (_averagingVM != null)
-                    {
-                        _averagingVM.AverageEnsemble(ensemble);
-                    }
+        //            // Average the data
+        //            if (_averagingVM != null)
+        //            {
+        //                _averagingVM.AverageEnsemble(ensemble);
+        //            }
 
-                    // Publish the data
-                    // Do not publish the data if you are importing data
-                    if (!IsImporting)
-                    {
-                        PublishEnsemble(ensemble, data.Source, data.Type);
-                    }
-                }
-            }
-        }
+        //            // Publish the data
+        //            // Do not publish the data if you are importing data
+        //            if (!IsImporting)
+        //            {
+        //                PublishEnsemble(ensemble, data.Source, data.Type);
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Receive the ensemble from the codec, process the data, and pass it to the next subscriber.
@@ -4432,32 +4436,35 @@ namespace RTI
                 PublishRawEnsemble(ensemble.Clone(), source, type, origDataFormat);
             }
 
-            // Set the ensemble
-            DataSet.Ensemble newEnsemble = ensemble;
+            // Make a copy of the ensemble to screen and average and pass to all the views
+            DataSet.Ensemble newEnsemble = ensemble.Clone();
 
-            // Create the velocity vectors for the ensemble
-            DataSet.VelocityVectorHelper.CreateVelocityVector(ref newEnsemble);
-
-            // Vessel Mount Options
-            VesselMountScreen(ref newEnsemble);
-
-            // Screen the data
-            if (_screenDataVM != null)
+            lock (newEnsemble.SyncRoot)
             {
-                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
-            }
+                // Create the velocity vectors for the ensemble
+                DataSet.VelocityVectorHelper.CreateVelocityVector(ref newEnsemble);
 
-            // Average the data
-            if (_averagingVM != null)
-            {
-                _averagingVM.AverageEnsemble(newEnsemble);
-            }
+                // Vessel Mount Options
+                VesselMountScreen(ref newEnsemble);
 
-            // Publish the data
-            // Do not publish the data if you are importing data
-            if (!IsImporting)
-            {
-                PublishEnsemble(newEnsemble, source, type);
+                // Screen the data
+                if (_screenDataVM != null)
+                {
+                    _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+                }
+
+                // Average the data
+                if (_averagingVM != null)
+                {
+                    _averagingVM.AverageEnsemble(newEnsemble);
+                }
+
+                // Publish the data
+                // Do not publish the data if you are importing data
+                if (!IsImporting)
+                {
+                    PublishEnsemble(newEnsemble, source, type);
+                }
             }
         }
 
@@ -5095,7 +5102,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         /// <summary>
@@ -5112,7 +5122,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
 
         }
 
@@ -5129,7 +5142,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         /// <summary>
@@ -5145,7 +5161,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         /// <summary>
@@ -5161,7 +5180,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         /// <summary>
@@ -5177,7 +5199,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
 
@@ -5203,7 +5228,10 @@ namespace RTI
             _processDataQueue.Enqueue(pd);
 
             // Wakeup the thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         #endregion

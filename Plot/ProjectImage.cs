@@ -333,7 +333,10 @@ namespace RTI
                 _incomingDataQueue.Enqueue(ensemble);
 
                 // Wakeup Queue
-                _eventWaitData.Set();
+                if (!_eventWaitData.SafeWaitHandle.IsClosed)
+                {
+                    _eventWaitData.Set();
+                }
             }
         }
 
@@ -892,7 +895,10 @@ namespace RTI
             _continue = false;
 
             // Wake up the thread to stop thread
-            _eventWaitData.Set();
+            if (!_eventWaitData.SafeWaitHandle.IsClosed)
+            {
+                _eventWaitData.Set();
+            }
         }
 
         #endregion
