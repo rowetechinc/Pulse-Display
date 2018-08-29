@@ -67,6 +67,7 @@
  * 08/20/2014      RC          4.0.1      Added CloseVMCommand.
  * 08/21/2014      RC          4.0.1      Await on Clear() in DisplayBulkDataExecute().
  * 05/19/2016      RC          4.4.3      Added GPS Heading.
+ * 08/29/2018      RC          4.11.0     Check for null in Event Handler for EnsEvent in ValidationTestViewModel.
  * 
  */
 
@@ -3076,7 +3077,7 @@ namespace RTI
         /// <param name="ensEvent">Ensemble event which contains the ensemble.</param>
         public override void Handle(EnsembleEvent ensEvent)
         {
-            if(ensEvent.Ensemble == null)
+            if(ensEvent == null || _Config == null || _Config.SubSystem == null || ensEvent.Ensemble == null || !ensEvent.Ensemble.IsEnsembleAvail)
             {
                 return;
             }

@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.11.0
+ * Check for null in Event Handler for EnsEvent in ValidationTestViewModel.
+
 Pulse-Display-4.10.2
  * In PredictionModel, fixed bug with Narrowband Max Velocity.
  * In PredictionModel, updated the number of elements in E0000014.
