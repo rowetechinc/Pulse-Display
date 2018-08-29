@@ -2991,7 +2991,7 @@ namespace RTI
         /// Write the raw ADCP data to the raw ADCP file.
         /// </summary>
         /// <param name="data">Data to write to the file.</param>
-        private void WriteRawAdcpData(byte[] data)
+        public void WriteRawAdcpData(byte[] data)
         {
             // Verify recording is turned on
             if (IsRawAdcpRecording)
