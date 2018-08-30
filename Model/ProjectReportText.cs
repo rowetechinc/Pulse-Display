@@ -43,6 +43,7 @@
  * 04/07/2016      RC          4.4.3      Added support for SeaSeven in ProjectReportText.
  * 03/15/2016      RC          4.4.3      Allow DMG to be calculated with no Water Profile data.
  * 02/13/2017      RC          4.4.5      Removed the await in LoadData().
+ * 08/30/2018      RC          4.11.0     Added Ensemble SyncRoot in AddIncomingData().
  * 
  */
 
@@ -4386,24 +4387,27 @@ namespace RTI
             //if (ensemble != null && ensemble.IsEnsembleAvail && ensemble.IsAncillaryAvail && ensemble.IsAmplitudeAvail)
             if (ensemble != null)
             {
-                // Distance Traveled
-                _distanceTraveled.AddIncomingData(ensemble);
-                PropertyChangedDistanceTraveled();
+                lock (ensemble.SyncRoot)
+                {
+                    // Distance Traveled
+                    _distanceTraveled.AddIncomingData(ensemble);
+                    PropertyChangedDistanceTraveled();
 
-                // Average Amplitude
-                AverageAmplitude(ensemble);
+                    // Average Amplitude
+                    AverageAmplitude(ensemble);
 
-                // Glitch check
-                GlitchCheck(ensemble);
+                    // Glitch check
+                    GlitchCheck(ensemble);
 
-                // Profile Range
-                ProfileRange(ensemble);
+                    // Profile Range
+                    ProfileRange(ensemble);
 
-                // Get report Info
-                SetReportInfo(ensemble);
+                    // Get report Info
+                    SetReportInfo(ensemble);
 
-                // Set Test Orientation
-                SetTestOrientation(ensemble);
+                    // Set Test Orientation
+                    SetTestOrientation(ensemble);
+                }
 
                 // Set number of ensembles
                 NumEnsembles++;

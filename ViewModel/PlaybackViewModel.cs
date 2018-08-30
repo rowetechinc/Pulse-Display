@@ -43,6 +43,7 @@
  * 12/03/2015      RC          4.4.0      Added recording to file to the record button.
  * 02/28/2017      RC          4.4.5      Fixed playback speed and divide by zero.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
+ * 08/30/2018      RC          4.11.0     Lock the ensemble with SyncRoot in ProcessEnsembleBatch().
  * 
  */
 
@@ -784,14 +785,17 @@ namespace RTI
                 // Make a copy of the ensemble to pass to all the views
                 DataSet.Ensemble newEnsemble = data.IndexValue(x).Clone();
 
-                // Vessel Mount Options
-                VesselMountScreen(ref newEnsemble);
+                lock (newEnsemble.SyncRoot)
+                {
+                    // Vessel Mount Options
+                    VesselMountScreen(ref newEnsemble);
 
-                // Screen the data
-                _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
+                    // Screen the data
+                    _screenDataVM.ScreenData(ref newEnsemble, origDataFormat);
 
-                // Add the screened ensemble to the list
-                screenData.Add(data.IndexKey(x), newEnsemble);
+                    // Add the screened ensemble to the list
+                    screenData.Add(data.IndexKey(x), newEnsemble);
+                }
             }
 
             // Publish all the ensembles
