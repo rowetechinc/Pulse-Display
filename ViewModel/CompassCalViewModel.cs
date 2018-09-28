@@ -39,6 +39,7 @@
  * 08/15/2014      RC          4.0.0      Removed Vault and storing the data to database.
  * 02/03/2015      RC          4.1.0      Added an event to be sent when the compass cal is complete.
  * 07/10/2015      RC          4.1.3      Removed all the background workers.
+ * 09/28/2018      RC          4.11.1     When getting pre and post points, wait for a reply. 
  * 
  */
 
@@ -2894,9 +2895,9 @@ namespace RTI
             _adcpConn.AdcpSerialPort.ReceiveBufferString = "";
 
             // Send a command for compass reading
-            _adcpConn.AdcpSerialPort.SendData(RTI.Commands.AdcpCommands.CMD_ENGPNI);
+            _adcpConn.AdcpSerialPort.SendDataWaitReply(RTI.Commands.AdcpCommands.CMD_ENGPNI);
 
-            Thread.Sleep(RTI.AdcpSerialPort.WAIT_STATE);
+            //Thread.Sleep(RTI.AdcpSerialPort.WAIT_STATE);
 
             // Decode the the command results
             return RTI.Commands.AdcpCommands.DecodeEngPniResult(_adcpConn.AdcpSerialPort.ReceiveBufferString);

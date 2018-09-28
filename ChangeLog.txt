@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.11.1
+ * In CompassCalViewModel, when getting pre and post points, wait for a reply.
+
 Pulse-Display-4.11.0
  * Check for null in Event Handler for EnsEvent in ValidationTestViewModel.
 
