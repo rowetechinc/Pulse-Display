@@ -2960,6 +2960,8 @@ namespace RTI
             // Get a compass sample
             RTI.Commands.HPR result = GetAdcpCompassReading();
 
+            DiagDisplay = string.Format("{0} - {1}, {2}, {3}\n", count.ToString(), result.Heading.ToString(), result.Pitch.ToString(), result.Roll.ToString()) + _DiagDisplay;
+
             if (count == 0)
             {
                 CalSamples = 0;
