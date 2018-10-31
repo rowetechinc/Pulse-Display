@@ -73,7 +73,7 @@
  * 03/28/2018      RC          4.8.1      Use the DataFormatOptions when adding the data to the ADCP codec.
  * 04/23/2018      RC          4.9.0      Limit the file size recorded to 16mb.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
- * 10/31/2018      RC          4.11.0     Added EngBeamShowTest().
+ * 10/31/2018      RC          4.11.1     Added EngBeamShowTest().
  * 
  */
 
