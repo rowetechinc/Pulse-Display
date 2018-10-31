@@ -73,6 +73,7 @@
  * 03/28/2018      RC          4.8.1      Use the DataFormatOptions when adding the data to the ADCP codec.
  * 04/23/2018      RC          4.9.0      Limit the file size recorded to 16mb.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
+ * 10/31/2018      RC          4.11.0     Added EngBeamShowTest().
  * 
  */
 
@@ -3874,6 +3875,24 @@ namespace RTI
         public string EngConfTest()
         {
             string result = SendDataGetReply("ENGCONF");
+
+            ReceiveBufferString = "";
+
+            Thread.Sleep(3000);
+
+            result += ReceiveBufferString;
+
+            return result.Trim();
+        }
+
+        /// <summary>
+        /// Get the ENGBEAMSHOW test result.
+        /// 
+        /// </summary>
+        /// <returns>Result from command.</returns>
+        public string EngBeamShowTest()
+        {
+            string result = SendDataGetReply("ENGBEAMSHOW");
 
             ReceiveBufferString = "";
 

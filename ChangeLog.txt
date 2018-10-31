@@ -7,6 +7,7 @@ Pulse-Display-4.11.0
  * Check for null in Event Handler for EnsEvent in ValidationTestViewModel.
  - In ProjectReportText, added Ensemble SyncRoot in AddIncomingData().
  - In PlaybackViewModel, added Ensemble SyncRoot when screening the data.
+ - In AdcpConnection, Added EngBeamShowTest().
 
 Pulse-Display-4.10.2
  * In PredictionModel, fixed bug with Narrowband Max Velocity.
