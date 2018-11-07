@@ -30,7 +30,8 @@
  * 01/16/2018      RC          4.7.1      Updated table for Range and Absorption scale factor.
  * 02/15/2018      RC          4.7.3      Calculate power differently for a burst.
  * 06/27/2018      RC          4.10.1     Updated the Prediction Model to Rev Y with the Narrowband Profile range.
- * 07/02/2018      RC          4.10.2     Fixed bug with Narrowband Max Velocity.       
+ * 07/02/2018      RC          4.10.2     Fixed bug with Narrowband Max Velocity.      
+ * 11/07/2018      RC          4.11.1     Updated BatteryUsage() to use Lithium batteries.
  * 
  */
 
@@ -1358,12 +1359,17 @@ namespace RTI
         #endregion
 
         #region Battery Usage
-
+        
+        /// <summary>
+        /// Calculate the number of batteries used based of the user input.
+        /// </summary>
+        /// <param name="input">User input for the prediction model.</param>
+        /// <returns>Number of batteries predicted.</returns>
         public double BatteryUsage(PredictionModelInput input)
         {
             if (input.IsBurst)
-                return BatteryUsage(CalculatePowerBurst(input), input.DeploymentDuration, PredictionModelInput.DEFAULT_BATTERY_POWER, input.BatteryDerate, input.BatterySelfDischargePerYear);
-            return BatteryUsage(CalculatePower(input), input.DeploymentDuration, PredictionModelInput.DEFAULT_BATTERY_POWER, input.BatteryDerate, input.BatterySelfDischargePerYear);
+                return BatteryUsage(CalculatePowerBurst(input), input.DeploymentDuration, (int)input.BatteryType, input.BatteryDerate, input.BatterySelfDischargePerYear);
+            return BatteryUsage(CalculatePower(input), input.DeploymentDuration, (int)input.BatteryType, input.BatteryDerate, input.BatterySelfDischargePerYear);
         }
 
         /// <summary>
