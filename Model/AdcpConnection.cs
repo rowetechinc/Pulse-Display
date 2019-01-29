@@ -74,6 +74,7 @@
  * 04/23/2018      RC          4.9.0      Limit the file size recorded to 16mb.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 10/31/2018      RC          4.11.1     Added EngBeamShowTest().
+ * 12/12/2018      RC          4.11.1     Made the Wait States for Advanced BREAK doubles in SendAdvancedBreak().
  * 
  */
 
@@ -1074,7 +1075,7 @@ namespace RTI
         /// <param name="stateChangeWaitStates">Number of wait states after done with BREAK.</param>
         /// <param name="softBreak">Flag if try soft BREAK if hardware BREAK fails.</param>
         /// </summary>
-        public void SendAdvancedBreak(int waitStates = 5, int stateChangeWaitStates = 4, bool softBreak = true)
+        public void SendAdvancedBreak(double waitStates = 5.0, double stateChangeWaitStates = 4.0, bool softBreak = true)
         {
             if (AdcpCommType == AdcpCommTypes.Serial)
             {

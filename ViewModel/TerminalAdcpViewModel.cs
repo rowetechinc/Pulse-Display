@@ -40,6 +40,7 @@
  * 05/24/2017      RC          4.4.6      Added some additional command buttons.
  * 09/13/2017      RC          4.4.7      Added AdcpUdp and removed AdcpTcp.
  *                                         In ScanSerialPorts(), made it also reconnect the serial port.
+ * 12/12/2018      RC          4.12.7     Made the Wait States for Advanced BREAK doubles in SendAdvancedBreak().
  * 
  */
 
@@ -841,11 +842,11 @@ namespace RTI
         /// <summary>
         /// Number of Wait states to wait during BREAK.
         /// </summary>
-        private int _WaitState;
+        private double _WaitState;
         /// <summary>
         /// Number of Wait states to wait during BREAK.
         /// </summary>
-        public int WaitState
+        public double WaitState
         {
             get { return _WaitState; }
             set
@@ -858,11 +859,11 @@ namespace RTI
         /// <summary>
         /// Number of Wait states to wait after BREAK.
         /// </summary>
-        private int _WaitStateAfterBreak;
+        private double _WaitStateAfterBreak;
         /// <summary>
         /// Number of Wait states to wait after BREAK.
         /// </summary>
-        public int WaitStateAfterBreak
+        public double WaitStateAfterBreak
         {
             get { return _WaitStateAfterBreak; }
             set

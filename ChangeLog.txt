@@ -4,6 +4,7 @@ Pulse-Display-4.11.1
  * In CompassCalViewModel, when getting pre and post points, wait for a reply.
  - In AdcpConnection, Added EngBeamShowTest().
  - In PredictionModel, updated BatteryUsage() to use Lithium batteries.
+ - Made the Wait States for Advanced BREAK doubles in SendAdvancedBreak().
 
 Pulse-Display-4.11.0
  * Check for null in Event Handler for EnsEvent in ValidationTestViewModel.

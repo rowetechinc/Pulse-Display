@@ -167,8 +167,8 @@
                 <StackPanel>
                     <TextBlock Text="Advanced BREAK" HorizontalAlignment="Center" />
                     <StackPanel Orientation="Horizontal">
-                        <extToolkit:IntegerUpDown Value="{Binding WaitState}" Foreground="Black" Background="White" Minimum="0" Maximum="200" ToolTip="Time to hold the BREAK state in ms." />
-                        <extToolkit:IntegerUpDown Value="{Binding WaitStateAfterBreak}" Foreground="Black" Background="White" Minimum="0" Maximum="200" ToolTip="Time to wait after the BREAK before allowing another BREAK in ms." />
+                        <extToolkit:DoubleUpDown Value="{Binding WaitState}" Foreground="Black" Background="White" Minimum="0" Maximum="200" ToolTip="Time to hold the BREAK state in ms." />
+                        <extToolkit:DoubleUpDown Value="{Binding WaitStateAfterBreak}" Foreground="Black" Background="White" Minimum="0" Maximum="200" ToolTip="Time to wait after the BREAK before allowing another BREAK in ms." />
                         <CheckBox IsChecked="{Binding IsSoftBreak}" Foreground="White" ToolTip="Send a SOFT BREAK if a HARD BREAK does not work. " />
                     </StackPanel>
                 </StackPanel>
