@@ -32,6 +32,7 @@
  * 11/24/2015      RC          4.3.1      Added Magnitude and Direction and Speed.
  * 11/25/2015      RC          4.3.1      Added NMEA Heading and speed.
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
+ * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
  * 
  */
 
@@ -452,7 +453,17 @@ namespace RTI
         /// <summary>
         /// The title for the System Setup voltage.
         /// </summary>
-        public const string TITLE_SYSTEMSETUP_VOLTAGE = "Voltage";
+        public const string TITLE_SYSTEMSETUP_VOLTAGE = "Input Voltage";
+
+        /// <summary>
+        /// The title for the System Setup Transmitter Boost Postive voltage.
+        /// </summary>
+        public const string TITLE_SYSTEMSETUP_TRANSMIT_POSITIVE_VOLTAGE = "Transimitter Boost Positive Voltage";
+
+        /// <summary>
+        /// The title for the System Setup Transmitter Boost Negative voltage.
+        /// </summary>
+        public const string TITLE_SYSTEMSETUP_TRANSMIT_NEGATIVE_VOLTAGE = "Transimitter Boost Negative Voltage";
 
         /// <summary>
         /// The title for the Water Velocity Magnitude.
@@ -670,9 +681,21 @@ namespace RTI
 
             /// <summary>
             /// Base Series Type.
-            /// System Setup Voltage.
+            /// System Setup Input Voltage.
             /// </summary>
             Base_SystemSetup_Voltage,
+
+            /// <summary>
+            /// Base Series Type.
+            /// System Setup Transmit Positive Voltage.
+            /// </summary>
+            Base_SystemSetup_Transmit_Positive_Voltage,
+
+            /// <summary>
+            /// Base Series Type.
+            /// System Setup Transmit Positive Voltage.
+            /// </summary>
+            Base_SystemSetup_Transmit_Negative_Voltage,
 
             /// <summary>
             /// Base Series Type.
@@ -857,6 +880,10 @@ namespace RTI
                     return TITLE_RANGETRACKING_PINGS;
                 case eBaseSeriesType.Base_SystemSetup_Voltage:
                     return TITLE_SYSTEMSETUP_VOLTAGE;
+                case eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:
+                    return TITLE_SYSTEMSETUP_TRANSMIT_POSITIVE_VOLTAGE;
+                case eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:
+                    return TITLE_SYSTEMSETUP_TRANSMIT_NEGATIVE_VOLTAGE;
                 case eBaseSeriesType.Base_Water_Magnitude:
                     return TITLE_WATER_MAGNITUDE;
                 case eBaseSeriesType.Base_Water_Direction:
@@ -955,6 +982,8 @@ namespace RTI
                     return list;
                 case DataSource.eSource.SystemSetup:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Voltage));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage));
                     return list;
                 case DataSource.eSource.NMEA:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_NMEA_Heading));
@@ -1038,6 +1067,8 @@ namespace RTI
                     return list;
                 case DataSource.eSource.SystemSetup:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Voltage));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage));
                     return list;
                 case DataSource.eSource.NMEA:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_NMEA_Heading));
@@ -1316,7 +1347,17 @@ namespace RTI
         /// <summary>
         /// The title for the System Setup Voltage.
         /// </summary>
-        public const string TITLE_SS_VOLTAGE = "Voltage";
+        public const string TITLE_SS_VOLTAGE = "Input Voltage";
+
+        /// <summary>
+        /// The title for the System Setup Transmitter Boost Positive Voltage.
+        /// </summary>
+        public const string TITLE_SS_TRANSMIT_POSITIVE_VOLTAGE = "Transmitter Boost Positive Voltage";
+
+        /// <summary>
+        /// The title for the System Setup Transmitter Boost Negative Voltage.
+        /// </summary>
+        public const string TITLE_SS_TRANSMIT_NEGATIVE_VOLTAGE = "Transmitter Boost Positive Voltage";
 
         #endregion
 
@@ -1576,6 +1617,10 @@ namespace RTI
             {
                 case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Voltage:
                     return TITLE_SS_VOLTAGE;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:
+                    return TITLE_SS_TRANSMIT_POSITIVE_VOLTAGE;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:
+                    return TITLE_SS_TRANSMIT_NEGATIVE_VOLTAGE;
                 default:
                     return "";
             }

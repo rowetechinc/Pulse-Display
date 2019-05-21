@@ -47,6 +47,7 @@
  * 02/17/2017      RC          4.4.5      Added AddIncomingDataBulk to display all data.
  * 05/20/2017      RC          4.4.6      Check if the series type is set in GenerateReport().
  * 02/07/2018      RC          4.7.2      Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
+ * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
  * 
  */
 
@@ -1120,6 +1121,12 @@ namespace RTI
                 case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Voltage:       // Voltage
                     temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volt"));
                     break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:       // Transmit Positive Voltage
+                    temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volt"));
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:       // Transmit Negative Voltage
+                    temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volt"));
+                    break;
                 case BaseSeriesType.eBaseSeriesType.Base_Waves_East_Vel:            // Waves East Velocity
                     temp.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "m/s"));
                     break;
@@ -1421,6 +1428,12 @@ namespace RTI
                     Plot.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "dB"));
                     break;
                 case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Voltage:       // Voltage
+                    Plot.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volts"));
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:       // Transmit Postive Voltage
+                    Plot.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volts"));
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:       // Transmit Negative Voltage
                     Plot.Axes.Add(CreatePlotAxis(AxisPosition.Left, 1.0, "volts"));
                     break;
                 default:

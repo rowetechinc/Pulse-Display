@@ -34,6 +34,7 @@
  * 10/15/2015      RC          4.3.0      Added new constructor.  Added Transducer Depth plot. 
  * 11/25/2015      RC          4.3.1      Added NMEA Heading and speed.
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
+ * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
  * 
  */
 
@@ -419,7 +420,13 @@ namespace RTI
                     switch (Type.Type.Code)
                     {
                         case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Voltage:
-                            beamType = "Voltage";
+                            beamType = "Input Voltage";
+                            break;
+                        case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:
+                            beamType = "Transmit (+) Voltage";
+                            break;
+                        case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:
+                            beamType = "Transmit (-) Voltage";
                             break;
                     }
 
@@ -705,6 +712,12 @@ namespace RTI
             {
                 case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Voltage:
                     UpdateSystemSetupVoltagePlot(ensemble, Beam, maxEnsembles, isFilterData);     // System Setup Voltage
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Positive_Voltage:
+                    UpdateSystemSetupTransmitBoostPositiveVoltagePlot(ensemble, Beam, maxEnsembles, isFilterData);     // System Setup Boost Transmit Positive Voltage
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_SystemSetup_Transmit_Negative_Voltage:
+                    UpdateSystemSetupTransmitBoostNegativeVoltagePlot(ensemble, Beam, maxEnsembles, isFilterData);     // System Setup Boost Transmit Negative Voltage
                     break;
                 default:
                     break;
@@ -1848,6 +1861,50 @@ namespace RTI
             if (ensemble.IsEnsembleAvail && ensemble.IsSystemSetupAvail)
             {
                 Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.SystemSetupData.Voltage));
+            }
+
+            // Maintain the list size
+            if (Points.Count > maxEnsembles)
+            {
+                Points.RemoveAt(0);
+            }
+        }
+
+        /// <summary>
+        /// Update the plot with the latest System Setup Transmitter Boost Postive Voltage.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble.</param>
+        /// <param name="beam">Which beam the series will represent.</param>
+        /// <param name="maxEnsembles">Max number of ensembles for the series.</param>
+        /// <param name="isFilterData">Filter the data for bad data.</param>
+        private void UpdateSystemSetupTransmitBoostPositiveVoltagePlot(DataSet.Ensemble ensemble, int beam, int maxEnsembles, bool isFilterData)
+        {
+            // Check if the ensemble contains data
+            if (ensemble.IsEnsembleAvail && ensemble.IsSystemSetupAvail)
+            {
+                Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.SystemSetupData.TransmitterBoostPositiveVoltage));
+            }
+
+            // Maintain the list size
+            if (Points.Count > maxEnsembles)
+            {
+                Points.RemoveAt(0);
+            }
+        }
+
+        /// <summary>
+        /// Update the plot with the latest System Setup Transmitter Boost Negative Voltage.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble.</param>
+        /// <param name="beam">Which beam the series will represent.</param>
+        /// <param name="maxEnsembles">Max number of ensembles for the series.</param>
+        /// <param name="isFilterData">Filter the data for bad data.</param>
+        private void UpdateSystemSetupTransmitBoostNegativeVoltagePlot(DataSet.Ensemble ensemble, int beam, int maxEnsembles, bool isFilterData)
+        {
+            // Check if the ensemble contains data
+            if (ensemble.IsEnsembleAvail && ensemble.IsSystemSetupAvail)
+            {
+                Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.SystemSetupData.TransmitterBoostNegativeVoltage));
             }
 
             // Maintain the list size

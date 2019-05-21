@@ -339,8 +339,13 @@ namespace RTI
                 for (int bin = 0; bin < numBins; bin++)
                 {
                     // Get the magnitude and direction
-                    double mag = vectors.Vectors[bin].Magnitude;
-                    double angleYNorth = vectors.Vectors[bin].DirectionXNorth;
+                    double mag = DataSet.Ensemble.BAD_VELOCITY;
+                    double angleYNorth = DataSet.Ensemble.BAD_VELOCITY;
+                    if (vectors.Vectors[bin] != null)
+                    {
+                        mag = vectors.Vectors[bin].Magnitude;
+                        angleYNorth = vectors.Vectors[bin].DirectionXNorth;
+                    }
 
                     // If the magnitude is bad, do not create an arrow
                     if (mag != DataSet.Ensemble.BAD_VELOCITY)
