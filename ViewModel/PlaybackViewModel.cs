@@ -44,6 +44,7 @@
  * 02/28/2017      RC          4.4.5      Fixed playback speed and divide by zero.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 08/30/2018      RC          4.11.0     Lock the ensemble with SyncRoot in ProcessEnsembleBatch().
+ * 6/18/2019       RC          4.11.1     Add event to display all the data.
  * 
  */
 
@@ -66,7 +67,7 @@ namespace RTI
     /// Playback the data in the project.   This will allow the
     /// user to move forwards and backwards within a project file.
     /// </summary>
-    public class PlaybackViewModel : PulseViewModel, IHandle<ProjectEvent>, IHandle<EnsembleWriteEvent>, IHandle<PlaybackEvent>
+    public class PlaybackViewModel : PulseViewModel, IHandle<ProjectEvent>, IHandle<EnsembleWriteEvent>, IHandle<PlaybackEvent>, IHandle<DisplayAllEvent>
     {
 
         #region Defaults
@@ -1159,6 +1160,15 @@ namespace RTI
                 // Move the ensemble
                 JumpEnsemble(1);
             }
+        }
+
+        /// <summary>
+        /// Display all the data.
+        /// </summary>
+        /// <param name="message"></param>
+        public void Handle(DisplayAllEvent message)
+        {
+            Task.Run(() => DisplayAllData());
         }
         #endregion
     }

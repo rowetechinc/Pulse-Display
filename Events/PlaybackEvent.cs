@@ -25,6 +25,7 @@
  * Date            Initials    Version    Comments
  * -----------------------------------------------------------------
  * 09/10/2014      RC          4.0.3      Initial coding.
+ * 06/18/2019      RC          4.11.1     Added DisplayAllEvent.
  * 
  */
 
@@ -57,6 +58,19 @@ namespace RTI
         public PlaybackEvent(IPlayback selectedPlayback)
         {
             SelectedPlayback = selectedPlayback;
+        }
+    }
+
+    /// <summary>
+    /// Display all the data.
+    /// </summary>
+    public class DisplayAllEvent
+    {
+        /// <summary>
+        /// Do nothing.
+        /// </summary>
+        public DisplayAllEvent()
+        {
         }
     }
 }

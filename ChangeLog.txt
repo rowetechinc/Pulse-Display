@@ -6,6 +6,8 @@ Pulse-Display-4.11.1
  - In PredictionModel, updated BatteryUsage() to use Lithium batteries.
  - Made the Wait States for Advanced BREAK doubles in SendAdvancedBreak().
  - In TimeSeries, added SystemSetup Boost Pos and Neg Voltage.
+ - In PlaybackViewModel, add event to display all the data.
+ - Created DisplayAllEvent.
 
 Pulse-Display-4.11.0
  * Check for null in Event Handler for EnsEvent in ValidationTestViewModel.
