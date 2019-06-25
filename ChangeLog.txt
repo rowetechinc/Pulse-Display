@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.11.2
+ * In AdcpConnection::TestEthernetConnection(), check if Ethernet Port is created.
+
 Pulse-Display-4.11.1
  * In CompassCalViewModel, when getting pre and post points, wait for a reply.
  - In AdcpConnection, Added EngBeamShowTest().

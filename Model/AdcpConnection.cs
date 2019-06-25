@@ -75,6 +75,7 @@
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 10/31/2018      RC          4.11.1     Added EngBeamShowTest().
  * 12/12/2018      RC          4.11.1     Made the Wait States for Advanced BREAK doubles in SendAdvancedBreak().
+ * 06/25/2019      RC          4.11.2     In TestEthernetConnection(), check if Ethernet Port is created.
  * 
  */
 
@@ -2333,16 +2334,21 @@ namespace RTI
         /// <returns></returns>
         public bool TestEthernetConnection()
         {
-            AdcpEthernetPort.ReceiveBufferString = string.Empty;
-            byte[] replyBuffer = new byte[100];
-            AdcpEthernetPort.SendData("", ref replyBuffer, true, 2000, true);
-
-            if (String.IsNullOrEmpty(AdcpEthernetPort.ReceiveBufferString))
+            if (AdcpEthernetPort != null)
             {
-                return false;
+                AdcpEthernetPort.ReceiveBufferString = string.Empty;
+                byte[] replyBuffer = new byte[100];
+                AdcpEthernetPort.SendData("", ref replyBuffer, true, 2000, true);
+
+                if (String.IsNullOrEmpty(AdcpEthernetPort.ReceiveBufferString))
+                {
+                    return false;
+                }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         /// <summary>
