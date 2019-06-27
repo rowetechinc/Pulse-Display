@@ -33,6 +33,7 @@
  * 11/25/2015      RC          4.3.1      Added NMEA Heading and speed.
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
  * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
+ * 06/26/2019      RC          4.11.2     Added Ship Velocity to Bottom Track and Water Track Time Series.
  * 
  */
 
@@ -940,19 +941,29 @@ namespace RTI
             switch(source)
             {
                 case DataSource.eSource.WaterProfile:
-                case DataSource.eSource.WaterTrack:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Beam));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_XYZ));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_ENU));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Ship));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Amplitude));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Correlation));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Water_Magnitude));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Water_Direction));
                     return list;
+                case DataSource.eSource.WaterTrack:
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Beam));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_XYZ));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_ENU));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Ship));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Amplitude));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Correlation));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Speed));
+                    return list;
                 case DataSource.eSource.BottomTrack:
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Beam));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_XYZ));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_ENU));
+                    list.Add(new BaseSeriesType(eBaseSeriesType.Base_Velocity_Ship));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Amplitude));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_Correlation));
                     list.Add(new BaseSeriesType(eBaseSeriesType.Base_SNR));

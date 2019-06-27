@@ -35,6 +35,7 @@
  * 11/25/2015      RC          4.3.1      Added NMEA Heading and speed.
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
  * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
+ * 06/26/2019      RC          4.11.2     Added Ship Velocity to Bottom Track and Water Track Time Series.
  * 
  */
 
@@ -308,6 +309,9 @@ namespace RTI
                             case BaseSeriesType.eBaseSeriesType.Base_Velocity_XYZ:
                                 beamType = DataSet.Ensemble.InstrumentBeamName(beam);
                                 break;
+                            case BaseSeriesType.eBaseSeriesType.Base_Velocity_Ship:
+                                beamType = DataSet.Ensemble.ShipBeamName(beam);
+                                break;
                             case BaseSeriesType.eBaseSeriesType.Base_Correlation:
                                 beamType = DataSet.Ensemble.BeamBeamName(beam);
                                 break;
@@ -336,6 +340,12 @@ namespace RTI
                             break;
                         case BaseSeriesType.eBaseSeriesType.Base_Velocity_XYZ:
                             beamType = DataSet.Ensemble.InstrumentBeamName(beam);
+                            break;
+                        case BaseSeriesType.eBaseSeriesType.Base_Velocity_Ship:
+                            beamType = DataSet.Ensemble.ShipBeamName(beam);
+                            break;
+                        case BaseSeriesType.eBaseSeriesType.Base_Speed:
+                            beamType = "Speed";
                             break;
                     }
 
@@ -632,6 +642,9 @@ namespace RTI
                 case BaseSeriesType.eBaseSeriesType.Base_Velocity_ENU:
                     UpdateBTEarthVelocityPlot(ensemble, Beam, maxEnsembles, isFilterData);  // Bottom Track Earth Velocity
                     break;
+                case BaseSeriesType.eBaseSeriesType.Base_Velocity_Ship:
+                    UpdateBTShipVelocityPlot(ensemble, Beam, maxEnsembles, isFilterData);  // Bottom Track Ship Velocity
+                    break;
                 case BaseSeriesType.eBaseSeriesType.Base_Heading:                     // Bottom Track Heading data
                     UpdateBTHeadingPlot(ensemble, maxEnsembles);
                     break;
@@ -666,6 +679,12 @@ namespace RTI
                     break;
                 case BaseSeriesType.eBaseSeriesType.Base_Velocity_ENU:
                     UpdateWTEarthVelocityPlot(ensemble, Beam, maxEnsembles, isFilterData);          // Water Track Earth Velocity
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_Velocity_Ship:
+                    UpdateWTShipVelocityPlot(ensemble, Beam, maxEnsembles, isFilterData);          // Water Track Ship Velocity
+                    break;
+                case BaseSeriesType.eBaseSeriesType.Base_Speed:
+                    UpdateWTShipSpeedPlot(ensemble, maxEnsembles);                                  // Water Track Speed
                     break;
                 default:
                     break;
@@ -1164,6 +1183,39 @@ namespace RTI
 
         #endregion
 
+        #region Bottom Track Ship Velocity Update
+
+        /// <summary>
+        /// Update the plot with the latest Bottom Track Ship Velocity Data.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble.</param>
+        /// <param name="beam">Which beam the series will represent.</param>
+        /// <param name="maxEnsembles">Max number of ensembles for the series.</param>
+        /// <param name="isFilterData">Filter the data for bad data.</param>
+        private void UpdateBTShipVelocityPlot(DataSet.Ensemble ensemble, int beam, int maxEnsembles, bool isFilterData)
+        {
+            // Check if the ensemble contains data
+            if (ensemble.IsEnsembleAvail && ensemble.IsBottomTrackAvail && ensemble.BottomTrackData.NumBeams > beam)
+            {
+                // Check for bad velocity
+                // If we are filtering data and the data is bad, then return and do not add the point
+                if (isFilterData && ensemble.BottomTrackData.ShipVelocity[beam] == DataSet.Ensemble.BAD_VELOCITY)
+                {
+                    return;
+                }
+
+                Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.BottomTrackData.ShipVelocity[beam]));
+            }
+
+            // Maintain the list size
+            if (Points.Count > maxEnsembles)
+            {
+                Points.RemoveAt(0);
+            }
+        }
+
+        #endregion
+
         #region SNR Update
 
         /// <summary>
@@ -1607,6 +1659,126 @@ namespace RTI
                 }
 
 
+            }
+
+            // Maintain the list size
+            if (Points.Count > maxEnsembles)
+            {
+                Points.RemoveAt(0);
+            }
+        }
+
+        #endregion
+
+        #region Water Track Ship Velocity Update
+
+        /// <summary>
+        /// Update the plot with the latest Water Track Ship Velocity Data.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble.</param>
+        /// <param name="beam">Which beam the series will represent.</param>
+        /// <param name="maxEnsembles">Max number of ensembles for the series.</param>
+        /// <param name="isFilterData">Filter the data for bad data.</param>
+        private void UpdateWTShipVelocityPlot(DataSet.Ensemble ensemble, int beam, int maxEnsembles, bool isFilterData)
+        {
+            // Check if the ensemble contains data
+            if (ensemble.IsEnsembleAvail && ensemble.IsShipWaterMassAvail)
+            {
+                switch (beam)
+                {
+                    case DataSet.Ensemble.BEAM_0_INDEX:
+                        {
+                            // Check for bad velocity
+                            // If we are filtering data and the data is bad, then return and do not add the point
+                            if (isFilterData && ensemble.ShipWaterMassData.VelocityTransverse == DataSet.Ensemble.BAD_VELOCITY)
+                            {
+                                return;
+                            }
+
+                            Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.ShipWaterMassData.VelocityTransverse));
+                        }
+                        break;
+                    case DataSet.Ensemble.BEAM_1_INDEX:
+                        {
+                            // Check for bad velocity
+                            // If we are filtering data and the data is bad, then return and do not add the point
+                            if (isFilterData && ensemble.ShipWaterMassData.VelocityLongitudinal == DataSet.Ensemble.BAD_VELOCITY)
+                            {
+                                return;
+                            }
+
+                            Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.ShipWaterMassData.VelocityLongitudinal));
+                        }
+                        break;
+                    case DataSet.Ensemble.BEAM_2_INDEX:
+                        {
+                            // Check for bad velocity
+                            // If we are filtering data and the data is bad, then return and do not add the point
+                            if (isFilterData && ensemble.ShipWaterMassData.VelocityNormal == DataSet.Ensemble.BAD_VELOCITY)
+                            {
+                                return;
+                            }
+
+                            Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, ensemble.ShipWaterMassData.VelocityNormal));
+                        }
+                        break;
+                }
+
+
+            }
+
+            // Maintain the list size
+            if (Points.Count > maxEnsembles)
+            {
+                Points.RemoveAt(0);
+            }
+        }
+
+        #endregion
+
+        #region Water Track Speed
+
+        /// <summary>
+        /// Update the plot with the latest Water Track Speed Data.
+        /// This will select the best speed in priority order with Earth being first.
+        /// </summary>
+        /// <param name="ensemble">Latest ensemble.</param>
+        /// <param name="maxEnsembles">Maximum number of data points for the series.</param>
+        private void UpdateWTShipSpeedPlot(DataSet.Ensemble ensemble, int maxEnsembles)
+        {
+            // Water Track Speed
+            if (ensemble.IsEarthWaterMassAvail)
+            {
+                // Ensure the velocities are good
+                // They could be set to bad velocity or 0.0.  So check for both for bad values.
+                if (((ensemble.EarthWaterMassData.VelocityEast != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.EarthWaterMassData.VelocityNorth != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.EarthWaterMassData.VelocityVertical != DataSet.Ensemble.BAD_VELOCITY)) &&
+                    ((ensemble.EarthWaterMassData.VelocityEast != 0.0) && (ensemble.EarthWaterMassData.VelocityNorth != 0.0) && (ensemble.EarthWaterMassData.VelocityVertical != 0.0)))
+                {
+                    double speed = Math.Sqrt((ensemble.EarthWaterMassData.VelocityEast * ensemble.EarthWaterMassData.VelocityEast) + (ensemble.EarthWaterMassData.VelocityNorth * ensemble.EarthWaterMassData.VelocityNorth) + (ensemble.EarthWaterMassData.VelocityVertical * ensemble.EarthWaterMassData.VelocityVertical));
+                    Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, speed));
+                }
+            }
+            if (ensemble.IsInstrumentWaterMassAvail)
+            {
+                // Ensure the velocities are good
+                // They could be set to bad velocity or 0.0.  So check for both for bad values.
+                if (((ensemble.InstrumentWaterMassData.VelocityX != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.InstrumentWaterMassData.VelocityY != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.InstrumentWaterMassData.VelocityZ != DataSet.Ensemble.BAD_VELOCITY)) &&
+                    ((ensemble.InstrumentWaterMassData.VelocityX != 0.0) && (ensemble.InstrumentWaterMassData.VelocityY != 0.0) && (ensemble.InstrumentWaterMassData.VelocityZ != 0.0)))
+                {
+                    double speed = Math.Sqrt((ensemble.InstrumentWaterMassData.VelocityX * ensemble.InstrumentWaterMassData.VelocityX) + (ensemble.InstrumentWaterMassData.VelocityY * ensemble.InstrumentWaterMassData.VelocityY) + (ensemble.InstrumentWaterMassData.VelocityZ * ensemble.InstrumentWaterMassData.VelocityZ));
+                    Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, speed));
+                }
+            }
+            if (ensemble.IsShipWaterMassAvail)
+            {
+                // Ensure the velocities are good
+                // They could be set to bad velocity or 0.0.  So check for both for bad values.
+                if (((ensemble.ShipWaterMassData.VelocityLongitudinal != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.ShipWaterMassData.VelocityTransverse != DataSet.Ensemble.BAD_VELOCITY) && (ensemble.ShipWaterMassData.VelocityNormal != DataSet.Ensemble.BAD_VELOCITY)) &&
+                    ((ensemble.ShipWaterMassData.VelocityLongitudinal != 0.0) && (ensemble.ShipWaterMassData.VelocityTransverse != 0.0) && (ensemble.ShipWaterMassData.VelocityNormal != 0.0)))
+                {
+                    double speed = Math.Sqrt((ensemble.ShipWaterMassData.VelocityLongitudinal * ensemble.ShipWaterMassData.VelocityLongitudinal) + (ensemble.ShipWaterMassData.VelocityTransverse * ensemble.ShipWaterMassData.VelocityTransverse) + (ensemble.ShipWaterMassData.VelocityNormal * ensemble.ShipWaterMassData.VelocityNormal));
+                    Points.Add(new DataPoint(ensemble.EnsembleData.EnsembleNumber, speed));
+                }
             }
 
             // Maintain the list size
