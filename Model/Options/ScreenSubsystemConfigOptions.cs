@@ -30,6 +30,7 @@
  *                                         Changed default DEFAULT_MARK_BAD_BELOW_BOTTOM to true.
  * 05/07/2014      RC          3.2.4       Added Correlation Threshold and SNR threshold for retransforming the data.
  * 01/06/2016      RC          3.3.0      Added IsRetransformUseGpsHeading and RetransformHeadingOffset.
+ * 10/10/2019      RC          4.11.3     Added IsMarkBadAboveSurface.
  * 
  */
 
@@ -53,6 +54,11 @@ namespace RTI
         /// Screen Mark Bad Below bottom default;
         /// </summary>
         private const bool DEFAULT_MARK_BAD_BELOW_BOTTOM = true;
+
+        /// <summary>
+        /// Screen Mark Bad Above Surface default;
+        /// </summary>
+        private const bool DEFAULT_MARK_BAD_ABOVE_SURFACE = true;
 
         /// <summary>
         /// Screen bottom track range default
@@ -174,6 +180,13 @@ namespace RTI
         /// bottom, mark it bad.
         /// </summary>
         public bool IsMarkBadBelowBottom { get; set; }
+
+        /// <summary>
+        /// Screen the velocity data for any velocities
+        /// above the surface.  If any velocity is above the
+        /// surface, mark it bad.
+        /// </summary>
+        public bool IsMarkBadAboveSurface { get; set; }
 
         /// <summary>
         /// Screen the Bottom Track Range values.
@@ -347,6 +360,7 @@ namespace RTI
         public void SetDefaults()
         {
             IsMarkBadBelowBottom = DEFAULT_MARK_BAD_BELOW_BOTTOM;
+            IsMarkBadAboveSurface = DEFAULT_MARK_BAD_ABOVE_SURFACE;
             IsScreenBottomTrackRange = DEFAULT_IS_SCREEN_BT_RANGE;
             IsRemoveShipSpeed = DEFAULT_IS_REMOVE_SHIP_SPEED;
             CanUseBottomTrackVel = DEFAULT_CAN_USE_BT_VEL;

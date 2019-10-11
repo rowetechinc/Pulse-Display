@@ -31,6 +31,8 @@
  * 02/07/2018      RC          4.7.2       Added MaxEnsemble to AddIncomingDataBulk() to allow a greater number then in cache.
  * 03/23/2018      RC          4.8.0       Updated Heatmap plot with bottom track line and shade under bottom track line. 
  * 08/10/2018      RC          4.10.2      Fixed InterPlote flag to only change HeatmapPlotSeries.
+ * 10/10/2019      RC          4.11.3      Fixed UpdateMeterAxis() max value.
+ *                                         Added SetUpwardOrDownwardPlotAxis() to flip axis based on upward or downward looking.
  * 
  */
 
@@ -737,6 +739,9 @@ namespace RTI
                             // Lock the plot for an update
                             lock (Plot.SyncRoot)
                             {
+                                // Check if plot is upward or downward ADCP
+                                SetUpwardOrDownwardPlotAxis(ewm.Ensemble);
+
                                 // Update the meter axis
                                 UpdateMeterAxis(ewm.Ensemble);
 
@@ -1027,8 +1032,8 @@ namespace RTI
             axis.MinorGridlineStyle = LineStyle.Solid;
             axis.MajorGridlineColor = OxyColor.FromAColor(40, OxyColors.White);
             axis.MinorGridlineColor = OxyColor.FromAColor(20, OxyColors.White);
-            axis.EndPosition = 0;
-            axis.StartPosition = 1;
+            axis.EndPosition = 0;                                                   // 0 = Downward looking
+            axis.StartPosition = 1;                                                 // 1 = Downward looking
             axis.Position = position;
             axis.Key = unit;
             axis.PositionTier = positionTier;
@@ -1050,36 +1055,42 @@ namespace RTI
             float min = 0.0f;
             float max = 1.0f;
 
-            if(ensemble.IsAncillaryAvail)
+            if(ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
             {
                 // Use blank for min
                 min = ensemble.AncillaryData.FirstBinRange;
+
+                // Max is blank + NumBins * BinSize
+                max = ensemble.AncillaryData.FirstBinRange + (ensemble.AncillaryData.BinSize * ensemble.EnsembleData.NumBins);
+
             }
 
-            if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
-            {
-                // Update the bottom track line series
-                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+            //if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
+            //{
+            //    // Update the bottom track line series
+            //    int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
 
-                // Update the meter axis with the largest depth
-                if (rangeBin > ensemble.EnsembleData.NumBins)
-                {
+            //    // Update the meter axis with the largest depth
+            //    if (rangeBin > ensemble.EnsembleData.NumBins)
+            //    {
 
-                    // Use the bottom track depth for max
-                    max = ensemble.BottomTrackData.GetAverageRange();
-                }
-                else
-                {
-                    // Use the total number of bins for the max
-                    max = ensemble.AncillaryData.GetBinToDepth(ensemble.EnsembleData.NumBins);
-                }
-            }
+            //        // Use the bottom track depth for max
+            //        max = ensemble.BottomTrackData.GetAverageRange();
+            //    }
+            //    else
+            //    {
+            //        // Use the total number of bins for the max
+            //        max = ensemble.AncillaryData.GetBinToDepth(ensemble.EnsembleData.NumBins);
+            //    }
+            //}
+
 
             // Set the min and max
             for (int x = 0; x < Plot.Axes.Count; x++)
             {
                 // Set the Minimum and Maxmimum for the axis
-                if(AXIS_LABEL_METERS.Equals(Plot.Axes[x].Key))
+                //if(AXIS_LABEL_METERS.Equals(Plot.Axes[x].Key))
+                if(Plot.Axes[x].Key == AXIS_LABEL_METERS)
                 {
                     Plot.Axes[x].Minimum = min;
                     Plot.Axes[x].Maximum = max;
@@ -1190,6 +1201,9 @@ namespace RTI
             {
                 // Update the meter axis
                 UpdateMeterAxis(ensemble);
+
+                // Check if Upward or Downward and set plot axis
+                SetUpwardOrDownwardPlotAxis(ensemble);
 
                 int plotEnsCount = 0;
 
@@ -1408,6 +1422,71 @@ namespace RTI
                 ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(dp);                      // Replace the point
                 ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(dp2);                      // Replace the point2
             }
+        }
+
+        #endregion
+
+        #region Check Upward or Downward
+
+        /// <summary>
+        /// Check if the plot axis label needs to be reset for Upward or Downward.
+        /// Set the axis StartPosition and EndPosition for upward or downward.
+        /// 
+        /// Downward:
+        /// StartPosition = 1
+        /// EndPosition = 0
+        /// 
+        /// Upward: 
+        /// StartPosition = 0
+        /// EndPosition = 1
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="ens"></param>
+        private void SetUpwardOrDownwardPlotAxis(DataSet.Ensemble ens)
+        {
+            if(ens.AncillaryData.IsUpwardFacing())
+            {
+                // Find the Plot axes for the bin and meter 
+                for(int x = 0; x < Plot.Axes.Count; x++)
+                {
+                    // Upward should be 0 so reset
+                    if(Plot.Axes[x].Key == AXIS_LABEL_BINS && Plot.Axes[x].StartPosition == 1)
+                    {
+                        Plot.Axes[x].StartPosition = 0;
+                        Plot.Axes[x].EndPosition = 1;
+                    }
+
+                    // Upward should be 0 so reset
+                    if (Plot.Axes[x].Key == AXIS_LABEL_METERS && Plot.Axes[x].StartPosition == 1)
+                    {
+                        Plot.Axes[x].StartPosition = 0;
+                        Plot.Axes[x].EndPosition = 1;
+                    }
+
+                }
+            }
+            else
+            {
+                // Find the Plot axes for the bin and meter 
+                for (int x = 0; x < Plot.Axes.Count; x++)
+                {
+                    // Downward StartPosition should be 1 so reset
+                    if (Plot.Axes[x].Key == AXIS_LABEL_BINS && Plot.Axes[x].StartPosition == 0)
+                    {
+                        Plot.Axes[x].StartPosition = 1;
+                        Plot.Axes[x].EndPosition = 0;
+                    }
+
+                    // Downward StartPosition should be 1 so reset
+                    if (Plot.Axes[x].Key == AXIS_LABEL_METERS && Plot.Axes[x].StartPosition == 0)
+                    {
+                        Plot.Axes[x].StartPosition = 1;
+                        Plot.Axes[x].EndPosition = 0;
+                    }
+                }
+            }
+
         }
 
         #endregion

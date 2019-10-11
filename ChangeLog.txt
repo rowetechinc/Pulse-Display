@@ -1,5 +1,12 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.11.3
+  - Added ScreenMarkBadAbove Surface to screening. 
+  - In ScreenSubsystemConfigOptions, Added IsMarkBadAboveSurface.
+  * Fixed UpdateMeterAxis() max value.
+  - Added SetUpwardOrDownwardPlotAxis() to flip axis based on upward or downward looking.
+  * In ProfileSeries, Fixed bug with max bin set on plots.
+
 Pulse-Display-4.11.2
  * In AdcpConnection::TestEthernetConnection(), check if Ethernet Port is created.
  - In SeriesType, Added Ship Velocity to Bottom Track and Water Track Time Series.
