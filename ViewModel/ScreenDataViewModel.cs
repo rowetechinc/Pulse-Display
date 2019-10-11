@@ -37,6 +37,7 @@
  * 09/29/2017      RC          4.4.7      Added FillInMissingWpData() to fill in data when Water Profile is turned off.
  * 03/23/2018      RC          4.8.0      Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
  * 03/27/2018      RC          4.8.1      Added Tab description.
+ * 10/10/2019      RC          
  * 
  */
 
@@ -120,6 +121,11 @@ namespace RTI
         /// Previous good Bottom Track range.
         /// </summary>
         private float _prevBtRange = DataSet.Ensemble.BAD_RANGE;
+
+        /// <summary>
+        /// Previous good Range Track range.
+        /// </summary>
+        private float _prevRangeTrackRange = DataSet.Ensemble.BAD_RANGE;
 
         /// <summary>
         /// Use the previous good heading, if heading drops out.
@@ -352,6 +358,26 @@ namespace RTI
 
         #endregion
 
+        #region Mark Bad Above Surface
+
+        /// <summary>
+        /// Turn on or off Mark Bad Below bottom.
+        /// </summary>
+        public bool IsMarkBadAboveSurface
+        {
+            get { return _Options.IsMarkBadAboveSurface; }
+            set
+            {
+                _Options.IsMarkBadAboveSurface = value;
+                this.NotifyOfPropertyChange(() => this.IsMarkBadAboveSurface);
+
+                // Save the options
+                SaveOptions();
+            }
+        }
+
+        #endregion
+
         #region Force 3 Beam Solution
 
         /// <summary>
@@ -571,6 +597,7 @@ namespace RTI
             _prevBtNorth = DataSet.Ensemble.BAD_VELOCITY;
             _prevBtVert = DataSet.Ensemble.BAD_VELOCITY;
             _prevBtRange = DataSet.Ensemble.BAD_RANGE;
+            _prevRangeTrackRange = DataSet.Ensemble.BAD_RANGE;
             _prevHeading = 0.0f;
 
             //SelectedHeadingSource = Transform.HeadingSource.ADCP;
@@ -678,6 +705,12 @@ namespace RTI
                 ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble, _prevBtRange);
             }
 
+            // Mark Bad Above Surface
+            if (_Options.IsMarkBadAboveSurface)
+            {
+                ScreenData.ScreenMarkBadAboveSurface.Screen(ref ensemble, _prevRangeTrackRange);
+            }
+
             // Remove Ship Speed
             if (_Options.IsRemoveShipSpeed)
             {
@@ -691,6 +724,9 @@ namespace RTI
 
             // Record the previous ship speed values
             SetPreviousShipSpeed(ensemble);
+
+            // Record the previous ranges
+            SetPreviousRange(ensemble);
         }
 
         #endregion
@@ -723,7 +759,14 @@ namespace RTI
             _prevShipSpeedTransverse = prevShipSpeedShip[0];
             _prevShipSpeedLongitudinal = prevShipSpeedShip[1];
             _prevShipSpeedNormal = prevShipSpeedShip[2];
+        }
 
+        /// <summary>
+        /// Store the previous good bottom track and range track range.
+        /// </summary>
+        /// <param name="ens">Ensembles.</param>
+        private void SetPreviousRange(DataSet.Ensemble ens)
+        {
             if (ens.IsBottomTrackAvail)
             {
                 float range = ens.BottomTrackData.GetAverageRange();
@@ -733,6 +776,14 @@ namespace RTI
                 }
             }
 
+            if (ens.IsRangeTrackingAvail)
+            {
+                float range = ens.RangeTrackingData.GetAverageRange();
+                if (range != DataSet.Ensemble.BAD_RANGE)
+                {
+                    _prevRangeTrackRange = range;
+                }
+            }
         }
 
         #endregion

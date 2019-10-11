@@ -28,6 +28,7 @@
  * 02/13/2013      RC          2.18       Changed GetTitle() to set the beam title to the coordinate transform description.
  * 07/09/2013      RC          3.0.3      Fixed bug when updating plot and checking for valid beam and bin.
  * 12/09/2013      RC          3.2.0      Changed UpdateWPCorrelationPlot() axis from bin to depth.
+ * 10/10/2019      RC          4.11.3     Fixed bug with max bin set on plots.
  * 
  */
 
@@ -328,10 +329,10 @@ namespace RTI
                     beam = ensemble.EnsembleData.NumBeams - 1;
                 }
 
-                if (maxBins >= ensemble.EnsembleData.NumBins)
-                {
-                    maxBins = ensemble.EnsembleData.NumBins - 1;
-                }
+                //if (maxBins >= ensemble.EnsembleData.NumBins)
+                //{
+                //    maxBins = ensemble.EnsembleData.NumBins - 1;
+                //}
 
                 // Add all the bin's beam data
                 // Go only to maxBins
@@ -382,10 +383,10 @@ namespace RTI
                     beam = ensemble.EnsembleData.NumBeams-1;
                 }
 
-                if (maxBins >= ensemble.EnsembleData.NumBins)
-                {
-                    maxBins = ensemble.EnsembleData.NumBins - 1;
-                }
+                //if (maxBins >= ensemble.EnsembleData.NumBins)
+                //{
+                //    maxBins = ensemble.EnsembleData.NumBins - 1;
+                //}
 
                 // Add all the bin's beam data
                 // Go only to maxBins
@@ -434,10 +435,10 @@ namespace RTI
                     beam = ensemble.EnsembleData.NumBeams - 1;
                 }
 
-                if (maxBins >= ensemble.EnsembleData.NumBins)
-                {
-                    maxBins = ensemble.EnsembleData.NumBins - 1;
-                }
+                //if (maxBins >= ensemble.EnsembleData.NumBins)
+                //{
+                //    maxBins = ensemble.EnsembleData.NumBins - 1;
+                //}
 
                 // Add all the bin's beam data
                 // Go only to maxBins
@@ -485,10 +486,10 @@ namespace RTI
                     beam = ensemble.EnsembleData.NumBeams - 1;
                 }
 
-                if (maxBins >= ensemble.EnsembleData.NumBins)
-                {
-                    maxBins = ensemble.EnsembleData.NumBins - 1;
-                }
+                //if (maxBins >= ensemble.EnsembleData.NumBins)
+                //{
+                //    maxBins = ensemble.EnsembleData.NumBins - 1;
+                //}
 
                 // Some times i get an index out of range error
                 // Not sure whye
@@ -536,10 +537,10 @@ namespace RTI
                     beam = ensemble.EnsembleData.NumBeams - 1;
                 }
 
-                if (maxBins >= ensemble.EnsembleData.NumBins)
-                {
-                    maxBins = ensemble.EnsembleData.NumBins - 1;
-                }
+                //if (maxBins >= ensemble.EnsembleData.NumBins)
+                //{
+                //    maxBins = ensemble.EnsembleData.NumBins - 1;
+                //}
 
                 // Add all the bin's beam data
                 // Go only to maxBins

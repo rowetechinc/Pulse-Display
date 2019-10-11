@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="500"
+             d:DesignHeight="550" d:DesignWidth="500"
              Foreground="{StaticResource PulseFontColor}">
     
     <Grid Grid.IsSharedSizeScope="True">
@@ -14,6 +14,7 @@
     		<RowDefinition Height="Auto" /> 
 			<RowDefinition Height="Auto" /> 
 			<RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />  
 			<RowDefinition Height="*" />  	
 		</Grid.RowDefinitions>
@@ -68,9 +69,24 @@
 				<CheckBox Grid.Column="1" IsChecked="{Binding IsMarkBadBelowBottom}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
 			</Grid>
 		</Border>
-		
-		<!--Force 3 Beam Solution-->
-		<Border Grid.Row="2" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
+
+        <!--Mark Bad Above Surface-->
+        <Border Grid.Row="2" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Title" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Mark Bad Above Surface" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Column="1" IsChecked="{Binding IsMarkBadAboveSurface}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+            </Grid>
+        </Border>
+
+        <!--Force 3 Beam Solution-->
+		<Border Grid.Row="3" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" SharedSizeGroup="Title" /> 
@@ -92,7 +108,7 @@
 		</Border>
 		
 		<!--Force BT 3 Beam Solution-->
-		<Border Grid.Row="3" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
+		<Border Grid.Row="4" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" SharedSizeGroup="Title" /> 
@@ -114,7 +130,7 @@
 		</Border>
 		
 		<!--Re-Transform Data-->
-		<Border Grid.Row="4" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
+		<Border Grid.Row="5" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" SharedSizeGroup="Title" /> 
