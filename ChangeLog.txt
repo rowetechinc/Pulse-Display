@@ -6,6 +6,8 @@ Pulse-Display-4.11.3
   * Fixed UpdateMeterAxis() max value.
   - Added SetUpwardOrDownwardPlotAxis() to flip axis based on upward or downward looking.
   * In ProfileSeries, Fixed bug with max bin set on plots.
+  - In TimeSeries, Filter Range Tracking Plots for Bad Range.
+  - In HeatmapPlotViewModel, In AddBottomTrackData() Added Range Tracking data to be used to get the surface height to draw line.
 
 Pulse-Display-4.11.2
  * In AdcpConnection::TestEthernetConnection(), check if Ethernet Port is created.

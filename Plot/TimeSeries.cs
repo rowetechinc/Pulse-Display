@@ -36,7 +36,7 @@
  * 12/04/2015      RC          4.4.0      Added DVL data to TimeSeries.  This includes Ship Velocity.
  * 04/22/2019      RC          4.11.1     Added SystemSetup Boost Pos and Neg Voltage.
  * 06/26/2019      RC          4.11.2     Added Ship Velocity to Bottom Track and Water Track Time Series.
- * 
+ * 10/11/2019      RC          4.11.3     Filter Range Tracking Plots for Bad Range.
  */
 
 
@@ -1886,7 +1886,8 @@ namespace RTI
                         {
                             // Check for bad velocity
                             // If we are filtering data and the data is bad, then return and do not add the point
-                            if (isFilterData && ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_0_INDEX] == DataSet.Ensemble.BAD_VELOCITY)
+                            if (isFilterData && (ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_0_INDEX] == DataSet.Ensemble.BAD_VELOCITY |
+                                                ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_0_INDEX] == DataSet.Ensemble.BAD_RANGE))
                             {
                                 return;
                             }
@@ -1898,7 +1899,8 @@ namespace RTI
                         {
                             // Check for bad velocity
                             // If we are filtering data and the data is bad, then return and do not add the point
-                            if (isFilterData && ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_1_INDEX] == DataSet.Ensemble.BAD_VELOCITY)
+                            if (isFilterData && (ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_1_INDEX] == DataSet.Ensemble.BAD_VELOCITY |
+                                                ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_1_INDEX] == DataSet.Ensemble.BAD_RANGE))
                             {
                                 return;
                             }
@@ -1910,7 +1912,8 @@ namespace RTI
                         {
                             // Check for bad velocity
                             // If we are filtering data and the data is bad, then return and do not add the point
-                            if (isFilterData && ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_2_INDEX] == DataSet.Ensemble.BAD_VELOCITY)
+                            if (isFilterData && (ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_2_INDEX] == DataSet.Ensemble.BAD_VELOCITY |
+                                                ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_2_INDEX] == DataSet.Ensemble.BAD_RANGE))
                             {
                                 return;
                             }
@@ -1922,7 +1925,8 @@ namespace RTI
                         {
                             // Check for bad velocity
                             // If we are filtering data and the data is bad, then return and do not add the point
-                            if (isFilterData && ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_3_INDEX] == DataSet.Ensemble.BAD_VELOCITY)
+                            if (isFilterData && (ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_3_INDEX] == DataSet.Ensemble.BAD_VELOCITY |
+                                                ensemble.RangeTrackingData.Range[DataSet.Ensemble.BEAM_3_INDEX] == DataSet.Ensemble.BAD_RANGE))
                             {
                                 return;
                             }

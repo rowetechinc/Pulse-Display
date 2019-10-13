@@ -460,6 +460,10 @@ namespace RTI
                 {
                     hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
+                else if(ensemble.IsRangeTrackingAvail && ensemble.IsAncillaryAvail)
+                {
+                    hmsd.RangeBin = ensemble.RangeTrackingData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+                }
                 _dataList.Add(hmsd);
 
                 // Ensure not exceed the max ensembles
@@ -539,6 +543,10 @@ namespace RTI
                 if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail)
                 {
                     hmsd.RangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+                }
+                else if (ensemble.IsRangeTrackingAvail && ensemble.IsAncillaryAvail)
+                {
+                    hmsd.RangeBin = ensemble.RangeTrackingData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
                 }
                 _dataList.Add(hmsd);
 
