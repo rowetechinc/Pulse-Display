@@ -33,6 +33,7 @@
  * 08/10/2018      RC          4.10.2      Fixed InterPlote flag to only change HeatmapPlotSeries.
  * 10/10/2019      RC          4.11.3      Fixed UpdateMeterAxis() max value.
  *                                         Added SetUpwardOrDownwardPlotAxis() to flip axis based on upward or downward looking.
+ *                                         In AddBottomTrackData() Added Range Tracking data to be used to get the surface height to draw line.
  * 
  */
 
@@ -1358,36 +1359,43 @@ namespace RTI
         /// <param name="maxEnsembles">Maximum number of ensembles to display in the plot.</param>
         private void AddBottomTrackData(int lineSeriesIndex, DataSet.Ensemble ensemble, int ensembleCount, int maxEnsembles)
         {
-            if(ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
+            int rangeBin = 0;
+
+            if (ensemble.IsBottomTrackAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
             {
                 // Update the bottom track line series
-                int rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+                rangeBin = ensemble.BottomTrackData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
 
-                // Only plot the range if it is found
-                if (rangeBin > 0)
+            }
+            else if(ensemble.IsRangeTrackingAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
+            {
+                rangeBin = ensemble.RangeTrackingData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+            }
+
+            // Only plot the range if it is found
+            if (rangeBin > 0)
+            {
+                // Create a new data point for the bottom track line
+                // This will be the (ensemble count, range bin)
+                ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(ensembleCount, rangeBin));
+
+                // Add the second point for the shaded area
+                if (rangeBin < ensemble.EnsembleData.NumBins)
                 {
-                    // Create a new data point for the bottom track line
-                    // This will be the (ensemble count, range bin)
-                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Add(new DataPoint(ensembleCount, rangeBin));
+                    // Less then the number of bins, so go to the end of the number of bins
+                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, ensemble.EnsembleData.NumBins - 1));
+                }
+                else
+                {
+                    // This is the deepest point
+                    ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, rangeBin));
+                }
 
-                    // Add the second point for the shaded area
-                    if (rangeBin < ensemble.EnsembleData.NumBins)
-                    {
-                        // Less then the number of bins, so go to the end of the number of bins
-                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, ensemble.EnsembleData.NumBins-1));
-                    }
-                    else
-                    {
-                        // This is the deepest point
-                        ((AreaSeries)Plot.Series[lineSeriesIndex]).Points2.Add(new DataPoint(ensembleCount, rangeBin));
-                    }
-
-                    // Add 1 because zero based and include the max number
-                    while (((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Count > maxEnsembles + 1)
-                    {
-                        // Shift Points
-                        ShiftBottomTrackLineSeries(lineSeriesIndex);
-                    }
+                // Add 1 because zero based and include the max number
+                while (((AreaSeries)Plot.Series[lineSeriesIndex]).Points.Count > maxEnsembles + 1)
+                {
+                    // Shift Points
+                    ShiftBottomTrackLineSeries(lineSeriesIndex);
                 }
             }
         }
