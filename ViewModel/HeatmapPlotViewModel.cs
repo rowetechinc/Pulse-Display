@@ -1369,7 +1369,14 @@ namespace RTI
             }
             else if(ensemble.IsRangeTrackingAvail && ensemble.IsAncillaryAvail && ensemble.IsEnsembleAvail)
             {
+                // Use Range Tracking for upward looking ADCP
                 rangeBin = ensemble.RangeTrackingData.GetRangeBin(ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+
+                // Use Pressure as a backup if Range Tracking is off
+                if(rangeBin <= 0 && ensemble.AncillaryData.TransducerDepth > 0)
+                {
+                    rangeBin = DataSet.Ensemble.GetRangeBin(ensemble.AncillaryData.TransducerDepth, ensemble.AncillaryData.BinSize, ensemble.AncillaryData.FirstBinRange);
+                }
             }
 
             // Only plot the range if it is found
@@ -1439,6 +1446,7 @@ namespace RTI
         /// <summary>
         /// Check if the plot axis label needs to be reset for Upward or Downward.
         /// Set the axis StartPosition and EndPosition for upward or downward.
+        /// Set both the Bin Axis and Meter Axis
         /// 
         /// Downward:
         /// StartPosition = 1
@@ -1447,17 +1455,17 @@ namespace RTI
         /// Upward: 
         /// StartPosition = 0
         /// EndPosition = 1
-        /// 
-        /// 
         /// </summary>
         /// <param name="ens"></param>
         private void SetUpwardOrDownwardPlotAxis(DataSet.Ensemble ens)
         {
+            // Upward Facing
             if(ens.AncillaryData.IsUpwardFacing())
             {
                 // Find the Plot axes for the bin and meter 
                 for(int x = 0; x < Plot.Axes.Count; x++)
                 {
+                    // Bin Axis
                     // Upward should be 0 so reset
                     if(Plot.Axes[x].Key == AXIS_LABEL_BINS && Plot.Axes[x].StartPosition == 1)
                     {
@@ -1465,6 +1473,7 @@ namespace RTI
                         Plot.Axes[x].EndPosition = 1;
                     }
 
+                    // Meters Axis
                     // Upward should be 0 so reset
                     if (Plot.Axes[x].Key == AXIS_LABEL_METERS && Plot.Axes[x].StartPosition == 1)
                     {
@@ -1474,6 +1483,7 @@ namespace RTI
 
                 }
             }
+            // Downward Facing
             else
             {
                 // Find the Plot axes for the bin and meter 

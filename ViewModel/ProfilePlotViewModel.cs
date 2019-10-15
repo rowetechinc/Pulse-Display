@@ -37,6 +37,7 @@
  * 01/27/2015      RC          4.1.0      Added the option to turn on or off the profile plots.
  * 12/07/2015      RC          4.4.0      Added GenerateReport to create HTML files.
  * 02/17/2015      RC          4.4.5      Update the plot when selection changed in UpdateSeriesVisibility().
+ * 10/14/2019      RC          4.11.3     Added SetUpwardOrDownwardPlotAxis() to flip axis based on upward or downward looking.
  * 
  */
 
@@ -121,6 +122,11 @@ namespace RTI
         public const string TAG_STDB2B_SERIES = "STD B2B";
 
         #endregion
+
+        /// <summary>
+        /// Bin or Depth Axis Key.
+        /// </summary>
+        private string BIN_OR_DEPTH_AXIS = "BIN_AXIS";
 
         /// <summary>
         /// Receive global events from the EventAggregator.
@@ -840,6 +846,9 @@ namespace RTI
                         // Update the list options
                         UpdateListOptions(ewm.Ensemble);
 
+                        // Flip the Axis for upward or downward ADCP
+                        SetUpwardOrDownwardPlotAxis(ewm.Ensemble);
+
                         // Lock the plot for an update
                         lock (Plot.SyncRoot)
                         {
@@ -890,6 +899,9 @@ namespace RTI
 
                         // Update the list options
                         UpdateListOptions(ewm.Ensemble);
+
+                        // Flip the Axis for upward or downward ADCP
+                        SetUpwardOrDownwardPlotAxis(ewm.Ensemble);
 
                         // Update the line series
                         UpdatePlot(ewm.Ensemble, ewm.MaxBins);
@@ -997,7 +1009,9 @@ namespace RTI
                     //MajorStep = 1,
                     //Minimum = 0,
                     IntervalLength = 20,
-                    Unit = "m"
+                    Unit = "m",
+                    Key = BIN_OR_DEPTH_AXIS
+                   
                 });
             }
             else
@@ -1020,7 +1034,8 @@ namespace RTI
                     //MajorStep = 1,
                     Minimum = 0,
                     IntervalLength = 20,
-                    Unit = "Bin"
+                    Unit = "Bin",
+                    Key = BIN_OR_DEPTH_AXIS
                 });
             }
 
@@ -1736,6 +1751,74 @@ namespace RTI
                     w.WriteReport(report, reportStyle);
                 }
             }
+        }
+
+        #endregion
+
+        #region Check Upward or Downward
+
+        /// <summary>
+        /// Check if the plot axis label needs to be reset for Upward or Downward.
+        /// Set the axis StartPosition and EndPosition for upward or downward.
+        /// Set both the Bin Axis and Meter Axis
+        /// 
+        /// Downward:
+        /// StartPosition = 1
+        /// EndPosition = 0
+        /// 
+        /// Upward: 
+        /// StartPosition = 0
+        /// EndPosition = 1
+        /// </summary>
+        /// <param name="ens"></param>
+        private void SetUpwardOrDownwardPlotAxis(DataSet.Ensemble ens)
+        {
+            // Upward Facing
+            if (ens.AncillaryData.IsUpwardFacing())
+            {
+                // Find the Plot axes for the bin and meter 
+                for (int x = 0; x < Plot.Axes.Count; x++)
+                {
+                    // Bin Axis
+                    // Upward should be 0 so reset
+                    if (Plot.Axes[x].Key == BIN_OR_DEPTH_AXIS && Plot.Axes[x].StartPosition == 1)
+                    {
+                        Plot.Axes[x].StartPosition = 0;
+                        Plot.Axes[x].EndPosition = 1;
+                    }
+
+                    // Meters Axis
+                    // Upward should be 0 so reset
+                    if (Plot.Axes[x].Key == BIN_OR_DEPTH_AXIS && Plot.Axes[x].StartPosition == 1)
+                    {
+                        Plot.Axes[x].StartPosition = 0;
+                        Plot.Axes[x].EndPosition = 1;
+                    }
+
+                }
+            }
+            // Downward Facing
+            else
+            {
+                // Find the Plot axes for the bin and meter 
+                for (int x = 0; x < Plot.Axes.Count; x++)
+                {
+                    // Downward StartPosition should be 1 so reset
+                    if (Plot.Axes[x].Key == BIN_OR_DEPTH_AXIS && Plot.Axes[x].StartPosition == 0)
+                    {
+                        Plot.Axes[x].StartPosition = 1;
+                        Plot.Axes[x].EndPosition = 0;
+                    }
+
+                    // Downward StartPosition should be 1 so reset
+                    if (Plot.Axes[x].Key == BIN_OR_DEPTH_AXIS && Plot.Axes[x].StartPosition == 0)
+                    {
+                        Plot.Axes[x].StartPosition = 1;
+                        Plot.Axes[x].EndPosition = 0;
+                    }
+                }
+            }
+
         }
 
         #endregion
