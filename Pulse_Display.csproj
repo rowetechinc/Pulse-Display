@@ -486,9 +486,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\1200DR.png" />
     <Resource Include="Images\1200SC.png" />
     <Resource Include="Images\300600DR.png" />
