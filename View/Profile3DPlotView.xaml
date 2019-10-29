@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="RTI.Profile3DPlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+			 xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             xmlns:helix="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+             xmlns:pulse_display="clr-namespace:RTI;assembly=Pulse_Display"
+             xmlns:rti="clr-namespace:RTI"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="200"
+			 MinWidth="10" MinHeight="10">
+    <Grid>
+    	<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />	  	
+		</Grid.ColumnDefinitions>	
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="15" />
+			<RowDefinition Height="*" />  	
+		</Grid.RowDefinitions>
+				
+
+		<!--Plot Title-->
+		<TextBlock Grid.Row="0" Text="{Binding Path=Title}" Foreground="{StaticResource PulseFontColor}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="10.667" Margin="0" />
+
+		<!-- Profile Plot -->
+        <Grid Grid.Row="1" Background="Black">
+            <Viewbox Stretch="Fill" MaxHeight="{Binding PlotSize2D}">
+                <helix:HelixViewport3D x:Name="viewportSelectedEnsemble" ZoomExtentsWhenLoaded="False" ShowCoordinateSystem="False" ShowCameraInfo="False" ShowCameraTarget="False" ShowViewCube="True" CameraMode="Inspect" Orthographic="True" Width="600" Height="1000" >
+                    <helix:HelixViewport3D.Camera>
+                        <PerspectiveCamera UpDirection="0, 1, 0" Position="-0.381, -10.889, 25.000" LookDirection="0,0,-19.000"  />
+                    </helix:HelixViewport3D.Camera>
+                    <helix:DefaultLights />
+                    <rti:BinPlot3D Content="{Binding Plot.Content}">
+                        <rti:BinPlot3D.Transform>
+                            <Transform3DGroup>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Axis="0,1,0" Angle="90"/>
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Transform3DGroup>
+                        </rti:BinPlot3D.Transform>
+                    </rti:BinPlot3D>
+                </helix:HelixViewport3D>
+            </Viewbox>
+        </Grid>
+
+
+    </Grid>
+</UserControl>

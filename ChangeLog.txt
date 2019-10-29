@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.12.0
+  - Added Profile3DPlotViewModel and View.
+
 Pulse-Display-4.11.3
   - Added ScreenMarkBadAbove Surface to screening. 
   - In ScreenSubsystemConfigOptions, Added IsMarkBadAboveSurface.

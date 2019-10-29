@@ -278,6 +278,7 @@
     <Compile Include="ViewModel\DisplayViewModel.cs" />
     <Compile Include="ViewModel\HeatmapPlotViewModel.cs" />
     <Compile Include="ViewModel\PlaybackViewModel.cs" />
+    <Compile Include="ViewModel\Profile3DPlotViewModel.cs" />
     <Compile Include="ViewModel\ProfilePlotViewModel.cs" />
     <Compile Include="ViewModel\PulseDialogViewModel.cs" />
     <Compile Include="ViewModel\PulseViewModel.cs" />
@@ -315,6 +316,9 @@
     </Compile>
     <Compile Include="View\PlaybackView.xaml.cs">
       <DependentUpon>PlaybackView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Profile3DPlotView.xaml.cs">
+      <DependentUpon>Profile3DPlotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProfilePlotView.xaml.cs">
       <DependentUpon>ProfilePlotView.xaml</DependentUpon>
@@ -429,6 +433,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PlaybackView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Profile3DPlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
