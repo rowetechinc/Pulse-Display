@@ -57,6 +57,7 @@
  * 10/23/2012      RC          2.16       Changed to version 2.16.
  * 08/22/2014      RC          4.0.2      Added DEFAULT_RECORD_DIR_TANK and DEFAULT_RECORD_DIR.
  * 02/18/2015      RC          4.1.0      Added DEFAULT_CONFIG_DIR.
+ * 11/29/2019      RC          4.12.0     Check if the folder exist when getting the default project folder in Commons.
  * 
  */
 using System;
@@ -189,7 +190,15 @@ namespace RTI
             public static string GetProjectDefaultFolderPath()
             {
                 string myDoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                return string.Format(@"{0}\RTI", myDoc);
+
+                // Create the folder path
+                string defaultPrjFolder = string.Format(@"{0}\RTI", myDoc);
+
+                // Create the folder if it does not exist
+                Directory.CreateDirectory(defaultPrjFolder);
+
+                // Return the folder path
+                return defaultPrjFolder;
             }
 
             /// <summary>

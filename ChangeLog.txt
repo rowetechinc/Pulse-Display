@@ -2,6 +2,7 @@
 
 Pulse-Display-4.12.0
   - Added Profile3DPlotViewModel and View.
+  - Check if the folder exist when getting the default project folder in Commons.
 
 Pulse-Display-4.11.3
   - Added ScreenMarkBadAbove Surface to screening. 
