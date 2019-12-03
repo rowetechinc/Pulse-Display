@@ -26,7 +26,7 @@
 
 		<!-- Profile Plot -->
         <Grid Grid.Row="1" Background="Black">
-            <Viewbox Stretch="Fill" MaxHeight="{Binding PlotSize2D}">
+            <Viewbox Stretch="Fill">
                 <helix:HelixViewport3D x:Name="viewportSelectedEnsemble" ZoomExtentsWhenLoaded="False" ShowCoordinateSystem="False" ShowCameraInfo="False" ShowCameraTarget="False" ShowViewCube="True" CameraMode="Inspect" Orthographic="True" Width="600" Height="1000" >
                     <helix:HelixViewport3D.Camera>
                         <PerspectiveCamera UpDirection="0, 1, 0" Position="-0.381, -10.889, 25.000" LookDirection="0,0,-19.000"  />

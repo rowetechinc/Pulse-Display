@@ -123,6 +123,11 @@ namespace RTI
         private DataSet.EnsembleVelocityVectors _prevVectors;
 
         /// <summary>
+        /// Store the previous orientation of the ADCP.
+        /// </summary>
+        private bool _prevIsDownwardLooking;
+
+        /// <summary>
         /// Previous number of bins.  This is used to determine
         /// if any settings have changed.
         /// </summary>
@@ -176,7 +181,7 @@ namespace RTI
             {
                 _cylinderRadius = value;
                 Application.Current.Dispatcher.BeginInvoke(new Action(() => CreateBase(_prevNumBins)));
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors, _prevIsDownwardLooking)));
             }
         }
 
@@ -197,7 +202,7 @@ namespace RTI
             set
             {
                 _selectedBin = value;
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors, _prevIsDownwardLooking)));
             }
         }
 
@@ -215,7 +220,7 @@ namespace RTI
             {
                 _colormapBrushSelection = value;
                 _colormap.ColormapBrushType = _colormapBrushSelection;
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors, _prevIsDownwardLooking)));
             }
         }
 
@@ -236,7 +241,7 @@ namespace RTI
             set
             {
                 _minVelocity = value;
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors, _prevIsDownwardLooking)));
             }
         }
 
@@ -257,7 +262,7 @@ namespace RTI
             set
             {
                 _maxVelocity = value;
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors)));
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(_prevVectors, _prevIsDownwardLooking)));
             }
         }
 
@@ -299,10 +304,12 @@ namespace RTI
         /// of vectors.
         /// </summary>
         /// <param name="vectors">Vectors to add to the list.</param>
-        public async Task AddIncomingData(DataSet.EnsembleVelocityVectors vectors)
+        /// <param name="isDownwardLooking">Flag if the ADCP is upward or downward looking.  By default it assumes downward looking.</param>
+        public async Task AddIncomingData(DataSet.EnsembleVelocityVectors vectors, bool isDownwardLooking=true)
         {
             _prevVectors = vectors;
-            await Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(vectors)));
+            _prevIsDownwardLooking = isDownwardLooking;
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() => DrawPlot(vectors, isDownwardLooking)));
         }
 
         /// <summary>
@@ -327,7 +334,8 @@ namespace RTI
         /// to the scene.
         /// </summary>
         /// <param name="vectors">Vectors to display.</param>
-        private void DrawPlot(DataSet.EnsembleVelocityVectors vectors)
+        /// <param name="IsDownwardLooking">Flag if upward or downward looking ADCP.</param>
+        private void DrawPlot(DataSet.EnsembleVelocityVectors vectors, bool IsDownwardLooking)
         {
             // Ensure the data is good
             if (vectors.Vectors != null)
@@ -338,13 +346,22 @@ namespace RTI
                 // Go through each bin
                 for (int bin = 0; bin < numBins; bin++)
                 {
+                    // If Downward looking, start bin from top going downward
+                    // If Upward looking, start bin at the bottom going up.
+                    // This resets the bin location based on orientation
+                    int binLoc = bin;
+                    if(!IsDownwardLooking)
+                    {
+                        binLoc = (numBins-1) - bin;
+                    }
+
                     // Get the magnitude and direction
                     double mag = DataSet.Ensemble.BAD_VELOCITY;
                     double angleYNorth = DataSet.Ensemble.BAD_VELOCITY;
-                    if (vectors.Vectors[bin] != null)
+                    if (vectors.Vectors[binLoc] != null)
                     {
-                        mag = vectors.Vectors[bin].Magnitude;
-                        angleYNorth = vectors.Vectors[bin].DirectionXNorth;
+                        mag = vectors.Vectors[binLoc].Magnitude;
+                        angleYNorth = vectors.Vectors[binLoc].DirectionXNorth;
                     }
 
                     // If the magnitude is bad, do not create an arrow
