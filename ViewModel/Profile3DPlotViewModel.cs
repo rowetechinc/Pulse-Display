@@ -458,12 +458,19 @@ namespace RTI
 
         #endregion
 
-
-        public async void AddIncomingData(DataSet.EnsembleVelocityVectors vv)
+        /// <summary>
+        /// Add incoming data to the Profile 3D plot.
+        /// </summary>
+        /// <param name="vv">Velocity vectors.</param>
+        /// <param name="isDownwardLooking">Orientation of the ADCP.</param>
+        public async void AddIncomingData(DataSet.EnsembleVelocityVectors vv, bool isDownwardLooking)
         {
-            await Plot.AddIncomingData(vv);
+            await Plot.AddIncomingData(vv, isDownwardLooking);
         }
 
+        /// <summary>
+        /// Clear the ADCP data from the plot.
+        /// </summary>
         public void ClearIncomingData()
         {
             Plot.ClearIncomingData();
