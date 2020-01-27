@@ -173,6 +173,30 @@ namespace RTI
         /// </summary>
         public bool ParseDownloadedData { get; set; }
 
+        /// <summary>
+        /// Heading offset.  Value added to the heading value.  Then data retransformed.
+        /// </summary>
+        public float HeadingOffset { get; set; }
+
+        /// <summary>
+        /// Pitch offset.  Value added to the pitch value.  Then data retransformed.
+        /// </summary>
+        public float PitchOffset { get; set; }
+
+        /// <summary>
+        /// Roll offset.  Value added to the roll value.  Then data retransformed.
+        /// </summary>
+        public float RollOffset { get; set; }
+
+        /// <summary>
+        /// Flag to replace the Pressure data with the vertical beam.
+        /// In small waves environment, if the pressure sensor is not
+        /// configured properly, the pressure data will be bad.  This
+        /// will replace the pressure data with the vertical beam data
+        /// so Wavector can still process the data.
+        /// </summary>
+        public bool IsReplacePressure { get; set; }
+
         #endregion
 
         /// <summary>
@@ -188,9 +212,9 @@ namespace RTI
         /// </summary>
         public void SetDefaults()
         {
-            Bin1Selection = "1";
-            Bin2Selection = DISABLE_BIN_SELECTION;
-            Bin3Selection = DISABLE_BIN_SELECTION;
+            Bin1Selection = "5";
+            Bin2Selection = "6";
+            Bin3Selection = "7";
 
             BeamHeightSource = HeightSource.Vertical;
 
@@ -205,6 +229,12 @@ namespace RTI
             ParseDownloadedData = true;
             OverwriteDownloadFiles = true;
             DownloadDirectory = Pulse.Commons.DEFAULT_RECORD_DIR;
+
+            HeadingOffset = 0.0f;
+            PitchOffset = 0.0f;
+            RollOffset = 0.0f;
+
+            IsReplacePressure = false;
         }
 
         /// <summary>
