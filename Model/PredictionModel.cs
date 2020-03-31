@@ -1343,7 +1343,7 @@ namespace RTI
                                     double _XdcrDepth_,
                                     int _CBI_EnsemblesPerBurst_,
                                     double _CBI_BurstInterval_,
-                                    bool _CBI_IsInterleaved_)
+                                    int _CBI_IsInterleaved_)
         {
             // Power per burst
             // Set 1 day for deployment duration so only 1 burst is calculated

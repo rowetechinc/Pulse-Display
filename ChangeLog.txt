@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.13.0
+  - In PulseManager, if error reading in Pulse Options, create a clean options.
+
 Pulse-Display-4.12.0
   - Added Profile3DPlotViewModel and View.
   - Check if the folder exist when getting the default project folder in Commons.

@@ -426,7 +426,7 @@ namespace RTI
         /// <summary>
         /// Set the flag if this burst is interleaved with the next burst.
         /// </summary>
-        public bool CBI_IsInterleaved { get; set; }
+        public int CBI_IsInterleaved { get; set; }
 
         #endregion
 
@@ -669,7 +669,7 @@ namespace RTI
             IsBurst = false;
             CBI_SamplesPerBurst = 4096;
             CBI_BurstInterval = 3600;
-            CBI_IsInterleaved = false;
+            CBI_IsInterleaved = 0;
 
             // CED
             CED_IsE0000001 = true;
@@ -766,7 +766,7 @@ namespace RTI
             IsBurst = false;
             CBI_SamplesPerBurst = 4096;
             CBI_BurstInterval = 3600;
-            CBI_IsInterleaved = false;
+            CBI_IsInterleaved = 0;
 
             // CED
             CED_IsE0000001 = true;
