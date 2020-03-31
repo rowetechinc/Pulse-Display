@@ -42,6 +42,7 @@
  * 12/02/2015      RC          4.4.0      Added, DataBit, Parity and Stop Bit to ADCP serial port.
  * 10/18/2017      RC          4.4.7      Added DataOutputViewOptions.
  * 03/28/2018      RC          4.8.1      Retreieve and save the DataFormatOptions.
+ * 03/30/2020      RC          4.13.0     If error reading in Pulse Options, create a clean options.
  * 
  * 
  */
@@ -1009,8 +1010,16 @@ namespace RTI
             // Verify a string exist
             if (!string.IsNullOrEmpty(json))
             {
-                // Parse the JSON to an object
-                _PulseOptions = Newtonsoft.Json.JsonConvert.DeserializeObject<PulseOptions>(json);
+                try
+                {
+                    // Parse the JSON to an object
+                    _PulseOptions = Newtonsoft.Json.JsonConvert.DeserializeObject<PulseOptions>(json);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Error reading in the configuration from Pulse Settings Database");
+                    _PulseOptions = new PulseOptions();
+                }
             }
             // Database did not contain any options
             else
