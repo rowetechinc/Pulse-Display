@@ -373,7 +373,12 @@ namespace RTI
             /// <summary>
             /// Data Format view.
             /// </summary>
-            DataFormatView
+            DataFormatView,
+
+            /// <summary>
+            /// Hyrdophone Lake Test view.
+            /// </summary>
+            HydrophoneLakeView,
         }
 
         #region Properties
