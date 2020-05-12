@@ -33,6 +33,7 @@
  * 03/13/2013      RC          2.18       Updated the Helix package and changed the 3D text prorperties.
  * 06/28/2013      RC          2.19       Replaced Shutdown() with IDisposable.
  * 08/08/2014      RC          4.0.0      Made AddIncomingData() handle multithreading.
+ * 05/11/2020      RC          4.13.1     Fixed bug in BinPlot3D if no water profile data is available.
  * 
  */
 
@@ -381,14 +382,26 @@ namespace RTI
                 }
 
                 // Create the North and East arrow
-                group.Children.Add(_northArrow);
-                group.Children.Add(_eastArrow);
+                if (_northArrow != null)
+                {
+                    group.Children.Add(_northArrow);
+                }
+                if (_eastArrow != null)
+                {
+                    group.Children.Add(_eastArrow);
+                }
 
                 // Origin tube
-                group.Children.Add(_originTube);
+                if (_originTube != null)
+                {
+                    group.Children.Add(_originTube);
+                }
 
                 // Last item to add
-                group.Children.Add(_cylinder);
+                if (_cylinder != null)
+                {
+                    group.Children.Add(_cylinder);
+                }
 
                 Content = group;
             }

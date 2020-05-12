@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.13.1
+  - Fixed bug in BinPlot3D if no water profile data is available.
+
 Pulse-Display-4.13.0
   - In PulseManager, if error reading in Pulse Options, create a clean options.
 
