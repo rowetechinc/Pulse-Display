@@ -31,6 +31,7 @@
  * 05/07/2014      RC          3.2.4       Added Correlation Threshold and SNR threshold for retransforming the data.
  * 01/06/2016      RC          3.3.0      Added IsRetransformUseGpsHeading and RetransformHeadingOffset.
  * 10/10/2019      RC          4.11.3     Added IsMarkBadAboveSurface.
+ * 06/04/2020      RC          4.13.2     Added Additional screen options for Amplitude and Correlation.
  * 
  */
 
@@ -51,14 +52,34 @@ namespace RTI
         #region Defaults
 
         /// <summary>
-        /// Screen Mark Bad Below bottom default;
+        /// Screen Mark Bad Below bottom Velocities default;
         /// </summary>
         private const bool DEFAULT_MARK_BAD_BELOW_BOTTOM = true;
 
         /// <summary>
-        /// Screen Mark Bad Above Surface default;
+        /// Screen Mark Bad Below bottom Amplitude default;
+        /// </summary>
+        private const bool DEFAULT_MARK_BAD_BELOW_BOTTOM_AMPLITUDE = false;
+
+        /// <summary>
+        /// Screen Mark Bad Below bottom Correlation default;
+        /// </summary>
+        private const bool DEFAULT_MARK_BAD_BELOW_BOTTOM_CORRELATION = false;
+
+        /// <summary>
+        /// Screen Mark Bad Above Surface Velocities default;
         /// </summary>
         private const bool DEFAULT_MARK_BAD_ABOVE_SURFACE = true;
+
+        /// <summary>
+        /// Screen Mark Bad Above Surface Amplitude default;
+        /// </summary>
+        private const bool DEFAULT_MARK_BAD_ABOVE_SURFACE_AMPLITUDE = false;
+
+        /// <summary>
+        /// Screen Mark Bad Above Surface Correlation default;
+        /// </summary>
+        private const bool DEFAULT_MARK_BAD_ABOVE_SURFACE_CORRELATION = false;
 
         /// <summary>
         /// Screen bottom track range default
@@ -182,11 +203,39 @@ namespace RTI
         public bool IsMarkBadBelowBottom { get; set; }
 
         /// <summary>
+        /// Screen the velocity data for any Amplitude
+        /// below the bottom.  If any Amplitude is below the
+        /// bottom, mark it bad.
+        /// </summary>
+        public bool IsMarkBadBelowBottomAmplitude { get; set; }
+
+        /// <summary>
+        /// Screen the velocity data for any Correlation
+        /// below the bottom.  If any Correlation is below the
+        /// bottom, mark it bad.
+        /// </summary>
+        public bool IsMarkBadBelowBottomCorrelation { get; set; }
+
+        /// <summary>
         /// Screen the velocity data for any velocities
         /// above the surface.  If any velocity is above the
         /// surface, mark it bad.
         /// </summary>
         public bool IsMarkBadAboveSurface { get; set; }
+
+        /// <summary>
+        /// Screen the velocity data for any Amplitude
+        /// above the surface.  If any Amplitude is above the
+        /// surface, mark it bad.
+        /// </summary>
+        public bool IsMarkBadAboveSurfaceAmplitude { get; set; }
+
+        /// <summary>
+        /// Screen the velocity data for any Correlation
+        /// above the surface.  If any Correlation is above the
+        /// surface, mark it bad.
+        /// </summary>
+        public bool IsMarkBadAboveSurfaceCorrelation { get; set; }
 
         /// <summary>
         /// Screen the Bottom Track Range values.
@@ -360,7 +409,11 @@ namespace RTI
         public void SetDefaults()
         {
             IsMarkBadBelowBottom = DEFAULT_MARK_BAD_BELOW_BOTTOM;
+            IsMarkBadBelowBottomAmplitude = DEFAULT_MARK_BAD_BELOW_BOTTOM_AMPLITUDE;
+            IsMarkBadBelowBottomCorrelation = DEFAULT_MARK_BAD_BELOW_BOTTOM_CORRELATION;
             IsMarkBadAboveSurface = DEFAULT_MARK_BAD_ABOVE_SURFACE;
+            IsMarkBadAboveSurfaceAmplitude = DEFAULT_MARK_BAD_ABOVE_SURFACE_AMPLITUDE;
+            IsMarkBadAboveSurfaceCorrelation = DEFAULT_MARK_BAD_ABOVE_SURFACE_CORRELATION;
             IsScreenBottomTrackRange = DEFAULT_IS_SCREEN_BT_RANGE;
             IsRemoveShipSpeed = DEFAULT_IS_REMOVE_SHIP_SPEED;
             CanUseBottomTrackVel = DEFAULT_CAN_USE_BT_VEL;

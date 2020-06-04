@@ -1,5 +1,9 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.13.2
+  - Added Additional screen options for MarkBadBelowBottom and MarkBadAboveSurface for Amplitude and Correlation.
+  - In ScreenDataViewModel, allow user to select which parts to screen in MarkBadBelowBottom and MarkBadAboveSurface.
+
 Pulse-Display-4.13.1
   - Fixed bug in BinPlot3D if no water profile data is available.
 

@@ -37,7 +37,7 @@
  * 09/29/2017      RC          4.4.7      Added FillInMissingWpData() to fill in data when Water Profile is turned off.
  * 03/23/2018      RC          4.8.0      Added _prevBtRange to keep a backup value of the Range.  Use it Mark Bad Below Bottom.
  * 03/27/2018      RC          4.8.1      Added Tab description.
- * 10/10/2019      RC          
+ * 06/04/2020      RC          4.13.2     Added Additional screen options for Amplitude and Correlation in MarkBadBelowBottom and MarkBadAboveSurface.
  * 
  */
 
@@ -341,7 +341,7 @@ namespace RTI
         #region Mark Bad Below Bottom
 
         /// <summary>
-        /// Turn on or off Mark Bad Below bottom.
+        /// Turn on or off Mark Bad Below bottom for velocities.
         /// </summary>
         public bool IsMarkBadBelowBottom
         {
@@ -356,12 +356,44 @@ namespace RTI
             }
         }
 
+        /// <summary>
+        /// Turn on or off Mark Bad Below bottom for amplitude.
+        /// </summary>
+        public bool IsMarkBadBelowBottomAmplitude
+        {
+            get { return _Options.IsMarkBadBelowBottomAmplitude; }
+            set
+            {
+                _Options.IsMarkBadBelowBottomAmplitude = value;
+                this.NotifyOfPropertyChange(() => this.IsMarkBadBelowBottomAmplitude);
+
+                // Save the options
+                SaveOptions();
+            }
+        }
+
+        /// <summary>
+        /// Turn on or off Mark Bad Below bottom for correlation.
+        /// </summary>
+        public bool IsMarkBadBelowBottomCorrelation
+        {
+            get { return _Options.IsMarkBadBelowBottomCorrelation; }
+            set
+            {
+                _Options.IsMarkBadBelowBottomCorrelation = value;
+                this.NotifyOfPropertyChange(() => this.IsMarkBadBelowBottomCorrelation);
+
+                // Save the options
+                SaveOptions();
+            }
+        }
+
         #endregion
 
         #region Mark Bad Above Surface
 
         /// <summary>
-        /// Turn on or off Mark Bad Below bottom.
+        /// Turn on or off Mark Bad above surface for Velocities.
         /// </summary>
         public bool IsMarkBadAboveSurface
         {
@@ -370,6 +402,38 @@ namespace RTI
             {
                 _Options.IsMarkBadAboveSurface = value;
                 this.NotifyOfPropertyChange(() => this.IsMarkBadAboveSurface);
+
+                // Save the options
+                SaveOptions();
+            }
+        }
+
+        /// <summary>
+        /// Turn on or off Mark Bad above surface for Amplitude.
+        /// </summary>
+        public bool IsMarkBadAboveSurfaceAmplitude
+        {
+            get { return _Options.IsMarkBadAboveSurfaceAmplitude; }
+            set
+            {
+                _Options.IsMarkBadAboveSurfaceAmplitude = value;
+                this.NotifyOfPropertyChange(() => this.IsMarkBadAboveSurfaceAmplitude);
+
+                // Save the options
+                SaveOptions();
+            }
+        }
+
+        /// <summary>
+        /// Turn on or off Mark Bad above surface for Correlation.
+        /// </summary>
+        public bool IsMarkBadAboveSurfaceCorrelation
+        {
+            get { return _Options.IsMarkBadAboveSurfaceCorrelation; }
+            set
+            {
+                _Options.IsMarkBadAboveSurfaceCorrelation = value;
+                this.NotifyOfPropertyChange(() => this.IsMarkBadAboveSurfaceCorrelation);
 
                 // Save the options
                 SaveOptions();
@@ -700,15 +764,15 @@ namespace RTI
             }
 
             // Mark Bad Below Bottom
-            if (_Options.IsMarkBadBelowBottom)
+            if (_Options.IsMarkBadBelowBottom || _Options.IsMarkBadBelowBottomAmplitude || _Options.IsMarkBadBelowBottomCorrelation)
             {
-                ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble, _prevBtRange);
+                ScreenData.ScreenMarkBadBelowBottom.Screen(ref ensemble, _prevBtRange, _Options.IsMarkBadBelowBottom, _Options.IsMarkBadBelowBottomAmplitude, _Options.IsMarkBadBelowBottomCorrelation);
             }
 
             // Mark Bad Above Surface
-            if (_Options.IsMarkBadAboveSurface)
+            if (_Options.IsMarkBadAboveSurface || _Options.IsMarkBadAboveSurfaceAmplitude || _Options.IsMarkBadAboveSurfaceCorrelation)
             {
-                ScreenData.ScreenMarkBadAboveSurface.Screen(ref ensemble, _prevRangeTrackRange);
+                ScreenData.ScreenMarkBadAboveSurface.Screen(ref ensemble, _prevRangeTrackRange, _Options.IsMarkBadAboveSurface, _Options.IsMarkBadAboveSurfaceAmplitude, _Options.IsMarkBadAboveSurfaceCorrelation);
             }
 
             // Remove Ship Speed

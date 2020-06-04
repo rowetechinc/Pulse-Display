@@ -64,12 +64,24 @@
 					<ColumnDefinition Width="Auto" /> 
 					<ColumnDefinition Width="*" /> 
 				</Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 				
-				<TextBlock Grid.Column="0" Text="Mark Bad Below Bottom" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
-				<CheckBox Grid.Column="1" IsChecked="{Binding IsMarkBadBelowBottom}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
-			</Grid>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Mark Velocities Bad Below Bottom" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+				<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsMarkBadBelowBottom}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mark Amplitude Bad Below Bottom" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsMarkBadBelowBottomAmplitude}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Mark Correlation Bad Below Bottom" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsMarkBadBelowBottomCorrelation}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+            </Grid>
 		</Border>
 
+        
         <!--Mark Bad Above Surface-->
         <Border Grid.Row="2" Grid.Column="0" Background="{StaticResource PulseBackBorder2Color}" Margin="5" CornerRadius="5">
             <Grid>
@@ -79,9 +91,20 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Mark Bad Above Surface" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
-                <CheckBox Grid.Column="1" IsChecked="{Binding IsMarkBadAboveSurface}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Mark Velocities Bad Above Surface" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsMarkBadAboveSurface}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mark Amplitude Bad Above Surface" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsMarkBadAboveSurfaceAmplitude}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Mark Correlation Bad Above Surface" Margin="5" FontWeight="Bold" Foreground="{StaticResource PulseFontHighlightColor}" FontSize="13.333" />
+                <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding IsMarkBadAboveSurfaceCorrelation}" VerticalAlignment="Center" Margin="5" Style="{StaticResource OnOffSwitchStyle}" />
             </Grid>
         </Border>
 
