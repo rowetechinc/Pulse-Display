@@ -1,5 +1,8 @@
 ﻿Pulse_Display Changelog
 
+Pulse-Display-4.13.3
+  * Fixed a bug in PlaybackViewModel, where the last ensemble is not displayed. 
+
 Pulse-Display-4.13.2
   - Added Additional screen options for MarkBadBelowBottom and MarkBadAboveSurface for Amplitude and Correlation.
   - In ScreenDataViewModel, allow user to select which parts to screen in MarkBadBelowBottom and MarkBadAboveSurface.

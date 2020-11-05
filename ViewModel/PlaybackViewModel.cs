@@ -44,7 +44,8 @@
  * 02/28/2017      RC          4.4.5      Fixed playback speed and divide by zero.
  * 08/17/2018      RC          4.10.2     Lock the ensemble with SyncRoot when screening and averaging the data.
  * 08/30/2018      RC          4.11.0     Lock the ensemble with SyncRoot in ProcessEnsembleBatch().
- * 6/18/2019       RC          4.11.1     Add event to display all the data.
+ * 06/18/2019      RC          4.11.1     Add event to display all the data.
+ * 11/05/2020      RC          4.13.3     Fixed a bug in PlaybackViewModel:SetEnsembleExecute(), where the last ensemble is not displayed. 
  * 
  */
 
@@ -653,7 +654,7 @@ namespace RTI
                         this.NotifyOfPropertyChange(() => this.TotalEnsembles);
 
                         // Check if we hit the end of playback
-                        if (_PlaybackIndex >= TotalEnsembles)
+                        if (_PlaybackIndex > TotalEnsembles)
                         {
                             // Stop the playback
                             StopTimer();
